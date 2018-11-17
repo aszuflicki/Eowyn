@@ -18,7 +18,11 @@
     "url": "https://github.com/predator1945/Eowyn/issues"
   },
   "homepage": "https://github.com/predator1945/Eowyn#readme",
-  "dependencies": {},
+  "dependencies": {
+    "pg": "^7.6.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.41.2"
+  },
   "devDependencies": {
     "eslint": "^5.7.0",
     "eslint-config-standard": "^12.0.0",
