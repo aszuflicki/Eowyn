@@ -19,9 +19,12 @@
   },
   "homepage": "https://github.com/predator1945/Eowyn#readme",
   "dependencies": {
+    "express": "^4.16.4",
     "pg": "^7.6.1",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.41.2"
+    "sequelize": "^4.41.2",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1"
   },
   "devDependencies": {
     "eslint": "^5.7.0",
