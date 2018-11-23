@@ -1,12 +1,10 @@
 
 export const addTick = (x, y) => {
-    console.log("2")
 
     return dispatch => dispatch(addTickSuccess(x,y))
 }
 
 const addTickSuccess = (x,y) => {
-    console.log("3")
 
     return {
         type: "ADD_TICK",
@@ -26,6 +24,7 @@ const setFigureSuccess = (figure) => {
 }
 
 export const setZoom = (layout) => {
+    console.log("ssdsdsdsdssssssssssssssssssssss")
     return dispatch => dispatch(setZoomSuccess(layout))
 }
 
