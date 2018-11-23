@@ -2,7 +2,10 @@ const chartReducerDefaultState = {
     x: [],
     y: [],
     type: 'line',
-    layout: { width: 800, height: 640, title: 'A Fancy Plot', plot_bgcolor: '#252120', paper_bgcolor: '#252120' }, frames: [], config: {}
+    layout: { autosize: true, title: 'A Fancy Plot'
+    // , plot_bgcolor: '#32393E'
+    // , paper_bgcolor: '#32393E'
+ }, frames: [], config: {}
 };
 
 export default (state = chartReducerDefaultState, action) => {
@@ -20,6 +23,7 @@ export default (state = chartReducerDefaultState, action) => {
             return { ...state, frames, layout }
 
         case 'SET_ZOOM':
+        console.log(action.payload)
             return { ...state, layout: action.payload }
 
 
