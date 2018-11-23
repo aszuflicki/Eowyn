@@ -1,11 +1,11 @@
 const serverSettings = {
-	port: 8001
+	port: 7001
 }
 
 const dbSettings = {
 	user: 'priceservice',
 	password: 'priceservice123',
-	url: 'localhost',
+	url: 'prices_db',
 	port: 5432,
 	dbname: 'prices',
 	opts: { // database wide options
