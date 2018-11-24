@@ -26,8 +26,8 @@ body {
     background-color: #622E6E;
 }
 
-.chart {
+.chart-container {
     padding: 15px;
     width: 100%;
     height: 90vh;
-  }
+}

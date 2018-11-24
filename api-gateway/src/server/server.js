@@ -2,10 +2,18 @@ const express = require('express')
 const morgan = require('morgan')
 const helmet = require('helmet')
 const proxy = require('http-proxy-middleware')
+<<<<<<< HEAD
 const start = (options) => {
 	return new Promise((resolve, reject) => {
 		if (!options.routes) {
 			reject(new Error('The server must be started with a discovered routes'))
+=======
+
+const start = (options) => {
+	return new Promise((resolve, reject) => {
+		if (!options.routes) {
+			reject(new Error('The server must be started with a list of routes'))
+>>>>>>> 6e979d5ddd8ea5f5484a50ebc16ee50c76ce796c
 		}
 		if (!options.port) {
 			reject(new Error('The server must be started with an available port'))
@@ -16,11 +24,12 @@ const start = (options) => {
 		app.use(helmet())
 
 		options.routes.forEach(el => {
-			const { route, port } = el
-			console.log(route + '     ' + port)
+
+
+			const { route, uri } = el
 			app.use(route, proxy({
-				target: `http://192.168.99.100:${port}`,
-				changeOrigin: true
+				target: `${uri}`
+
 			}))
 		})
 

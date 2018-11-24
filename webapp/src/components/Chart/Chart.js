@@ -2,12 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import { scaleTime } from "d3-scale";
+import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
 import { curveMonotoneX } from "d3-shape";
 
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { AreaSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { fitWidth } from "react-stockcharts/lib/helper";
+import { fitDimensions } from "react-stockcharts/lib/helper";
 import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
 
 const canvasGradient = createVerticalLinearGradient([
@@ -18,28 +19,42 @@ const canvasGradient = createVerticalLinearGradient([
 
 class AreaChart extends React.Component {
 	render() {
-		const { data, type, width, ratio } = this.props;
+		let { data:initialData, type, width, ratio, height } = this.props;
+
+		const xScaleProvider = discontinuousTimeScaleProvider
+			.inputDateAccessor(d => d._time);
+
+		const {
+			data,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+		} = xScaleProvider(initialData);
+
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={height}
 				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
 				seriesName="MSFT"
 				data={data} type={type}
-				xAccessor={d => d.date}
-				xScale={scaleTime()}
-				xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}
+				xScale={xScale}
+				xAccessor={xAccessor}
+				displayXAccessor={displayXAccessor}
 			>
-				<Chart id={0} yExtents={d => d.close}>
+				<Chart id={0} yExtents={d => {
+					//console.log(d.open)
+					return d.price
+				}}>
 					<defs>
 						<linearGradient id="MyGradient" x1="0" y1="100%" x2="0" y2="0%">
 							<stop offset="0%" stopColor="#b5d0ff" stopOpacity={0.2} />
 							<stop offset="70%" stopColor="#6fa4fc" stopOpacity={0.4} />
-							<stop offset="100%"  stopColor="#4286f4" stopOpacity={0.8} />
+							<stop offset="100%" stopColor="#4286f4" stopOpacity={0.8} />
 						</linearGradient>
 					</defs>
-					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
+					<XAxis axisAt="bottom" orient="bottom" ticks={6} />
 					<YAxis axisAt="left" orient="left" />
 					<AreaSeries
-						yAccessor={d => d.close}
+						yAccessor={d => d.price}
 						fill="url(#MyGradient)"
 						strokeWidth={2}
 						interpolation={curveMonotoneX}
@@ -62,6 +77,6 @@ AreaChart.propTypes = {
 AreaChart.defaultProps = {
 	type: "svg",
 };
-AreaChart = fitWidth(AreaChart);
+AreaChart = fitDimensions(AreaChart);
 
 export default AreaChart;
