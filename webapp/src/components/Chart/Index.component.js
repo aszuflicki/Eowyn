@@ -2,34 +2,26 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { addTick, setFigure } from '../../actions/Chart.actions'
 import Chart from './Chart'
+import io from 'socket.io-client'
+
 class Index extends Component {
 
     value;
 
     componentDidMount() {
-        const subscribe = {
-            type: "subscribe",
-            channels: [
-                {
-                    name: "ticker",
-                    product_ids: ["BTC-USD"]
-                }
-            ]
-        };
-        this.ws = new WebSocket("wss://ws-feed.gdax.com");
+        let socket = io('http://192.168.1.106:7001/');
 
-        this.ws.onopen = () => {
-            this.ws.send(JSON.stringify(subscribe));
-        };
+        socket.on("btc", (message) => {
+            console.log(message);
+            const value = JSON.parse(message)
 
-        this.ws.onmessage = e => {
-            this.value = JSON.parse(e.data);
-            if (this.value.type !== "ticker") {
-                return;
-            }
-            if (!!this.value.time)
-                this.props.addTick(this.value.time, this.value.price)
-        }
+            this.setState({
+                data: [
+                    ...this.state.data,
+                    { _time: new Date(value.time), price: value.price }
+                ]
+            })
+        })
 
         fetch('http://192.168.1.106:7001/prices/btc')
             .then(res => res.json())
@@ -41,12 +33,6 @@ class Index extends Component {
     }
 
     render() {
-
-        // const x = this.props.x.length ? this.props.x : ['2018-11-12T10:19:26.118000Z',]
-        // const y = this.props.x.length ? this.props.y : [6359.09000000,]
-        // const data = [
-        //     { type: 'line', x: x, y: y }
-        // ]
 
         if (this.state == null) {
             return <div>Loading...</div>
@@ -69,6 +55,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+
         addTick: (x, y) => dispatch(addTick(x, y)),
         setFigure: (figure) => dispatch(setFigure(figure))
     };

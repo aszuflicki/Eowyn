@@ -24,7 +24,6 @@ const setFigureSuccess = (figure) => {
 }
 
 export const setZoom = (layout) => {
-    console.log("ssdsdsdsdssssssssssssssssssssss")
     return dispatch => dispatch(setZoomSuccess(layout))
 }
 
