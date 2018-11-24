@@ -7,7 +7,7 @@ import { curveMonotoneX } from "d3-shape";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { AreaSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { fitWidth } from "react-stockcharts/lib/helper";
+import { fitDimensions } from "react-stockcharts/lib/helper";
 import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
 
 const canvasGradient = createVerticalLinearGradient([
@@ -18,17 +18,22 @@ const canvasGradient = createVerticalLinearGradient([
 
 class AreaChart extends React.Component {
 	render() {
-		const { data, type, width, ratio } = this.props;
+		let { data, type, width, ratio, height } = this.props;
+		data = data.map(d=> ({_time: d._time, price: d.price}))
+		console.log(data)
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={400}
+			<ChartCanvas ratio={ratio} width={width} height={height}
 				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
 				seriesName="MSFT"
 				data={data} type={type}
-				xAccessor={d => d.date}
+				xAccessor={d => !d? new Date():d._time}
 				xScale={scaleTime()}
-				xExtents={[new Date(2011, 0, 1), new Date(2013, 0, 2)]}
+				// xExtents={[new Date(2017, 1, 22), new Date(2019, 12, 25)]}
 			>
-				<Chart id={0} yExtents={d => d.close}>
+				<Chart id={0} yExtents={d => {
+					//console.log(d.open)
+					return d.price
+				}}>
 					<defs>
 						<linearGradient id="MyGradient" x1="0" y1="100%" x2="0" y2="0%">
 							<stop offset="0%" stopColor="#b5d0ff" stopOpacity={0.2} />
@@ -39,7 +44,7 @@ class AreaChart extends React.Component {
 					<XAxis axisAt="bottom" orient="bottom" ticks={6}/>
 					<YAxis axisAt="left" orient="left" />
 					<AreaSeries
-						yAccessor={d => d.close}
+						yAccessor={d => d.price}
 						fill="url(#MyGradient)"
 						strokeWidth={2}
 						interpolation={curveMonotoneX}
@@ -62,6 +67,6 @@ AreaChart.propTypes = {
 AreaChart.defaultProps = {
 	type: "svg",
 };
-AreaChart = fitWidth(AreaChart);
+AreaChart = fitDimensions(AreaChart);
 
 export default AreaChart;

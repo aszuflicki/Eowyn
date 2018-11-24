@@ -12,7 +12,7 @@ export const history = createHistory();
 const AppRouter = () => (
     <React.Fragment>
         <Navbar />
-        <div class="container-fluid">
+        <div className="container-fluid">
             <div className="row">
                 <div className="col-md-2 sidebar">
                     <Sidebar />
