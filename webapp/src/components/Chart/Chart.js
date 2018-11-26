@@ -1,8 +1,10 @@
 import React from "react";
 import { ChartCanvas, Chart } from "react-stockcharts";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-
-
+import { format } from "d3-format";
+import {
+	PriceCoordinate
+} from "react-stockcharts/lib/coordinates";
 import { discontinuousTimeScaleProviderBuilder } from "react-stockcharts/lib/scale";
 
 import { ema } from "react-stockcharts/lib/indicator";
@@ -203,7 +205,7 @@ class CandleStickChartPanToLoadMore extends React.Component {
 				ratio={ratio}
 				width={width}
 				height={height}
-				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				margin={{ left: 50, right: 85, top: 20, bottom: 30 }}
 				type={type}
 				seriesName="MSFT"
 				data={data}
@@ -235,6 +237,20 @@ class CandleStickChartPanToLoadMore extends React.Component {
 						interpolation={curveMonotoneX}
 						canvasGradient={canvasGradient}
 					/>
+
+					<PriceCoordinate
+						at="right"
+						orient="right"
+						price={data[data.length - 1].price}
+						stroke="#3490DC"
+						strokeWidth={1}
+						fill="#FFFFFF"
+						textFill="#22292F"
+						arrowWidth={7}
+						strokeDasharray="ShortDash"
+						displayFormat={format(".2f")}
+					/>
+
 				</Chart>
 			</ChartCanvas>
 		)
