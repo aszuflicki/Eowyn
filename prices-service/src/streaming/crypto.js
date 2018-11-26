@@ -16,6 +16,25 @@ const connect = (rep) => {
 			}
 		}
 	})
+
+
+	setInterval(() => {
+		socket = ioClient('https://streamer.cryptocompare.com/')
+		var subscription = ['5~CCCAGG~BTC~USD']
+		socket.emit('SubAdd', { subs: subscription })
+		socket.on('m', function (message) {
+			const msg = message.split('~')
+
+			if (msg[0] === '5' && (msg[4] === '1' || msg[4] === '2')) {
+				price = msg[5]
+				if (price != null) {
+					rep.addBTC(new Date(), price)
+				}
+			}
+		})
+
+		console.log("Reconnected to Cryptocompare API")
+	}, 1000 * 60 * 30) // reconnect every 30 minutes
 }
 
 const serve = (app) => {
