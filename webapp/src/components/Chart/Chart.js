@@ -1,14 +1,14 @@
 import React from "react";
-import PropTypes from "prop-types";
-
-import { scaleTime } from "d3-scale";
-import { discontinuousTimeScaleProvider } from "react-stockcharts/lib/scale";
-import { curveMonotoneX } from "d3-shape";
-
 import { ChartCanvas, Chart } from "react-stockcharts";
-import { AreaSeries } from "react-stockcharts/lib/series";
 import { XAxis, YAxis } from "react-stockcharts/lib/axes";
-import { fitDimensions } from "react-stockcharts/lib/helper";
+
+
+import { discontinuousTimeScaleProviderBuilder } from "react-stockcharts/lib/scale";
+
+import { ema } from "react-stockcharts/lib/indicator";
+import  { fitDimensions } from "react-stockcharts/lib/helper";
+import { AreaSeries } from "react-stockcharts/lib/series";
+import { curveMonotoneX } from "d3-shape";
 import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/utils";
 
 const canvasGradient = createVerticalLinearGradient([
@@ -17,28 +17,203 @@ const canvasGradient = createVerticalLinearGradient([
 	{ stop: 1, color: hexToRGBA("#4286f4", 0.8) },
 ]);
 
-class AreaChart extends React.Component {
+
+
+function getMaxUndefined(calculators) {
+	return calculators
+		.map(each => each.undefinedLength())
+		.reduce((a, b) => Math.max(a, b));
+}
+const LENGTH_TO_SHOW = 180;
+
+class CandleStickChartPanToLoadMore extends React.Component {
+	constructor(props) {
+		super(props);
+		const { data: inputData } = props;
+
+		const ema12 = ema()
+			.id(1)
+			.options({ windowSize: 12 })
+			.merge((d, c) => {
+				d.ema12 = c;
+			})
+			.accessor(d => d.ema12);
+
+		const maxWindowSize = getMaxUndefined([
+			ema12,
+		]);
+		/* SERVER - START */
+		const dataToCalculate = inputData.slice(-LENGTH_TO_SHOW - maxWindowSize);
+
+		const calculatedData =
+			ema12(dataToCalculate
+			);
+		const indexCalculator = discontinuousTimeScaleProviderBuilder().indexCalculator();
+
+		// console.log(inputData.length, dataToCalculate.length, maxWindowSize)
+		const { index } = indexCalculator(calculatedData);
+		// /* SERVER - END */
+
+		const xScaleProvider = discontinuousTimeScaleProviderBuilder().withIndex(
+			index
+		);
+		const {
+			data: linearData,
+			xScale,
+			xAccessor,
+			displayXAccessor
+		} = xScaleProvider(calculatedData.slice(-LENGTH_TO_SHOW));
+
+		// console.log(head(linearData), last(linearData))
+		// console.log(linearData.length)
+
+		this.state = {
+			ema12,
+			linearData,
+			data: linearData,
+			xScale,
+			xAccessor,
+			displayXAccessor,
+			initialIndex: 0
+		};
+		this.handleDownloadMore = this.handleDownloadMore.bind(this);
+	}
+
+	saveCanvas = node => {
+		this.canvas = node;
+	};
+	append = newData => {
+		const {
+			ema12,
+			initialIndex
+		} = this.state;
+
+		const maxWindowSize = getMaxUndefined([
+			ema12,
+		]);
+		/* SERVER - START */
+		const dataToCalculate = newData.slice(
+			-this.canvas.fullData.length - maxWindowSize
+		);
+
+		const calculatedData =
+			ema12(dataToCalculate
+			);
+		const indexCalculator = discontinuousTimeScaleProviderBuilder()
+			.initialIndex(initialIndex)
+			.indexCalculator();
+
+		// console.log(inputData.length, dataToCalculate.length, maxWindowSize)
+		const { index } = indexCalculator(calculatedData);
+		/* SERVER - END */
+
+		const xScaleProvider = discontinuousTimeScaleProviderBuilder()
+			.initialIndex(initialIndex)
+			.withIndex(index);
+		const {
+			data: linearData,
+			xScale,
+			xAccessor,
+			displayXAccessor
+		} = xScaleProvider(calculatedData.slice(-this.canvas.fullData.length));
+
+		// console.log(head(linearData), last(linearData))
+		// console.log(linearData.length)
+
+		this.setState({
+			ema12,
+			linearData,
+			data: linearData,
+			xScale,
+			xAccessor,
+			displayXAccessor
+		});
+	};
+	componentWillReceiveProps(nextProps) {
+		this.append(nextProps.data);
+	}
+	handleDownloadMore(start, end) {
+		if (Math.ceil(start) === end) return;
+		// console.log("rows to download", rowsToDownload, start, end)
+		const {
+			data: prevData,
+			ema12,
+		} = this.state;
+		const { data: inputData } = this.props;
+
+		if (inputData.length === prevData.length) return;
+
+		const rowsToDownload = end - Math.ceil(start);
+
+		const maxWindowSize = getMaxUndefined([
+			ema12,
+		]);
+
+		/* SERVER - START */
+		const dataToCalculate = inputData.slice(
+			-rowsToDownload - maxWindowSize - prevData.length,
+			-prevData.length
+		);
+
+		const calculatedData =
+			ema12(dataToCalculate)
+		const indexCalculator = discontinuousTimeScaleProviderBuilder()
+			.initialIndex(Math.ceil(start))
+			.indexCalculator();
+		const { index } = indexCalculator(
+			calculatedData.slice(-rowsToDownload).concat(prevData)
+		);
+		/* SERVER - END */
+
+		const xScaleProvider = discontinuousTimeScaleProviderBuilder()
+			.initialIndex(Math.ceil(start))
+			.withIndex(index);
+
+		const {
+			data: linearData,
+			xScale,
+			xAccessor,
+			displayXAccessor
+		} = xScaleProvider(calculatedData.slice(-rowsToDownload).concat(prevData));
+
+		// console.log(linearData.length)
+		setTimeout(() => {
+			// simulate a lag for ajax
+			this.setState({
+				data: linearData,
+				xScale,
+				xAccessor,
+				displayXAccessor,
+				initialIndex: Math.ceil(start)
+			});
+		}, 300);
+	}
 	render() {
-		let { data:initialData, type, width, ratio, height } = this.props;
-
-		const xScaleProvider = discontinuousTimeScaleProvider
-			.inputDateAccessor(d => d._time);
-
+		const { type, width, height, ratio } = this.props;
 		const {
 			data,
 			xScale,
 			xAccessor,
-			displayXAccessor,
-		} = xScaleProvider(initialData);
+			displayXAccessor
+		} = this.state;
 
+		
 		return (
-			<ChartCanvas ratio={ratio} width={width} height={height}
-				margin={{ left: 50, right: 50, top: 10, bottom: 30 }}
+			<ChartCanvas
+				ratio={ratio}
+				width={width}
+				height={height}
+				margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+				type={type}
 				seriesName="MSFT"
-				data={data} type={type}
+				data={data}
 				xScale={xScale}
 				xAccessor={xAccessor}
 				displayXAccessor={displayXAccessor}
+				onLoadMore={this.handleDownloadMore}
+				ref={node => {
+					this.saveCanvas(node);
+				}}
 			>
 				<Chart id={0} yExtents={d => {
 					//console.log(d.open)
@@ -62,21 +237,15 @@ class AreaChart extends React.Component {
 					/>
 				</Chart>
 			</ChartCanvas>
-		);
+		)
 	}
 }
 
+/*
 
-AreaChart.propTypes = {
-	data: PropTypes.array.isRequired,
-	width: PropTypes.number.isRequired,
-	ratio: PropTypes.number.isRequired,
-	type: PropTypes.oneOf(["svg", "hybrid"]).isRequired,
-};
+*/
 
-AreaChart.defaultProps = {
-	type: "svg",
-};
-AreaChart = fitDimensions(AreaChart);
 
-export default AreaChart;
+CandleStickChartPanToLoadMore = fitDimensions(CandleStickChartPanToLoadMore);
+
+export default CandleStickChartPanToLoadMore;

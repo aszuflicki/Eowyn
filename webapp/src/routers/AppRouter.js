@@ -13,19 +13,14 @@ const AppRouter = () => (
     <React.Fragment>
         <Navbar />
         <div className="container-fluid">
-            <div className="row">
-                <div className="col-md-2 sidebar">
+                
                     <Sidebar />
-                </div>
-                <div className="col-md-10">
                     <Router history={history}>
                         <Switch>
                             <Route path="/" component={Chart} />
 
                         </Switch>
                     </Router>
-                </div>
-            </div>
         </div>
 
     </React.Fragment>

@@ -1,64 +1,65 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { addTick, setFigure } from '../../actions/Chart.actions'
-import Chart from './Chart'
+import React from "react";
+import Chart from "./Chart";
+
 import io from 'socket.io-client'
 
-class Index extends Component {
-
-    value;
+class App extends React.Component {
 
     componentDidMount() {
+
         let socket = io('http://192.168.1.106:7001/');
 
         socket.on("btc", (message) => {
-            console.log(message);
             const value = JSON.parse(message)
+            console.log(value.price);
 
-            this.setState({
-                data: [
-                    ...this.state.data,
-                    { _time: new Date(value.time), price: value.price }
-                ]
+            this.appendData({
+                date: new Date(value.time),
+                open: message.price,
+                high: message.price,
+                low: message.price,
+                price: value.price,
+                volume: message.price,
             })
         })
 
         fetch('http://192.168.1.106:7001/prices/btc')
             .then(res => res.json())
             .then(data => {
-                const d = data.map(d => ({ _time: new Date(d._time), price: d.price }))
+                const d = data.map(d => ({ date: new Date(d._time), price: d.price }))
 
                 this.setState({ data: d })
             })
     }
 
+    componentWillUnmount() {
+        clearInterval(this.intervalId);
+    }
+
+    /* Just to simulate getting data from the server */
+    appendData = (dataPoint) => {
+
+        if (!!this.state) {
+            const { data } = this.state;
+
+            data.push(dataPoint);
+            this.setState({ data });
+        }
+
+    };
     render() {
 
+        console.log(this.state)
         if (this.state == null) {
-            return <div>Loading...</div>
+            return <div>Loading...</div>;
         }
         return (
             <div className="chart-container" >
 
                 <Chart type={'hybrid'} data={this.state.data} />
-
             </div>
         );
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        ...state.chart
-    }
-};
-
-const mapDispatchToProps = (dispatch) => {
-    return {
-
-        addTick: (x, y) => dispatch(addTick(x, y)),
-        setFigure: (figure) => dispatch(setFigure(figure))
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Index);
+export default App
