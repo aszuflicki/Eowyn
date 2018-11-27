@@ -7,7 +7,7 @@ class App extends React.Component {
 
     componentDidMount() {
 
-        let socket = io('http://192.168.1.106:7001/');
+        let socket = io('https://api.eowyn.szuflicki.tk/prices/');
 
         socket.on("btc", (message) => {
             const value = JSON.parse(message)
@@ -23,7 +23,7 @@ class App extends React.Component {
             })
         })
 
-        fetch('http://192.168.1.106:7001/prices/btc')
+        fetch('https://api.eowyn.szuflicki.tk/prices/btc')
             .then(res => res.json())
             .then(data => {
                 const d = data.map(d => ({ date: new Date(d._time), price: d.price }))
