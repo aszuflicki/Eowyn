@@ -7,20 +7,28 @@ class App extends React.Component {
 
     componentDidMount() {
 
-        let socket = io('https://api.eowyn.szuflicki.tk/prices/');
 
-        socket.on("btc", (message) => {
-            const value = JSON.parse(message)
-            console.log(value.price);
+        let socket = io('https://streamer.cryptocompare.com/')
+        var subscription = ['5~CCCAGG~BTC~USD']
+        socket.emit('SubAdd', { subs: subscription })
 
-            this.appendData({
-                date: new Date(value.time),
-                open: message.price,
-                high: message.price,
-                low: message.price,
-                price: value.price,
-                volume: message.price,
-            })
+
+        socket.on("m", (message) => {
+            const msg = message.split('~')
+
+            if (msg[0] === '5' && (msg[4] === '1' || msg[4] === '2')) {
+                let price = msg[5];
+                     this.appendData({
+                    date: new Date(),
+                    open: price,
+                    high: price,
+                    low: price,
+                    price: price,
+                    volume: price,
+                })
+
+            }
+           
         })
 
         fetch('https://api.eowyn.szuflicki.tk/prices/btc')

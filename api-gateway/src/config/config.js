@@ -6,7 +6,7 @@ const routes = [
 	// },
 	{
 		route: "/prices",
-		uri: "prices_service:7001",
+		uri: "http://prices_service:7001",
 		protected: false
 	}
 	// ,{

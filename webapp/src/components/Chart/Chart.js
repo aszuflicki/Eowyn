@@ -257,11 +257,6 @@ class CandleStickChartPanToLoadMore extends React.Component {
 	}
 }
 
-/*
-
-*/
-
-
 CandleStickChartPanToLoadMore = fitDimensions(CandleStickChartPanToLoadMore);
 
 export default CandleStickChartPanToLoadMore;
