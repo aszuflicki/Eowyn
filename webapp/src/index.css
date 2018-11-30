@@ -21,14 +21,7 @@ body {
     transform: translate(-50px, 0px);
 }
 
-.sidebar {
-    height: calc(100vh - 60px);
-    width: 250px;
-    background-color: #622E6E;
-    position: absolute;
-    top: 60px;
-    left: 0px;
-}
+
 
 .container-body {
     position: absolute;
