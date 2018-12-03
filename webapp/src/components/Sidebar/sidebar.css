@@ -1,0 +1,25 @@
+
+
+.drawer {
+    height: calc(100vh - 60px);
+    width: 250px;
+    background-color: #622E6E;
+    position: absolute;
+    top: 60px;
+    /* left: -250px; */
+    transform: translateX(-100%);
+}
+
+.drawer.open {
+    transform: translateX(0%);
+   
+    left: 0px;
+}
+.drawer__handle {
+    position: absolute;
+    top: calc(50vh - 60px);
+    left: 240px;
+    transition: transform 0.3s ease-out;
+}
+
+

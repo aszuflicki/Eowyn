@@ -17,12 +17,9 @@ const start = (options) => {
 		app.use(helmet())
 
 		options.routes.forEach(el => {
-
-
 			const { route, uri } = el
 			app.use(route, proxy({
 				target: `${uri}`
-
 			}))
 		})
 
