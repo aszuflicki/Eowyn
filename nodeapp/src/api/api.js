@@ -13,7 +13,10 @@ module.exports = (app, options) => {
     })
 
     app.post('/login', (req, res) => {
-        const { email, password } = req.body;
+        const { email, password } = req.params;
+        console.log(email + "   " + password)
+
+        res.json({ msg: 'ok' })
     })
 
     app.post('/register', (req, res) => {

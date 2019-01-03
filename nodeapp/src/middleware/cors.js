@@ -1,8 +1,7 @@
 const cors = require('cors')
+const { whitelist } = require('./../config/cors')
 
 module.exports = (app, options) => {
-    const { whitelist } = options.corsSettings;
-    
     const corsOptions = {
         origin: function (origin, callback) {
             if (whitelist.indexOf(origin) !== -1) {
@@ -13,7 +12,7 @@ module.exports = (app, options) => {
         }
     }
 
-    app.get('*', cors(corsOptions), function (req, res, next) {
+    app.all('*', cors(corsOptions), function (req, res, next) {
         next()
     })
 }
