@@ -14,7 +14,7 @@ const AppRouter = () => (
     <React.Fragment>
         <Router history={history}>
             <Switch>
-                {/* <Route path="/" exact={true} component={LandingPage} /> */}
+                <Route path="/" exact={true} component={Dashboard} />
                 <PublicRoute path="/" exact={true} component={LandingPage} />
                 <PublicRoute path="/dashboard" component={Dashboard} />
 

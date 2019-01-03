@@ -34,6 +34,7 @@ class NavigationBar extends Component {
 
 const mapStateToProps = (state) => {
     return {
+        
     }
 
 };
