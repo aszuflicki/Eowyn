@@ -14,7 +14,7 @@ const ReactGridLayout = WidthProvider(RGL);
 class MessyLayout extends React.PureComponent {
   static defaultProps = {
     className: "layout",
-    items: 5,
+    items: 6,
     rowHeight: 40,
     cols: 12
   };
