@@ -24,10 +24,12 @@ mediator.on('db.ready', db => {
 		.then(repo => {
 			console.log('Connected. Starting Server')
 			rep = repo
+
 			return server.start({
 				port: config.serverSettings.port,
 				repo
 			})
+
 		})
 		.then(app => {
 			console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`)
