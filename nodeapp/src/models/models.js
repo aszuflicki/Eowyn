@@ -8,7 +8,7 @@ const User = (sequelize, types) =>
 			autoIncrement: true
 		},
 		email: types.STRING(32),
-		pass: types.STRING(32)
+		pass: types.STRING(127)
 	})
 
 module.exports = { User }

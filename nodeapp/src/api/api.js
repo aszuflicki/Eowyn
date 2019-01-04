@@ -1,9 +1,12 @@
 'use strict'
 const status = require('http-status')
+const passport = require("passport");
+const { strategy, signUp, logIn, ensureAuthenticated } = require("./../middleware/passport")
 
 module.exports = (app, options) => {
     const { repo } = options
 
+    passport.use(strategy(repo));
     app.get('/dashboard', (req, res, next) => {
         repo.getDashboard(req.user)
             .then(dashboard => {
@@ -12,40 +15,34 @@ module.exports = (app, options) => {
             .catch(next)
     })
 
-    app.post('/login', (req, res) => {
-        const { email, password } = req.params;
-        console.log(email + "   " + password)
-
-        res.json({ msg: 'ok' })
+    app.get("/protected", ensureAuthenticated, (req, res) => {
+        return res.status(200).send("YAY! this is a protected Route")
     })
 
+    app.post("/login", (req, res) => {
+        let { email, password } = req.body;
+
+        logIn(repo, email, password)
+            .then(response => {
+                res.status(200).json({
+                    msg: "Auth Passed",
+                    token
+                })
+            })
+            .catch(err => {
+                res.status(401).json({ message: "Auth Failed" })
+            })
+    });
+
     app.post('/register', (req, res) => {
-        const { name, email, password, password2 } = req.body;
-        let errors = [];
+        let { password, email } = req.body;
 
-        if (!name || !email || !password || !password2) {
-            res.json({ msg: 'Please enter all fields' });
-        }
-
-        if (password.length < 6) {
-            res.json({ msg: 'Password must be at least 6 characters' });
-        }
-
-        let user = null;
-
-        repo.getUserByEmail(email)
-            .then(results => user = results)
-
-        if (user != null) {
-            res.json({ msg: 'Email already exists' });
-        }
-
-        bcrypt.hash(password, saltRounds).then(function (hash) {
-            password = hash
-        })
-
-        repo.addUser(name, email, password)
-
-        res.json({ msg: "Ok" })
+        signUp(repo, email, password)
+            .then(response => {
+                res.status(201).json({ msg: "Ok" })
+            })
+            .catch(err => {
+                res.json({ msg: err })
+            })
     })
 }

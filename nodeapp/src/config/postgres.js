@@ -9,7 +9,6 @@ const getURI = options => {
 const connect = (options, mediator) => {
 	mediator.once('boot.ready', () => {
 		const URI = getURI(options)
-		console.log(URI)
 		const sequelize = new Sequelize(URI, options.opts)
 
 		sequelize

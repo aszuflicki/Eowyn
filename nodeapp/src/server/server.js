@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const helmet = require('helmet')
 const api = require('../api/api')
 const cors = require('./../middleware/cors')
+const bodyParser = require('body-parser')
 
 const start = (options) => {
     return new Promise((resolve, reject) => {
@@ -21,8 +22,11 @@ const start = (options) => {
             res.status(500).send('Something went wrong!')
         })
 
+        app.use(bodyParser.json());
+
         cors(app, options)
         api(app, options)
+
 
         const server = app.listen(options.port, () => resolve(server))
     })

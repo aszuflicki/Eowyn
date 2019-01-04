@@ -6,7 +6,7 @@ const config = require('./config/')
 const mediator = new EventEmitter()
 
 console.log('--- Main service ---')
-console.log('Connecting to repository')
+console.log('Connecting to repository...')
 
 process.on('uncaughtException', (err) => {
 	console.error('Unhandled Exception', err)
@@ -22,7 +22,7 @@ mediator.on('db.ready', db => {
 	let rep
 	repository.connect(db)
 		.then(repo => {
-			console.log('Connected. Starting Server')
+			console.log('Connected. Starting Server...')
 			rep = repo
 
 			return server.start({
