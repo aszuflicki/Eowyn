@@ -3,9 +3,11 @@ import { Router, Route, Switch } from 'react-router-dom';
 import createHistory from 'history/createBrowserHistory'
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
-import Navbar from '../components/Navbar.component'
+// import Navbar from '../components/Navbar.component'
 
 import LandingPage from '../components/LandingPage.component'
+import RegisterPage from '../components/RegisterPage.component'
+import LoginPage from '../components/LoginPage.component'
 import Dashboard from '../components/Dashboard/Dashboard.component'
 
 export const history = createHistory();
@@ -16,7 +18,9 @@ const AppRouter = () => (
             <Switch>
                 <Route path="/" exact={true} component={Dashboard} />
                 <PublicRoute path="/" exact={true} component={LandingPage} />
-                <PublicRoute path="/dashboard" component={Dashboard} />
+                <PublicRoute path="/register" exact={true} component={RegisterPage} />
+                <PublicRoute path="/login" exact={true} component={LoginPage} />
+                <PrivateRoute path="/dashboard" component={Dashboard} />
 
             </Switch>
         </Router>

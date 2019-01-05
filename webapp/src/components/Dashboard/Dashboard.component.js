@@ -3,7 +3,6 @@ import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
 import './dashboard.css'
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
-import Navbar from './../Navbar.component'
 import CryptoMarketOverview from './Widgets/CryptoMarketOveriew.component'
 import MarketOverview from './Widgets/MarketOveriew.component'
 import SingleTicker from './Widgets/SingleTicker.component'

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Tab, FormGroup, ControlLabel, FormControl, HelpBlock } from 'react-bootstrap';
+import { Tabs, Tab, FormGroup, FormControl } from 'react-bootstrap';
 class LandingPage extends Component {
 
     render() {
@@ -15,7 +15,7 @@ class LandingPage extends Component {
                 <div className="landingpage-container_form">
                     <Tabs defaultActiveKey={1} id="form-register">
                         <Tab eventKey={1} title="Register">
-                            
+
                             <FormGroup
                                 controlId="formBasicText"
                                 validationState={true}
@@ -46,7 +46,7 @@ class LandingPage extends Component {
                             </FormGroup>
                         </Tab>
                         <Tab eventKey={2} title="Log in">
-                            
+
                             <FormGroup
                                 controlId="formBasicText"
                                 validationState={true}
