@@ -18,16 +18,28 @@ class RegisterPage extends Component {
         this.props.register(this.email.current.value, this.password.current.value)
     }
 
-    render() {
+    renderAlerts(msgs, type) {
+        return msgs.map(msg => (
+            <div class={`alert ${type}`} role="alert">
+                {msg}
+            </div>
+        ))
+    }
 
+    render() {
         if (this.props.isRegistered) return <Redirect to='/login' />
 
+        const { error_msgs, success_msgs } = this.props;
+        console.log(error_msgs)
+        console.log(success_msgs)
         return (
             <div className="container">
                 <div className="row mt-5">
                     <div className="col-md-6 m-auto">
                         <div className="card card-body">
                             <h1 className="text-center mb-3"><i className="fas fa-sign-in-alt"></i>Register</h1>
+                            {this.renderAlerts(error_msgs, 'alert-danger')}
+                            {/* {this.renderAlerts(success_msgs, 'alert-success')} */}
                             <form onSubmit={this.handleSubmit}>
                                 <div className="form-group">
                                     <label htmlFor="email">Email</label>

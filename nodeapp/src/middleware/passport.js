@@ -1,6 +1,7 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const bcrypt = require('bcrypt')
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+const jwt = require("jsonwebtoken")
 const opts = {}
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = 'SECRET_KEY';
@@ -17,12 +18,11 @@ const logIn = (repo, email, plainPassword) => {
     repo.getUserByEmail(email)
       .then((user) => {
         if (user.length == 0) {
-          reject("Auth Failed")
+          reject({ msg: "Auth failed" })
         }
-
         const { pass: hashedPassword } = user[0].dataValues
 
-        bcrypt.compareSync(plainPassword, hashedPassword, (err, result) => {
+        bcrypt.compare(plainPassword, hashedPassword, (err, result) => {
           if (err) console.log(err)
 
           if (result) {
@@ -30,10 +30,12 @@ const logIn = (repo, email, plainPassword) => {
             opts.expiresIn = 60 * 60 * 12;
             const secret = "SECRET_KEY"
             const token = jwt.sign({ email }, secret, opts);
+
             resolve({
               token
             })
           } else {
+
             reject("Auth Failed")
           }
         });

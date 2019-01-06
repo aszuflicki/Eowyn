@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from 'react-redux';
 import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
 import './dashboard.css'
@@ -8,9 +9,12 @@ import MarketOverview from './Widgets/MarketOveriew.component'
 import SingleTicker from './Widgets/SingleTicker.component'
 import TechnicalAnalisis from './Widgets/TechnicalAnalisis.component'
 import Ticker from './Widgets/Ticker.component'
+import { updateLayout } from './../../actions/Dashboard.actions'
+import AddWidgetModal from './Modal.component'
+
 const ReactGridLayout = WidthProvider(RGL);
 
-class MessyLayout extends React.PureComponent {
+class Dashboard extends React.PureComponent {
   static defaultProps = {
     className: "layout",
     items: 6,
@@ -37,7 +41,7 @@ class MessyLayout extends React.PureComponent {
       y: 0
     },
     {
-      
+
       h: 10,
       w: 6,
       i: "1",
@@ -45,7 +49,7 @@ class MessyLayout extends React.PureComponent {
       y: 0
     },
     {
-      
+
       h: 10,
       w: 6,
       i: "2",
@@ -92,7 +96,6 @@ class MessyLayout extends React.PureComponent {
 
 
     return _.map(_.range(this.props.items), function (i) {
-      console.log(i)
       return (
         <div key={i}>
           <span className="text">{i}</span>
@@ -127,18 +130,32 @@ class MessyLayout extends React.PureComponent {
 
   render() {
 
-    console.log(this.generateLayout())
+    // console.log(this.generateLayout())
     return (
       <React.Fragment>
+
+        <div class="card">
+          <div class="card-body">
+            <button type="button" class="btn btn-md btn-success">Add</button>
+            <span style={{ color: "white" }}>x</span>
+            <button type="button" class="btn btn-md btn-info" >Edit</button>
+          </div>
+        </div>
         <div className="widget-container">
           <ReactGridLayout
             layout={this.state.layout}
-            onLayoutChange={(...args) => console.log(args)}
+            onLayoutChange={(...args) => {
+              console.log(args)
+              this.props.updateLayout(args)
+            }
+            }
             {...this.props}
           >
             {this.generateDOM()}
           </ReactGridLayout>
         </div>
+            <AddWidgetModal />
+       
       </React.Fragment>
     );
   }
@@ -148,7 +165,7 @@ const getWidgets = (i) => {
     case 0:
       return (
         <TradingViewWidget
-          symbol="NASDAQ:AAPL"
+          symbol="BITFINEX:ETHUSD"
           theme={Themes.DARK}
           locale="pl"
           autosize={true}
@@ -175,11 +192,21 @@ const getWidgets = (i) => {
 
         <Ticker />
       )
-      default:
+    default:
       return <div> Ooopss...</div>
 
   }
 }
+function mapStateToProps(state) {
+  return {
+    ...state.dashboard,
+  }
+}
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateLayout: (layout) => dispatch(updateLayout(layout)),
+  };
+};
 
-export default MessyLayout;
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

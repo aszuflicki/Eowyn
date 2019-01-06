@@ -24,13 +24,15 @@ module.exports = (app, options) => {
 
         logIn(repo, email, password)
             .then(response => {
-                res.status(200).json({
+                console.log(response)
+                res.json({
                     msg: "Auth Passed",
-                    token
+                    token: response.token
                 })
             })
             .catch(err => {
-                res.status(401).json({ message: "Auth Failed" })
+                console.log(err)
+                res.status(401).json({ msg: "Auth Failed" })
             })
     });
 
@@ -39,6 +41,7 @@ module.exports = (app, options) => {
 
         signUp(repo, email, password)
             .then(response => {
+                console.log(response)
                 res.status(201).json({ msg: "Ok" })
             })
             .catch(err => {

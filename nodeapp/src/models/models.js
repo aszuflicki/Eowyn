@@ -11,4 +11,14 @@ const User = (sequelize, types) =>
 		pass: types.STRING(127)
 	})
 
-module.exports = { User }
+const Dashboard = (sequelize, types) =>
+	sequelize.define('dashboard', {
+		email: {
+			type: types.STRING(32),
+			primaryKey: true
+		},
+		layout: types.JSON,
+		settings: types.JSON
+	})
+	
+module.exports = { User, Dashboard }

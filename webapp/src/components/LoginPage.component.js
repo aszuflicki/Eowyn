@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { login } from './../actions/Auth.actions'
+import { login, checkIfLoggedIn } from './../actions/Auth.actions'
 import { Redirect } from 'react-router-dom'
 
 
@@ -17,7 +17,21 @@ class LoginPage extends Component {
         this.props.login(this.email.current.value, this.password.current.value)
     }
 
+    renderAlerts(msgs, type) {
+        return msgs.map(msg => (
+            <div class={`alert ${type}`} role="alert">
+                {msg}
+            </div>
+        ))
+    }
+
+    componentWillMount() {
+        this.props.checkIfLoggedIn()
+    }
+
     render() {
+
+        const { error_msgs, success_msgs } = this.props;
 
         if (this.props.token.length > 0) return <Redirect to='/dashboard' />
 
@@ -27,6 +41,10 @@ class LoginPage extends Component {
                     <div className="col-md-6 m-auto">
                         <div className="card card-body">
                             <h1 className="text-center mb-3"><i className="fas fa-sign-in-alt"></i>Login</h1>
+
+                            {this.renderAlerts(error_msgs, 'alert-danger')}
+                            {this.renderAlerts(success_msgs, 'alert-success')}
+
                             <form onSubmit={this.handleSubmit}>
                                 <div className="form-group">
                                     <label htmlFor="email">Email</label>
@@ -76,6 +94,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         login: (email, password) => dispatch(login(email, password)),
+        checkIfLoggedIn: () => dispatch(checkIfLoggedIn())
     };
 };
 

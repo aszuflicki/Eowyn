@@ -19,7 +19,8 @@ process.on('uncaughtRejection', (err) => {
 })
 
 mediator.on('db.ready', db => {
-	let rep
+	let rep;
+	
 	repository.connect(db)
 		.then(repo => {
 			console.log('Connected. Starting Server...')
@@ -31,12 +32,9 @@ mediator.on('db.ready', db => {
 			})
 
 		})
-		.then(app => {
-			console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`)
-			app.on('close', () => {
-				rep.disconnect()
+		.then(() => {
+				console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`);
 			})
-		})
 })
 
 mediator.on('db.error', err => {

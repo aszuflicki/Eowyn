@@ -27,8 +27,18 @@ const start = (options) => {
         cors(app, options)
         api(app, options)
 
+        const http = require('http').Server(app);
+        const io = require('socket.io')(http);
 
-        const server = app.listen(options.port, () => resolve(server))
+
+        io.on('connection', function (socket) {
+            console.log('connected -----------------')
+            socket.on('dashboard', function (msg) {
+                console.log(msg)
+            });
+        });
+
+        http.listen(options.port, () => resolve({}))
     })
 }
 
