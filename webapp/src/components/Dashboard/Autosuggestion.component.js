@@ -8,13 +8,25 @@ class AutoSugestions extends Component {
   }
 
   componentWillMount() {
-    this.setState({ value: '' })
+    this.setState({ value: '', choosen: '' })
 
   }
 
-  handleChange(event) {
-    const value = this.symbol.current.value
-    this.setState({ value })
+  handleChange() {
+    let value = this.symbol.current.value
+
+    if (value.length < this.state.value.length && this.state.chosen.length > 0){
+      value = ''
+      this.symbol.current.value = ''
+    } 
+
+    this.setState({ value, chosen: '' })
+  }
+
+  handleClick(el) {
+    const { symbol: chosen, name, desc, type } = el
+    this.symbol.current.value = name + "   " + desc + "     " + type
+    this.setState({ chosen })
   }
 
   renderSugestionsItems(value) {
@@ -27,7 +39,12 @@ class AutoSugestions extends Component {
       )
       .slice(0, 5)
       .map(el => (
-        <a style={{ width: "700px" }} class="dropdown-item">
+        <a
+          style={{ width: "700px" }}
+          class="dropdown-item"
+          value={this.state.value}
+          onClick={() => this.handleClick(el)}
+        >
           <b>{el.name}</b> {'\u00A0'}
           {el.desc}
           <i style={{ position: "absolute", right: '25px' }}>{el.type}</i>
@@ -38,7 +55,7 @@ class AutoSugestions extends Component {
   renderSugestions(value) {
     console.log(value)
 
-    if (value.length === 0) return
+    if (value.length === 0 || this.state.chosen.length !== 0) return
 
     return (
       <div class="dropdown-menu show" aria-labelledby="dropdownMenuButton" x-placement="bottom-start" style={style}>

@@ -7,27 +7,27 @@ class NavigationBar extends Component {
     console.log()
 
     return (
-      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a class="navbar-brand" href="/">Eowyn</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a className="navbar-brand" href="/">Eowyn</a>
+        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span className="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav mr-auto">
-            <li class={`nav-item ${checkIfUrl('dashboard')}`}>
-              <a class="nav-link" href="/">Dashboard </a>
+        <div className="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul className="navbar-nav mr-auto">
+            <li className={`nav-item ${checkIfUrl('dashboard')}`}>
+              <a className="nav-link" href="/">Dashboard </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/">Link</a>
+            <li className="nav-item">
+              <a className="nav-link" href="/">Link</a>
             </li>
             
 
           </ul>
-          <ul class="navbar-nav justify-content-end">
-          <button type="button" class="btn btn-outline-info">Edit</button>
-            <li class="nav-item">
-              <a class="nav-link" href="/" tabindex="-1" aria-disabled="true">Disabled</a>
+          <ul className="navbar-nav justify-content-end">
+          <button type="button" className="btn btn-outline-info">Edit</button>
+            <li className="nav-item">
+              <a className="nav-link" href="/" tabindex="-1" aria-disabled="true">Disabled</a>
             </li>
           </ul>
 
