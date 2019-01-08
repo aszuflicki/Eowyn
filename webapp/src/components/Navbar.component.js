@@ -27,7 +27,7 @@ class NavigationBar extends Component {
           <ul className="navbar-nav justify-content-end">
           <button type="button" className="btn btn-outline-info">Edit</button>
             <li className="nav-item">
-              <a className="nav-link" href="/" tabindex="-1" aria-disabled="true">Disabled</a>
+              <a className="nav-link" href="/" tabIndex="-1" aria-disabled="true">Disabled</a>
             </li>
           </ul>
 

@@ -18,9 +18,40 @@ class Dashboard extends React.PureComponent {
   static defaultProps = {
     className: "layout",
     items: 6,
-    rowHeight: 40,
-    cols: 12
+    rowHeight: 30,
+    cols: 12,
+    isAddMode: false
   };
+
+  settings = {
+    "0": {
+      type: 0,
+      settings: {
+        symbol: "BITFINEX:ETHUSD"
+      }
+    },
+    "1": {
+      type: 1,
+
+    },
+    "2": {
+      type: 2,
+
+    },
+    "3": {
+      type: 3,
+
+    },
+    "4": {
+      type: 4,
+
+    },
+    "5": {
+      type: 5,
+
+    },
+
+  }
 
 
   gridLayout = [
@@ -57,8 +88,8 @@ class Dashboard extends React.PureComponent {
       y: 10
     },
     {
-      h: 10,
-      w: 6,
+      h: 3,
+      w: 4,
       i: "3",
       x: 6,
       y: 10
@@ -71,8 +102,8 @@ class Dashboard extends React.PureComponent {
       y: 20
     },
     {
-      h: 10,
-      w: 6,
+      h: 3,
+      w: 3,
       i: "5",
       x: 6,
       y: 20
@@ -82,63 +113,88 @@ class Dashboard extends React.PureComponent {
 
   constructor(props) {
     super(props);
-
-    // const layout = this.generateLayout();
     const layout = this.gridLayout;
-    this.state = { layout };
+    this.state = { layout, isAddMode: false, settings: this.settings };
   }
 
 
 
   generateDOM() {
+    // return _.map(_.range(this.props.items), function (i) {
+    //   return (
+    //     <div key={i}>
+    //       <span className="text">{i}</span>
+    //       <div className="widget-body">
+    //         {getWidgets(i)}
+    //       </div>
+    //     </div>
+    //   );
+    // });
 
-
-
-
-    return _.map(_.range(this.props.items), function (i) {
+    return this.state.layout.map(widget => {
+      console.log(widget)
+      const { type, settings } = this.settings[widget.i]
       return (
-        <div key={i}>
-          <span className="text">{i}</span>
+        <div key={widget.i}>
+          <span className="text">{widget.i}</span>
           <div className="widget-body">
-            {getWidgets(i)}
+            {getWidgets(type, settings)}
           </div>
-
-
         </div>
       );
-    });
+    })
   }
 
-  generateLayout() {
-    const p = this.props;
-    return _.map(new Array(p.items), function (item, i) {
-      const w = 6;
-      const y = 10;
-      return {
-        x: (i % 2) * 6,
-        y: i % 2,
-        w: w,
-        h: y,
-        i: i.toString()
-      };
-    });
+
+
+  addMode(isAddMode) {
+    this.setState({ isAddMode })
   }
 
-  onLayoutChange(layout) {
-    this.props.onLayoutChange(layout);
+  addWidget(type, widgetSettings) {
+    const newId = Math.max(...this.state.layout.map(el => el.i)) + 1
+
+    switch (type) {
+      case 0:
+        let { layout, settings } = this.state
+        layout = [
+          {
+            h: 10,
+            w: 6,
+            i: newId+"",
+            x: 0,
+            y: 0
+          },
+          ...layout.map(el => ({
+            ...el, y: el.y + 10
+          })), ]
+        settings[newId] = {
+          type: 0,
+          settings: widgetSettings
+        }
+        console.log(layout)
+        console.log(widgetSettings)
+        this.setState({ settings })
+        this.setState({ layout })
+
+        this.setState({ layout })
+
+    }
+
   }
 
   render() {
-
-    // console.log(this.generateLayout())
     return (
       <React.Fragment>
-
-        <div class="card">
-          <div class="card-body">
-            <button type="button" class="btn btn-md btn-success">Add</button>
+        <div className="card">
+          <div className="card-body">
+            <button type="button" className="btn btn-md btn-success"
+              onClick={() => { this.addMode(true); console.log('xdd') }}
+            >
+              Add
+            </button>
             <span style={{ color: "white" }}>x</span>
-            <button type="button" class="btn btn-md btn-info" >Edit</button>
+            <button type="button" className="btn btn-md btn-info" >Edit</button>
           </div>
         </div>
         <div className="widget-container">
@@ -154,18 +210,26 @@ class Dashboard extends React.PureComponent {
             {this.generateDOM()}
           </ReactGridLayout>
         </div>
-            <AddWidgetModal />
-       
+        {this.state.isAddMode ?
+          <AddWidgetModal
+            onClose={() => this.addMode(false)}
+            addWidget={(type, settings) => {
+              this.addMode(false)
+              this.addWidget(type, settings)
+              console.log(settings)
+            }}
+          /> : ''}
+
       </React.Fragment>
     );
   }
 }
-const getWidgets = (i) => {
+const getWidgets = (i, settings) => {
   switch (i) {
     case 0:
       return (
         <TradingViewWidget
-          symbol="BITFINEX:ETHUSD"
+          symbol={settings.symbol.value}
           theme={Themes.DARK}
           locale="pl"
           autosize={true}

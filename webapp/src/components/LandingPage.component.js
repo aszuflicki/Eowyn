@@ -71,7 +71,6 @@ class LandingPage extends Component {
                     </Tabs>
 
                 </div>
-
             </div>
         )
     }

@@ -13,6 +13,7 @@ export const PrivateRoute = ({
         <Fragment>
           <Navbar />
           <Component {...props} />
+          
         </Fragment>
       ) : (
           <Redirect to="/login" />

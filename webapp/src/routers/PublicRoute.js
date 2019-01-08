@@ -12,6 +12,7 @@ export const PublicRoute = ({
         <Redirect to="/dashboard" />
       ) : (
           <Component {...props} />
+          
         )
     )} />
   );
