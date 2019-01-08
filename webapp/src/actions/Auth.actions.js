@@ -1,5 +1,5 @@
 import axios from 'axios'
-
+import jwt from 'jsonwebtoken'
 const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
 
@@ -91,9 +91,26 @@ export function loginFailed(data) {
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export function loginSuccess(data) {
+    data = {email: jwt.decode(data.token).email, ...data}
     return {
         type: LOGIN_SUCCESS,
         payload: data
+    };
+}
+
+export const logout = () => {
+    clearLocalStorage()
+    return dispatch => 
+
+dispatch(logoutSuccess({ success_msg: 'Successfuly logged out' }))
+    
+}
+
+export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
+export function logoutSuccess() {
+    return {
+        type: LOGOUT_SUCCESS,
+        payload: {}
     };
 }
 

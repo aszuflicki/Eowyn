@@ -18,6 +18,7 @@ class LoginPage extends Component {
     }
 
     renderAlerts(msgs, type) {
+        console.log(msgs)
         return msgs.map(msg => (
             <div class={`alert ${type}`} role="alert">
                 {msg}
@@ -32,6 +33,8 @@ class LoginPage extends Component {
     render() {
 
         const { error_msgs, success_msgs } = this.props;
+        console.log(success_msgs)
+
 
         if (this.props.token.length > 0) return <Redirect to='/dashboard' />
 

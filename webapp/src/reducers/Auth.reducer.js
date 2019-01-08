@@ -1,6 +1,6 @@
 import {
     REGISTRATION_SUCCESS, REGISTRATION_FAILED,
-    LOGIN_FAILED, LOGIN_SUCCESS, CLEAN_ALERTS
+    LOGIN_FAILED, LOGIN_SUCCESS, CLEAN_ALERTS, LOGOUT_SUCCESS
 } from './../actions/Auth.actions'
 
 const authReducerDefaultState = {
@@ -28,6 +28,15 @@ export default (state = authReducerDefaultState, action) => {
 
         case LOGIN_SUCCESS:
             return { ...state, ...action.payload, success_msgs: [action.payload.success_msg] }
+
+        case LOGOUT_SUCCESS:
+            return {
+                token: '',
+                email: '',
+                isRegistered: false,
+                error_msgs: [],
+                success_msgs: ['Logged out successfully']
+            }
 
         case CLEAN_ALERTS:
             return { ...state, success_msgs: [], error_msgs: [] }

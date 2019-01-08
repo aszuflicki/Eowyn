@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { logout } from './../actions/Auth.actions'
 
 class NavigationBar extends Component {
   render() {
@@ -21,14 +22,23 @@ class NavigationBar extends Component {
             <li className="nav-item">
               <a className="nav-link" href="/">Link</a>
             </li>
-            
+
 
           </ul>
           <ul className="navbar-nav justify-content-end">
-          <button type="button" className="btn btn-outline-info">Edit</button>
             <li className="nav-item">
-              <a className="nav-link" href="/" tabIndex="-1" aria-disabled="true">Disabled</a>
+              <a className="nav-link" href="/profile" tabIndex="-1" >{this.props.email}</a>
             </li>
+            <button type="button" className="btn btn-danger"
+              onClick={() => {
+                this.props.logout()
+                console.log(this.props)
+                // this.props.history.push('/')
+              }}
+            >
+              Logout
+            </button>
+
           </ul>
 
 
@@ -43,13 +53,14 @@ const checkIfUrl = (page) =>
 
 const mapStateToProps = (state) => {
   return {
-
+    ...state.auth
   }
 
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    logout: () => dispatch(logout())
   };
 };
 

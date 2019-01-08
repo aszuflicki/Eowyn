@@ -32,7 +32,8 @@ class AddWidgetModal extends Component {
                 }
             ],
             tabActive: 0,
-            multiTicker: []
+            multiTicker: [],
+            err: ''
 
         })
     }
@@ -84,7 +85,7 @@ class AddWidgetModal extends Component {
                     return (
                         <li className="nav-item" key={index + 'nav-tabs'}>
                             <a
-                                className={`nav-link ${this.state.tabActive === index ? 'active' : ''}`}
+                                className={`nav-link ${this.state.tabActive == index ? 'active' : ''}`}
                                 onClick={() => this.setState({ tabActive: index })}
                             >
                                 {tab.name}
@@ -99,9 +100,10 @@ class AddWidgetModal extends Component {
                                         let { tabs, tabActive } = this.state
                                         tabs = tabs.filter((el, i) => index !== i)
                                         if (tabActive >= index) tabActive = tabActive - 1
+                                        
 
-                                        this.setState({ tabActive, tabs })
-
+                                        this.setState({ tabs })
+                                        setTimeout(() => this.setState({ tabActive }), 50)
                                     }}
                                 />
                             </a>
@@ -412,24 +414,72 @@ class AddWidgetModal extends Component {
     validate() {
         switch (this.state.type) {
             case 0:
-                console.log()
                 if (!Array.isArray(this.state.symbol)) {
                     this.props.addWidget(0, {
                         symbol: this.state.symbol
                     })
                 } else {
-
+                    this.setState({ err: 'Please fill input' })
                 }
+                return
 
             case 1:
+                this.props.addWidget(1, {})
                 return
             case 2:
+                console.log(this.state.tabs.join())
+                let { tabs } = this.state
+
+                if (tabs.length === 0) {
+                    this.setState({ err: 'Please add at least one tab' })
+                }  else if (tabs.filter(el => el.name === '').length > 0) {
+                    this.setState({ err: 'All tabs should be named' })
+                }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
+                    this.setState({ err: 'All tabs should containe at least one symbol' })
+                }else if (tabs
+                    .filter(el => el.symbols.filter(el => el.value == null).length >  0)
+                    .length > 0) {
+                    this.setState({ err: 'All fields should be filled' })
+                }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
+                    this.setState({ err: 'All tabs should containe at least one symbol' })
+                } else {
+                    this.props.addWidget(5, {
+                        symbols: this.state.multiTicker.map(el => el.value)
+                    })
+                }
                 return
             case 3:
+                console.log()
+                if (!Array.isArray(this.state.symbol)) {
+                    this.props.addWidget(3, {
+                        symbol: this.state.symbol
+                    })
+                } else {
+                    this.setState({ err: 'Please fill input' })
+                }
                 return
             case 4:
+                console.log()
+                if (!Array.isArray(this.state.symbol)) {
+                    this.props.addWidget(4, {
+                        symbol: this.state.symbol
+                    })
+                } else {
+                    this.setState({ err: 'Please fill input' })
+                }
                 return
             case 5:
+                console.log(this.state.multiTicker)
+
+                if (this.state.multiTicker.length === 0) {
+                    this.setState({ err: 'Please add at least one symbol' })
+                } else if (this.state.multiTicker.filter(el => el.value == null).length > 0) {
+                    this.setState({ err: 'Please fill all inputs or delete additional' })
+                } else {
+                    this.props.addWidget(5, {
+                        tabs: tabs.map(el => ({name: el.name, symbols: el.symbols.map(el => el.value)}))
+                    })
+                }
                 return
         }
     }
@@ -451,9 +501,10 @@ class AddWidgetModal extends Component {
 
                             {this.renderChooseType()}
                             < hr />
-                            <div class="alert alert-danger" role="alert">
-                                A simple danger alert—check it out!
-                            </div>
+                            {this.state.err.length > 0 ?
+                                <div class="alert alert-danger" role="alert">
+                                    {this.state.err}
+                                </div> : ''}
                             {this.renderSettings()}
                         </div>
                         <div className="modal-footer">
