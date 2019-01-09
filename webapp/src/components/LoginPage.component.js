@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux';
 import { login, checkIfLoggedIn } from './../actions/Auth.actions'
 import { Redirect } from 'react-router-dom'
+import Navbar from '../components/Navbar.component'
 
 
 class LoginPage extends Component {
@@ -33,57 +34,58 @@ class LoginPage extends Component {
     render() {
 
         const { error_msgs, success_msgs } = this.props;
-        console.log(success_msgs)
-
 
         if (this.props.token.length > 0) return <Redirect to='/dashboard' />
 
         return (
-            <div className="container">
-                <div className="row mt-5">
-                    <div className="col-md-6 m-auto">
-                        <div className="card card-body">
-                            <h1 className="text-center mb-3"><i className="fas fa-sign-in-alt"></i>Login</h1>
+            <Fragment>
+                <Navbar />
+                <div className="container">
+                    <div className="row mt-5">
+                        <div className="col-md-6 m-auto">
+                            <div className="card card-body">
+                                <h1 className="text-center mb-3"><i className="fas fa-sign-in-alt"></i>Login</h1>
 
-                            {this.renderAlerts(error_msgs, 'alert-danger')}
-                            {this.renderAlerts(success_msgs, 'alert-success')}
+                                {this.renderAlerts(error_msgs, 'alert-danger')}
+                                {this.renderAlerts(success_msgs, 'alert-success')}
 
-                            <form onSubmit={this.handleSubmit}>
-                                <div className="form-group">
-                                    <label htmlFor="email">Email</label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        className="form-control"
-                                        placeholder="Enter Email"
-                                        ref={this.email}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="password">Password</label>
-                                    <input
-                                        type="password"
-                                        id="password"
-                                        name="password"
-                                        className="form-control"
-                                        placeholder="Enter Password"
-                                        ref={this.password}
-                                    />
-                                </div>
-                                <button
-                                    type="submit"
-                                    className="btn btn-primary btn-block"                                >
-                                    Login
+                                <form onSubmit={this.handleSubmit}>
+                                    <div className="form-group">
+                                        <label htmlFor="email">Email</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            className="form-control"
+                                            placeholder="Enter Email"
+                                            ref={this.email}
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="password">Password</label>
+                                        <input
+                                            type="password"
+                                            id="password"
+                                            name="password"
+                                            className="form-control"
+                                            placeholder="Enter Password"
+                                            ref={this.password}
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary btn-block"                                >
+                                        Login
                             </button>
-                            </form>
-                            <p className="lead mt-4">
-                                Don't have Account? <a href="/register">Register</a>
-                            </p>
+                                </form>
+                                <p className="lead mt-4">
+                                    Don't have Account? <a href="/register">Register</a>
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            </Fragment>
         )
     }
 }

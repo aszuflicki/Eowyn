@@ -17,31 +17,22 @@ class NavigationBar extends Component {
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav mr-auto">
             <li className={`nav-item ${checkIfUrl('dashboard')}`}>
-              <a className="nav-link" href="/">Dashboard </a>
+              <a className="nav-link" href="/dashboard">Dashboard </a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/">Link</a>
-            </li>
-
 
           </ul>
           <ul className="navbar-nav justify-content-end">
             <li className="nav-item">
               <a className="nav-link" href="/profile" tabIndex="-1" >{this.props.email}</a>
             </li>
-            <button type="button" className="btn btn-danger"
-              onClick={() => {
-                this.props.logout()
-                console.log(this.props)
-                // this.props.history.push('/')
-              }}
-            >
-              Logout
-            </button>
-
+            {this.props.token.length > 0 ?
+              <button type="button" className="btn btn-danger"
+                onClick={() => this.props.logout()}
+              >
+                Logout
+           </button> : ''
+            }
           </ul>
-
-
         </div>
       </nav>
     );
