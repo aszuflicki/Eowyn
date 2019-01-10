@@ -1,5 +1,5 @@
 const JwtStrategy = require('passport-jwt').Strategy;
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwt = require("jsonwebtoken")
 const opts = {}
