@@ -12,5 +12,8 @@ RUN yarn build
 
 FROM nginx:stable-alpine
 
-COPY --from=builder /usr/src/app/build /usr/share/nginx/html/
+COPY --from=builder /usr/src/app/build /var/www
 
+COPY nginx.conf /etc/nginx/nginx.conf
+
+EXPOSE 80
