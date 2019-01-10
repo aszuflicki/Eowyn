@@ -53,6 +53,18 @@ const repository = ({ user, dashboard }) => {
 		})
 	}
 
+	const createStandardDashboard = (email) => {
+		return new Promise((resolve, reject) => {
+			dashboard.upsert({ email, layout: standardLayout, settings: standadSettings })
+				.then(() =>
+					dashboard.findOrCreate({ where: { email } })
+				)
+				.spread((dashboard, created) => {
+					resolve({ dashboard, created })
+				})
+		})
+	}
+
 	const updateDashboardLayout = (email, layout) => {
 		return new Promise((resolve, reject) => {
 			dashboard.upsert({ email, layout })
@@ -82,7 +94,8 @@ const repository = ({ user, dashboard }) => {
 		addUser,
 		getDashboardByEmail,
 		updateDashboardLayout,
-		updateDashboardSettings
+		updateDashboardSettings,
+		createStandardDashboard
 	}
 }
 
@@ -106,11 +119,89 @@ const connect = sequelize => {
 			reject(new Error('Sequelize not supplied'))
 		}
 		initModels(sequelize).then(
-			([user]) => {
-				resolve(repository({ user }))
+			([user, dashboard]) => {
+				resolve(repository({ user, dashboard }))
 			}
 		).catch(e => reject(e))
 	})
 }
 
 module.exports = { connect }
+
+
+const standardLayout = [
+	{
+		h: 10,
+		w: 6,
+		i: "0",
+		x: 0,
+		y: 0
+	},
+	{
+
+		h: 10,
+		w: 6,
+		i: "1",
+		x: 6,
+		y: 0
+	},
+	{
+
+		h: 10,
+		w: 6,
+		i: "2",
+		x: 0,
+		y: 10
+	},
+	{
+		h: 3,
+		w: 4,
+		i: "3",
+		x: 6,
+		y: 10
+	},
+	{
+		h: 10,
+		w: 6,
+		i: "4",
+		x: 0,
+		y: 20
+	},
+	{
+		h: 3,
+		w: 3,
+		i: "5",
+		x: 6,
+		y: 20
+	},
+]
+
+const standadSettings = {
+	"0": {
+		type: 0,
+		settings: {
+			symbol: { value: "BITFINEX:ETHUSD" }
+		}
+	},
+	"1": {
+		type: 1,
+
+	},
+	"2": {
+		type: 2,
+
+	},
+	"3": {
+		type: 3,
+
+	},
+	"4": {
+		type: 4,
+
+	},
+	"5": {
+		type: 5,
+
+	},
+
+}

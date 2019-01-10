@@ -39,13 +39,40 @@ module.exports = (app, options) => {
     app.post('/register', (req, res) => {
         let { password, email } = req.body;
 
+
         signUp(repo, email, password)
             .then(response => {
+                console.log("------------")
                 console.log(response)
-                res.status(201).json({ msg: "Ok" })
+                repo.createStandardDashboard(email)
+                .then(() => res.status(201).json({ msg: "Ok" }))
+                
+
             })
             .catch(err => {
+                console.log("ERR ------------")
+                console.log(err)
                 res.json({ msg: err })
             })
     })
+
+    app.get('/layout', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals;
+        repo.getDashboardByEmail(email)
+            .then((dashboard => {
+                console.log(dashboard[0].dataValues)
+                return res.json(dashboard[0].dataValues.layout)
+            }))
+
+    })
+
+    app.get('/settings', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals;
+        repo.getDashboardByEmail(email)
+            .then((dashboard => {
+                console.log(dashboard[0].dataValues)
+                return res.json(dashboard[0].dataValues.settings)
+            }))
+    })
+
 }

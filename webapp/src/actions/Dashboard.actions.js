@@ -1,12 +1,13 @@
 import axios from 'axios'
+import { retrieveToken } from './Auth.actions'
+
 const io = require('socket.io-client')
 const socket = io('http://localhost:8081')
 const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
-
 export const updateLayout = (layout) => {
     return dispatch => {
-        socket.emit('dashboard', layout);
+        socket.emit('dashboard_layout', layout, retrieveToken());
 
         dispatch(layoutUpdated(layout))
     }
@@ -20,11 +21,27 @@ export function layoutUpdated(data) {
     };
 }
 
+export const updateSettings = (settings) => {
+    return dispatch => {
+        socket.emit('dashboard_settings', settings, retrieveToken());
+
+        dispatch(settingsUpdated(settings))
+    }
+}
+
+export const SETTINGS_UPDATED = 'SETTINGS_UPDATED';
+export function settingsUpdated(data) {
+    return {
+        type: LAYOUT_UPDATED,
+        payload: data
+    };
+}
+
 export const getLayout = () => {
     return dispatch => {
-        instance.get('/layout')
+        instance.get('/layout', { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
-                dispatch(getLayoutSuccess({ layout: res.data.layout }))
+                return dispatch(getLayoutSuccess({ layout: res.data }))
             })
             .catch(err => {
                 dispatch(getLayoutFailed())
@@ -50,9 +67,9 @@ function getLayoutSuccess(data) {
 
 export const getSettings = () => {
     return dispatch => {
-        instance.get('/settings')
+        instance.get('/settings', { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
-                dispatch(getSettingsSuccess({ settings: res.data.settings }))
+                dispatch(getSettingsSuccess({ settings: res.data }))
             })
             .catch(err => {
                 dispatch(getSettingsFailed({}))
