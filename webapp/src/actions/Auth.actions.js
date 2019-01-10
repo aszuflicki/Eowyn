@@ -1,6 +1,6 @@
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
-const instance = axios.create({ baseURL: 'http://localhost:8081' })
+const instance = axios.create({ baseURL: 'https://api.eowyn.szuflicki.tk' })
 
 
 export const register = (email, password) => {
