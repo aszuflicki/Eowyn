@@ -4,7 +4,8 @@ WORKDIR /usr/src/app
 
 COPY package* ./
 
-RUN apt-get update && apt-get install -y build-essential && apt-get install -y python && npm install
+RUN apt-get update && apt-get install -y build-essential && apt-get install -y python 
+RUN npm install
 
 COPY . .
 
