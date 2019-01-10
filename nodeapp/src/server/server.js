@@ -4,6 +4,7 @@ const helmet = require('helmet')
 const api = require('../api/api')
 const cors = require('./../middleware/cors')
 const bodyParser = require('body-parser')
+const jwt = require('jsonwebtoken')
 
 const start = (options) => {
     return new Promise((resolve, reject) => {
@@ -30,11 +31,30 @@ const start = (options) => {
         const http = require('http').Server(app);
         const io = require('socket.io')(http);
 
-
         io.on('connection', function (socket) {
             console.log('connected -----------------')
-            socket.on('dashboard', function (msg) {
-                console.log(msg)
+            socket.on('dashboard_layout', function (layout, token) {
+                console.log(layout)
+                console.log(token)
+                jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        options.repo.updateDashboardLayout(decoded.email, layout[0])
+                    }
+                });
+            });
+
+            socket.on('dashboard_settings', function (settings, token) {
+                console.log(settings)
+                console.log(token)
+                jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        options.repo.updateDashboardSettings(decoded.email, settings)
+                    }
+                });
             });
         });
 

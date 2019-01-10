@@ -6,6 +6,7 @@ module.exports = (http) => {
         socket.on('dashboard', function (msg) {
             //io.emit('chat message', msg);
             console.log(msg)
+            
         });
     });
 

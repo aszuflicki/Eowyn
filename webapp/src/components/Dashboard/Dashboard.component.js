@@ -9,7 +9,7 @@ import MarketOverview from './Widgets/MarketOveriew.component'
 import SingleTicker from './Widgets/SingleTicker.component'
 import TechnicalAnalisis from './Widgets/TechnicalAnalisis.component'
 import Ticker from './Widgets/Ticker.component'
-import { updateLayout, getLayout, getSettings } from './../../actions/Dashboard.actions'
+import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './Modal.component'
 
 const ReactGridLayout = WidthProvider(RGL);
@@ -23,108 +23,21 @@ class Dashboard extends React.PureComponent {
     isAddMode: false
   };
 
-  settings = {
-    "0": {
-      type: 0,
-      settings: {
-        symbol: { value: "BITFINEX:ETHUSD" }
-      }
-    },
-    "1": {
-      type: 1,
-
-    },
-    "2": {
-      type: 2,
-
-    },
-    "3": {
-      type: 3,
-
-    },
-    "4": {
-      type: 4,
-
-    },
-    "5": {
-      type: 5,
-
-    },
-
-  }
-
-
-  gridLayout = [
-
-    {
-      // isDraggable: true,
-      // isResizable: true,
-      // minH: 2,
-      // minW: 2,
-      // maxH: undefined,
-      // maxW: undefined,
-      // moved: false,
-      // static: false,
-      h: 10,
-      w: 6,
-      i: "0",
-      x: 0,
-      y: 0
-    },
-    {
-
-      h: 10,
-      w: 6,
-      i: "1",
-      x: 6,
-      y: 0
-    },
-    {
-
-      h: 10,
-      w: 6,
-      i: "2",
-      x: 0,
-      y: 10
-    },
-    {
-      h: 3,
-      w: 4,
-      i: "3",
-      x: 6,
-      y: 10
-    },
-    {
-      h: 10,
-      w: 6,
-      i: "4",
-      x: 0,
-      y: 20
-    },
-    {
-      h: 3,
-      w: 3,
-      i: "5",
-      x: 6,
-      y: 20
-    },
-  ]
-
   componentWillMount() {
+    this.props.getLayout()
+    this.props.getSettings()
 
   }
+
   constructor(props) {
     super(props);
-    const layout = this.gridLayout;
-    this.state = { layout: null, isAddMode: false, settings: this.settings };
+    this.state = { isAddMode: false };
   }
 
-
-
   generateDOM() {
-    return this.state.layout.map(widget => {
-      console.log(widget)
-      const { type, settings } = this.settings[widget.i]
+    return this.props.layout.map(widget => {
+
+      const { type, settings } = this.props.settings[widget.i]
       return (
         <div key={widget.i}>
           <span className="text">{widget.i}</span>
@@ -136,57 +49,51 @@ class Dashboard extends React.PureComponent {
     })
   }
 
-
-
   addMode(isAddMode) {
     this.setState({ isAddMode })
   }
 
   addWidget(type, widgetSettings) {
-    const newId = Math.max(...this.state.layout.map(el => el.i)) + 1
-    let { layout, settings } = this.state
+    const newId = Math.max(...this.props.layout.map(el => el.i)) + 1
+    let { layout, settings } = this.props
+
+    layout = [
+      {
+        h: 10,
+        w: 6,
+        i: newId + "",
+        x: 0,
+        y: 0
+      },
+      ...layout.map(el => ({
+        ...el, y: el.y + 10
+      })),]
 
     switch (type) {
       case 0:
-        layout = [
-          {
-            h: 10,
-            w: 6,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
         settings[newId] = {
           type: 0,
-          settings: widgetSettings
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
         }
-        console.log(layout)
-        console.log(widgetSettings)
-        this.setState({ settings })
-        this.setState({ layout })
-
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
         return
       case 1:
-        layout = [
-          {
-            h: 10,
-            w: 6,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
         settings[newId] = {
           type: 1,
           settings: widgetSettings
         }
         console.log(layout)
         console.log(widgetSettings)
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
+
         this.setState({ settings })
         this.setState({ layout })
 
@@ -194,69 +101,47 @@ class Dashboard extends React.PureComponent {
       case 2:
         return
       case 3:
-        layout = [
-          {
-            h: 3,
-            w: 3,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
+        layout[0].h = 3
+        layout[0].w = 3
+        console.log(widgetSettings)
         settings[newId] = {
           type: 3,
-          settings: widgetSettings
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
         }
-        console.log(layout)
-        console.log(widgetSettings)
-        this.setState({ settings })
-        this.setState({ layout })
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
 
         return
       case 4:
-        layout = [
-          {
-            h: 11,
-            w: 4,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
+        layout[0].h = 11
+        layout[0].w = 4
         settings[newId] = {
           type: 4,
-          settings: widgetSettings
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
         }
-        console.log(layout)
-        console.log(widgetSettings)
-        this.setState({ settings })
-        this.setState({ layout })
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
 
         return
       case 5:
-        layout = [
-          {
-            h: 10,
-            w: 6,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
         settings[newId] = {
-          type: 1,
-          settings: widgetSettings
+          type: 5,
+          settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
         }
-        console.log(layout)
-        console.log(widgetSettings)
-        this.setState({ settings })
-        this.setState({ layout })
+        console.log(settings)
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
 
         return
     }
@@ -282,6 +167,7 @@ class Dashboard extends React.PureComponent {
     )
   }
   renderLoading() {
+    console.log(this.props)
 
     return (
       <div style={{
@@ -293,7 +179,7 @@ class Dashboard extends React.PureComponent {
         height: 'calc(100vh - 75px)'
       }}>
         <div class="d-flex justify-content-center"
-        style={{top: '40vh', left: '50vw', position: 'absolute', transition: "transform(-50%, 0)"}}
+          style={{ top: '40vh', left: '50vw', position: 'absolute', transition: "transform(-50%, 0)" }}
         >
           <div class="spinner-border row" role="status">
             <span class="sr-only">Loading...</span>
@@ -318,7 +204,7 @@ class Dashboard extends React.PureComponent {
             <button type="button" className="btn btn-md btn-info" >Edit</button>
           </div>
         </div>
-        {this.state.layout !== null ? this.renderGridLayout() : this.renderLoading()}
+        {this.props.layout == null || this.props.settings == null ? this.renderLoading() : this.renderGridLayout()}
         {this.state.isAddMode ?
           <AddWidgetModal
             onClose={() => this.addMode(false)}
@@ -354,7 +240,8 @@ const getWidgets = (i, settings) => {
       )
     case 3:
       return (
-        <SingleTicker />
+        <SingleTicker
+          symbol={settings.symbol.value} />
       )
     case 4:
       return (
@@ -362,7 +249,8 @@ const getWidgets = (i, settings) => {
       )
     case 5:
       return (
-        <Ticker />
+        <Ticker
+          symbols={settings} />
       )
     default:
       return <div> Ooopss...</div>
@@ -370,6 +258,7 @@ const getWidgets = (i, settings) => {
   }
 }
 function mapStateToProps(state) {
+  console.log(state.dashboard)
   return {
     ...state.dashboard,
   }
@@ -378,6 +267,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
   return {
     updateLayout: (layout) => dispatch(updateLayout(layout)),
+    updateSettings: (settings) => dispatch(updateSettings(settings)),
     getLayout: () => dispatch(getLayout()),
     getSettings: () => dispatch(getSettings()),
   };

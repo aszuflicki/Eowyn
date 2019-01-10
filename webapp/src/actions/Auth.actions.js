@@ -14,6 +14,7 @@ export const register = (email, password) => {
             email, password
         })
             .then(res => {
+                console.log(res)
                 if (res.status === 201) {
                     dispatch(registrationSuccess({ success_msg: 'Successfuly registrated', isRegistered: true }))
                 } else {
@@ -76,8 +77,8 @@ export const checkIfLoggedIn = () => {
     return dispatch => {
 
         let token = retrieveToken()
-        if(token)
-        dispatch(loginSuccess({ success_msg: 'Successfuly logged in', token }))
+        if (token)
+            dispatch(loginSuccess({ success_msg: 'Successfuly logged in', token }))
     }
 }
 
@@ -91,7 +92,7 @@ export function loginFailed(data) {
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export function loginSuccess(data) {
-    data = {email: jwt.decode(data.token).email, ...data}
+    data = { email: jwt.decode(data.token).email, ...data }
     return {
         type: LOGIN_SUCCESS,
         payload: data
@@ -100,10 +101,10 @@ export function loginSuccess(data) {
 
 export const logout = () => {
     clearLocalStorage()
-    return dispatch => 
+    return dispatch =>
 
-dispatch(logoutSuccess({ success_msg: 'Successfuly logged out' }))
-    
+        dispatch(logoutSuccess({ success_msg: 'Successfuly logged out' }))
+
 }
 
 export const LOGOUT_SUCCESS = 'LOGOUT_SUCCESS';
@@ -133,7 +134,7 @@ const preserveToken = (token) =>
     localStorage.setItem('token', token)
 
 
-const retrieveToken = (token) =>
+export const retrieveToken = () =>
     localStorage.getItem('token')
 
 const clearLocalStorage = () =>

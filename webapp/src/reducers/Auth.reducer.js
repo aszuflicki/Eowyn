@@ -20,6 +20,7 @@ export default (state = authReducerDefaultState, action) => {
             return { ...state, ...action.payload, success_msgs: [action.payload.success_msg] }
 
         case REGISTRATION_FAILED:
+        console.log(action.payload)
             return { ...state, isRegistered: false, error_msgs: [action.payload.error_msg.msg] }
 
         case LOGIN_FAILED:

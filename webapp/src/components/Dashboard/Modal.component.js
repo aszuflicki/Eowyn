@@ -476,9 +476,7 @@ class AddWidgetModal extends Component {
                 } else if (this.state.multiTicker.filter(el => el.value == null).length > 0) {
                     this.setState({ err: 'Please fill all inputs or delete additional' })
                 } else {
-                    this.props.addWidget(5, {
-                        tabs: tabs.map(el => ({name: el.name, symbols: el.symbols.map(el => el.value)}))
-                    })
+                    this.props.addWidget(5, this.state.multiTicker)
                 }
                 return
         }
