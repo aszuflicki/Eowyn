@@ -4,6 +4,7 @@ const { whitelist } = require('./../config/cors')
 module.exports = (app, options) => {
     const corsOptions = {
         origin: function (origin, callback) {
+            console.log(origin)
             if (whitelist.indexOf(origin) !== -1) {
                 callback(null, true)
             } else {
