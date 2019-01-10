@@ -4,10 +4,10 @@ WORKDIR /usr/src/app
 
 COPY package* ./
 
-RUN npm install
+RUN apt-get update && apt-get install -y build-essential && apt-get install -y python && npm install
 
 COPY . .
 
 EXPOSE 8081
 
-CMD [ "node", "app.js" ]
+CMD [ "npm", "start" ]
