@@ -45,8 +45,16 @@ const start = (options) => {
                 });
             });
 
-            socket.on('dashboard_settings', function (msg) {
-                // options.repo.updateDashboardLayout()
+            socket.on('dashboard_settings', function (settings, token) {
+                console.log(settings)
+                console.log(token)
+                jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        options.repo.updateDashboardSettings(decoded.email, settings)
+                    }
+                });
             });
         });
 

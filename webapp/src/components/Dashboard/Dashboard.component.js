@@ -35,7 +35,7 @@ class Dashboard extends React.PureComponent {
 
   generateDOM() {
     return this.props.layout.map(widget => {
-      console.log(widget)
+
       const { type, settings } = this.props.settings[widget.i]
       return (
         <div key={widget.i}>
@@ -55,8 +55,8 @@ class Dashboard extends React.PureComponent {
   }
 
   addWidget(type, widgetSettings) {
-    const newId = Math.max(...this.state.layout.map(el => el.i)) + 1
-    let { layout, settings } = this.state
+    const newId = Math.max(...this.props.layout.map(el => el.i)) + 1
+    let { layout, settings } = this.props
 
     switch (type) {
       case 0:
@@ -73,11 +73,18 @@ class Dashboard extends React.PureComponent {
           })),]
         settings[newId] = {
           type: 0,
-          settings: widgetSettings
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
         }
-        this.setState({ settings })
-        this.setState({ layout })
-
+        console.log(settings)
+        console.log(widgetSettings)
+        console.log([layout])
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
         return
       case 1:
         layout = [
@@ -97,6 +104,10 @@ class Dashboard extends React.PureComponent {
         }
         console.log(layout)
         console.log(widgetSettings)
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
+
         this.setState({ settings })
         this.setState({ layout })
 
@@ -117,10 +128,15 @@ class Dashboard extends React.PureComponent {
           })),]
         settings[newId] = {
           type: 3,
-          settings: widgetSettings
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
         }
-        this.setState({ settings })
-        this.setState({ layout })
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
 
         return
       case 4:
@@ -137,10 +153,15 @@ class Dashboard extends React.PureComponent {
           })),]
         settings[newId] = {
           type: 4,
-          settings: widgetSettings
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
         }
-        this.setState({ settings })
-        this.setState({ layout })
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
 
         return
       case 5:

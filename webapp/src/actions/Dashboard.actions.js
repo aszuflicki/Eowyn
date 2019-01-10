@@ -10,6 +10,8 @@ export const updateLayout = (layout) => {
         socket.emit('dashboard_layout', layout, retrieveToken());
 
         dispatch(layoutUpdated(layout))
+        // dispatch(getLayoutSuccess({ layout }))
+
     }
 }
 
@@ -26,6 +28,7 @@ export const updateSettings = (settings) => {
         socket.emit('dashboard_settings', settings, retrieveToken());
 
         dispatch(settingsUpdated(settings))
+        dispatch(getSettingsSuccess({ settings }))
     }
 }
 
