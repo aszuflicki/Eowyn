@@ -24,13 +24,14 @@ class Dashboard extends React.PureComponent {
   };
 
   componentWillMount() {
-    console.log('xhr')
     this.props.getLayout()
     this.props.getSettings()
+
   }
+
   constructor(props) {
     super(props);
-    this.state = { layout: null, isAddMode: false, settings: null };
+    this.state = { isAddMode: false };
   }
 
   generateDOM() {
@@ -48,8 +49,6 @@ class Dashboard extends React.PureComponent {
     })
   }
 
-
-
   addMode(isAddMode) {
     this.setState({ isAddMode })
   }
@@ -58,19 +57,20 @@ class Dashboard extends React.PureComponent {
     const newId = Math.max(...this.props.layout.map(el => el.i)) + 1
     let { layout, settings } = this.props
 
+    layout = [
+      {
+        h: 10,
+        w: 6,
+        i: newId + "",
+        x: 0,
+        y: 0
+      },
+      ...layout.map(el => ({
+        ...el, y: el.y + 10
+      })),]
+
     switch (type) {
       case 0:
-        layout = [
-          {
-            h: 10,
-            w: 6,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
         settings[newId] = {
           type: 0,
           settings: {
@@ -79,25 +79,11 @@ class Dashboard extends React.PureComponent {
             }
           }
         }
-        console.log(settings)
-        console.log(widgetSettings)
-        console.log([layout])
         this.props.updateSettings(settings)
         this.props.updateLayout([layout])
         this.props.getLayout()
         return
       case 1:
-        layout = [
-          {
-            h: 10,
-            w: 6,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
         settings[newId] = {
           type: 1,
           settings: widgetSettings
@@ -115,17 +101,9 @@ class Dashboard extends React.PureComponent {
       case 2:
         return
       case 3:
-        layout = [
-          {
-            h: 3,
-            w: 3,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
+        layout[0].h = 3
+        layout[0].w = 3
+        console.log(widgetSettings)
         settings[newId] = {
           type: 3,
           settings: {
@@ -140,17 +118,8 @@ class Dashboard extends React.PureComponent {
 
         return
       case 4:
-        layout = [
-          {
-            h: 11,
-            w: 4,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
+        layout[0].h = 11
+        layout[0].w = 4
         settings[newId] = {
           type: 4,
           settings: {
@@ -165,23 +134,14 @@ class Dashboard extends React.PureComponent {
 
         return
       case 5:
-        layout = [
-          {
-            h: 10,
-            w: 6,
-            i: newId + "",
-            x: 0,
-            y: 0
-          },
-          ...layout.map(el => ({
-            ...el, y: el.y + 10
-          })),]
         settings[newId] = {
-          type: 1,
-          settings: widgetSettings
+          type: 5,
+          settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
         }
-        this.setState({ settings })
-        this.setState({ layout })
+        console.log(settings)
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
 
         return
     }
@@ -280,7 +240,8 @@ const getWidgets = (i, settings) => {
       )
     case 3:
       return (
-        <SingleTicker />
+        <SingleTicker
+          symbol={settings.symbol.value} />
       )
     case 4:
       return (
@@ -288,7 +249,8 @@ const getWidgets = (i, settings) => {
       )
     case 5:
       return (
-        <Ticker />
+        <Ticker
+          symbols={settings} />
       )
     default:
       return <div> Ooopss...</div>

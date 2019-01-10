@@ -193,6 +193,11 @@ const standadSettings = {
 	},
 	"3": {
 		type: 3,
+		settings: {
+			symbol: {
+				value: "BITFINEX:ETHUSD"
+			}
+		}
 
 	},
 	"4": {
