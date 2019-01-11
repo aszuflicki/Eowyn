@@ -61,7 +61,7 @@ const signUp = (repo, email, password) => {
         if (user.length !== 0) {
           return reject({ msg: 'Email already exists' });
         } else {
-          bcrypt.hash(password, 10, (hash) => {
+          bcrypt.hash(password, 10, null, (hash) => {
             repo.addUser(email, hash)
             return resolve({ msg: "Ok" })
           })
