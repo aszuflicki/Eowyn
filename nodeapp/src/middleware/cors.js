@@ -15,6 +15,8 @@ module.exports = (app, options) => {
     //       return callback(null, true);
     //     }
     //   }));
+
+    app.get('/', (req, res) => res.json({msg: 'hejo'}))
 }
 
 
