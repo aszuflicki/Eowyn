@@ -46,8 +46,6 @@ module.exports = (app, options) => {
                 console.log(response)
                 repo.createStandardDashboard(email)
                 .then(() => res.status(201).json({ msg: "Ok" }))
-                
-
             })
             .catch(err => {
                 console.log("ERR ------------")

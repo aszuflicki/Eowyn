@@ -42,6 +42,7 @@ const logIn = (repo, email, plainPassword) => {
           }
         });
       })
+      .catch(er => console.log(err))
   })
 }
 
