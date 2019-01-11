@@ -58,6 +58,7 @@ const signUp = (repo, email, password) => {
 
     repo.getUserByEmail(email)
       .then(user => {
+        console.log("register")
         if (user.length !== 0) {
           return reject({ msg: 'Email already exists' });
         } else {
