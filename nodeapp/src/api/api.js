@@ -39,6 +39,7 @@ module.exports = (app, options) => {
     app.post('/register', (req, res) => {
         let { password, email } = req.body;
         console.log({ password, email })
+        res.json({ msg: 'xdd' })
 
         signUp(repo, email, password)
             .then(response => {
