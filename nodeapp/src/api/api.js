@@ -14,6 +14,9 @@ module.exports = (app, options) => {
             })
             .catch(next)
     })
+    app.get("/", ensureAuthenticated, (req, res) => {
+        return res.status(200).send("YAY! ")
+    })
 
     app.get("/protected", ensureAuthenticated, (req, res) => {
         return res.status(200).send("YAY! this is a protected Route")
