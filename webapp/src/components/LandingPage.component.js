@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import { Tabs, Tab, FormGroup, FormControl } from 'react-bootstrap';
 import Navbar from '../components/Navbar.component'
 
 class LandingPage extends Component {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from 'react-redux';
 import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -14,13 +14,14 @@ import AddWidgetModal from './Modal.component'
 
 const ReactGridLayout = WidthProvider(RGL);
 
-class Dashboard extends React.PureComponent {
+class Dashboard extends React.Component {
   static defaultProps = {
     className: "layout",
     items: 6,
     rowHeight: 30,
     cols: 12,
-    isAddMode: false
+    isAddMode: false,
+    draggableHandle: '.handle'
   };
 
   componentWillMount() {
@@ -31,7 +32,7 @@ class Dashboard extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = { isAddMode: false };
+    this.state = { isAddMode: false, isEditMode: true };
   }
 
   generateDOM() {
@@ -40,8 +41,45 @@ class Dashboard extends React.PureComponent {
       const { type, settings } = this.props.settings[widget.i]
       return (
         <div key={widget.i}>
-          <span className="text">{widget.i}</span>
+          <div className="handle" style={{ width: "100%" }}>
+            <span className="text" >{widget.i} </span>
+          </div>
           <div className="widget-body">
+            {this.state.isEditMode ? (
+              <div style={{ position: "absolute", width: "100%", height: "calc(100% - 20px)", backgroundColor: "rgb(239, 163, 29,0.6)", zIndex: "100000" }}>
+                <div className="row" style={{ height: "100%" }}>
+                  <div className="col-md-6">
+                    <div style={{
+                      fontSize: "4rem", margin: 0, position: "absolute", top: "50%", right: "20%",
+                      transform: "translate(-50%, -50%)"
+                    }}>
+                      <i
+                        className="fas fa-trash-alt "
+                        onClick={() => {
+                          let { layout } = this.props
+                          layout = layout.filter((el) => el.i !== widget.i)
+                          this.props.updateLayout([layout])
+                          setTimeout(() => this.props.getLayout(), 100)
+                        }}
+                      ></i>
+                    </div>
+
+                  </div>
+                  <div className="col-md-6">
+                    <div style={{
+                      fontSize: "4rem", margin: 0, position: "absolute", top: "50%", left: "20%",
+                      transform: "translate(-50%, -50%)"
+                    }}>
+                      <i
+                        className="fas fa-cog"
+
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            ) : ''}
             {getWidgets(type, settings)}
           </div>
         </div>
@@ -208,12 +246,27 @@ class Dashboard extends React.PureComponent {
         <div className="card">
           <div className="card-body">
             <button type="button" className="btn btn-md btn-success"
-              onClick={() => { this.addMode(true); console.log('xdd') }}
+              onClick={() => { this.addMode(true); }}
             >
               Add
             </button>
             <span style={{ color: "white" }}>x</span>
-            <button type="button" className="btn btn-md btn-info" >Edit</button>
+
+            {this.state.isEditMode ? (
+              <Fragment>
+                <button type="button" className="btn btn-md btn-danger"
+                  onClick={() => { this.setState({ isEditMode: false }); }}
+                >Stop Editing</button>
+              </Fragment>
+            ) : (
+                <Fragment>
+                  <button type="button" className="btn btn-md btn-info"
+                    onClick={() => { this.setState({ isEditMode: true }); }}
+                  >Edit</button>
+                </Fragment>
+              )}
+
+
           </div>
         </div>
         {this.props.layout == null || this.props.settings == null ? this.renderLoading() : this.renderGridLayout()}
@@ -226,21 +279,28 @@ class Dashboard extends React.PureComponent {
               console.log(settings)
             }}
           /> : ''}
+        {this.state.isEditMode ?
+          'Edit mode' : ''}
 
       </React.Fragment>
     );
   }
 }
-const getWidgets = (i, settings) => {
+const getWidgets = (i, settings, isEditMode) => {
   switch (i) {
     case 0:
       return (
-        <TradingViewWidget
-          symbol={settings.symbol.value}
-          theme={Themes.DARK}
-          locale="pl"
-          autosize={true}
-        />
+        <Fragment>
+          {isEditMode ?
+            'Edit mode' : ''}
+          <TradingViewWidget
+            symbol={settings.symbol.value}
+            theme={Themes.DARK}
+            locale="pl"
+            autosize={true}
+          />
+        </Fragment>
+
       )
     case 1:
       return (
