@@ -99,6 +99,16 @@ class Dashboard extends React.PureComponent {
 
         return
       case 2:
+        console.log(widgetSettings)
+        layout[0].h = 11
+        layout[0].w = 6
+        settings[newId] = {
+          type: 2,
+          settings: widgetSettings
+        }
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
         return
       case 3:
         layout[0].h = 3
@@ -134,6 +144,8 @@ class Dashboard extends React.PureComponent {
 
         return
       case 5:
+        layout[0].h = 3
+        layout[0].w = 12
         settings[newId] = {
           type: 5,
           settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
@@ -236,7 +248,8 @@ const getWidgets = (i, settings) => {
       )
     case 2:
       return (
-        <MarketOverview />
+        <MarketOverview
+          settings={settings} />
       )
     case 3:
       return (
@@ -245,7 +258,8 @@ const getWidgets = (i, settings) => {
       )
     case 4:
       return (
-        <TechnicalAnalisis />
+        <TechnicalAnalisis
+          symbol={settings.symbol.value} />
       )
     case 5:
       return (

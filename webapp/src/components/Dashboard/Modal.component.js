@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { connect } from 'react-redux';
-import AutoSuggestions, { symbols } from './Autosuggestion.component'
+import { symbols } from './Autosuggestion.component'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faEnvelope, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -443,8 +443,14 @@ class AddWidgetModal extends Component {
                 }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
                 } else {
-                    this.props.addWidget(5, {
-                        symbols: this.state.multiTicker.map(el => el.value)
+                    this.props.addWidget(2, {
+                        tabs: tabs.map(tab => ({
+                            title: tab.name,
+                            symbols: tab.symbols.map(symbol => ({
+                                s: symbol.value,
+                                d: symbol.label.props.children[3]
+                            }))
+                        }))
                     })
                 }
                 return
