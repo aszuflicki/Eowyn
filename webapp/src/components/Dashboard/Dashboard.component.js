@@ -11,6 +11,7 @@ import TechnicalAnalisis from './Widgets/TechnicalAnalisis.component'
 import Ticker from './Widgets/Ticker.component'
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './Modal.component'
+import EditWidgetModal from './EditModal.component'
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -32,7 +33,7 @@ class Dashboard extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { isAddMode: false, isEditMode: true };
+    this.state = { isAddMode: false, isEditMode: false, isEditModeModal: false, editedWidget: {type: 1} };
   }
 
   generateDOM() {
@@ -72,7 +73,12 @@ class Dashboard extends React.Component {
                     }}>
                       <i
                         className="fas fa-cog"
-
+                        onClick={() => {
+                          this.setState({editedWidget: {
+                            type, settings
+                          }})
+                          this.setState({ isEditModeModal: true })
+                        }}
                       ></i>
                     </div>
                   </div>
@@ -279,8 +285,13 @@ class Dashboard extends React.Component {
               console.log(settings)
             }}
           /> : ''}
-        {this.state.isEditMode ?
-          'Edit mode' : ''}
+
+        {this.state.isEditModeModal ?
+          <EditWidgetModal
+            onClose={() => this.setState({ isEditModeModal: false })}
+            editedWidget={this.state.editedWidget}
+          /> : ''}
+
 
       </React.Fragment>
     );
