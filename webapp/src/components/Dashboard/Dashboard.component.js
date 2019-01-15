@@ -75,7 +75,7 @@ class Dashboard extends React.Component {
                         className="fas fa-cog"
                         onClick={() => {
                           this.setState({editedWidget: {
-                            type, settings
+                            type, settings, id: widget.i
                           }})
                           this.setState({ isEditModeModal: true })
                         }}
@@ -204,6 +204,92 @@ class Dashboard extends React.Component {
 
   }
 
+  editWidget(type, id, widgetSettings) {
+
+    console.log(type)
+    console.log(id)
+    console.log(widgetSettings)
+    let { layout, settings } = this.props
+
+
+    switch (type) {
+      case 0:
+        settings[id] = {
+          type: 0,
+          settings: {
+            symbol: {
+              value: widgetSettings.symbol.value
+            }
+          }
+        }
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
+        return
+      case 1:
+        return
+    //   case 2:
+    //     layout[0].h = 11
+    //     layout[0].w = 6
+    //     settings[newId] = {
+    //       type: 2,
+    //       settings: widgetSettings
+    //     }
+    //     this.props.updateSettings(settings)
+    //     this.props.updateLayout([layout])
+    //     this.props.getLayout()
+    //     return
+    //   case 3:
+    //     layout[0].h = 3
+    //     layout[0].w = 3
+    //     console.log(widgetSettings)
+    //     settings[newId] = {
+    //       type: 3,
+    //       settings: {
+    //         symbol: {
+    //           value: widgetSettings.symbol.value
+    //         }
+    //       }
+    //     }
+    //     this.props.updateSettings(settings)
+    //     this.props.updateLayout([layout])
+    //     this.props.getLayout()
+
+    //     return
+    //   case 4:
+    //     layout[0].h = 11
+    //     layout[0].w = 4
+    //     settings[newId] = {
+    //       type: 4,
+    //       settings: {
+    //         symbol: {
+    //           value: widgetSettings.symbol.value
+    //         }
+    //       }
+    //     }
+    //     this.props.updateSettings(settings)
+    //     this.props.updateLayout([layout])
+    //     this.props.getLayout()
+
+    //     return
+    //   case 5:
+    //     layout[0].h = 3
+    //     layout[0].w = 12
+    //     settings[newId] = {
+    //       type: 5,
+    //       settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
+    //     }
+    //     console.log(settings)
+    //     this.props.updateSettings(settings)
+    //     this.props.updateLayout([layout])
+    //     this.props.getLayout()
+
+    //     return
+    }
+
+  }
+
+
   renderGridLayout() {
     return (
       <div className="widget-container">
@@ -290,6 +376,10 @@ class Dashboard extends React.Component {
           <EditWidgetModal
             onClose={() => this.setState({ isEditModeModal: false })}
             editedWidget={this.state.editedWidget}
+            editWidget={(...args) => {
+              this.setState({ isEditModeModal: false })
+              this.editWidget(...args)
+            }}
           /> : ''}
 
 
