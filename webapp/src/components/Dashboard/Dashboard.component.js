@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { connect } from 'react-redux';
 import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
@@ -11,16 +11,18 @@ import TechnicalAnalisis from './Widgets/TechnicalAnalisis.component'
 import Ticker from './Widgets/Ticker.component'
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './Modal.component'
+import EditWidgetModal from './EditModal.component'
 
 const ReactGridLayout = WidthProvider(RGL);
 
-class Dashboard extends React.PureComponent {
+class Dashboard extends React.Component {
   static defaultProps = {
     className: "layout",
     items: 6,
     rowHeight: 30,
     cols: 12,
-    isAddMode: false
+    isAddMode: false,
+    draggableHandle: '.handle'
   };
 
   componentWillMount() {
@@ -31,7 +33,7 @@ class Dashboard extends React.PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = { isAddMode: false };
+    this.state = { isAddMode: false, isEditMode: false, isEditModeModal: false, editedWidget: {type: 1} };
   }
 
   generateDOM() {
@@ -40,8 +42,50 @@ class Dashboard extends React.PureComponent {
       const { type, settings } = this.props.settings[widget.i]
       return (
         <div key={widget.i}>
-          <span className="text">{widget.i}</span>
+          <div className="handle" style={{ width: "100%" }}>
+            <span className="text" >{widget.i} </span>
+          </div>
           <div className="widget-body">
+            {this.state.isEditMode ? (
+              <div style={{ position: "absolute", width: "100%", height: "calc(100% - 20px)", backgroundColor: "rgb(239, 163, 29,0.6)", zIndex: "100000" }}>
+                <div className="row" style={{ height: "100%" }}>
+                  <div className="col-md-6">
+                    <div style={{
+                      fontSize: "4rem", margin: 0, position: "absolute", top: "50%", right: "20%",
+                      transform: "translate(-50%, -50%)"
+                    }}>
+                      <i
+                        className="fas fa-trash-alt "
+                        onClick={() => {
+                          let { layout } = this.props
+                          layout = layout.filter((el) => el.i !== widget.i)
+                          this.props.updateLayout([layout])
+                          setTimeout(() => this.props.getLayout(), 100)
+                        }}
+                      ></i>
+                    </div>
+
+                  </div>
+                  <div className="col-md-6">
+                    <div style={{
+                      fontSize: "4rem", margin: 0, position: "absolute", top: "50%", left: "20%",
+                      transform: "translate(-50%, -50%)"
+                    }}>
+                      <i
+                        className="fas fa-cog"
+                        onClick={() => {
+                          this.setState({editedWidget: {
+                            type, settings
+                          }})
+                          this.setState({ isEditModeModal: true })
+                        }}
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            ) : ''}
             {getWidgets(type, settings)}
           </div>
         </div>
@@ -99,6 +143,16 @@ class Dashboard extends React.PureComponent {
 
         return
       case 2:
+        console.log(widgetSettings)
+        layout[0].h = 11
+        layout[0].w = 6
+        settings[newId] = {
+          type: 2,
+          settings: widgetSettings
+        }
+        this.props.updateSettings(settings)
+        this.props.updateLayout([layout])
+        this.props.getLayout()
         return
       case 3:
         layout[0].h = 3
@@ -134,6 +188,8 @@ class Dashboard extends React.PureComponent {
 
         return
       case 5:
+        layout[0].h = 3
+        layout[0].w = 12
         settings[newId] = {
           type: 5,
           settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
@@ -196,12 +252,27 @@ class Dashboard extends React.PureComponent {
         <div className="card">
           <div className="card-body">
             <button type="button" className="btn btn-md btn-success"
-              onClick={() => { this.addMode(true); console.log('xdd') }}
+              onClick={() => { this.addMode(true); }}
             >
               Add
             </button>
             <span style={{ color: "white" }}>x</span>
-            <button type="button" className="btn btn-md btn-info" >Edit</button>
+
+            {this.state.isEditMode ? (
+              <Fragment>
+                <button type="button" className="btn btn-md btn-danger"
+                  onClick={() => { this.setState({ isEditMode: false }); }}
+                >Stop Editing</button>
+              </Fragment>
+            ) : (
+                <Fragment>
+                  <button type="button" className="btn btn-md btn-info"
+                    onClick={() => { this.setState({ isEditMode: true }); }}
+                  >Edit</button>
+                </Fragment>
+              )}
+
+
           </div>
         </div>
         {this.props.layout == null || this.props.settings == null ? this.renderLoading() : this.renderGridLayout()}
@@ -215,20 +286,32 @@ class Dashboard extends React.PureComponent {
             }}
           /> : ''}
 
+        {this.state.isEditModeModal ?
+          <EditWidgetModal
+            onClose={() => this.setState({ isEditModeModal: false })}
+            editedWidget={this.state.editedWidget}
+          /> : ''}
+
+
       </React.Fragment>
     );
   }
 }
-const getWidgets = (i, settings) => {
+const getWidgets = (i, settings, isEditMode) => {
   switch (i) {
     case 0:
       return (
-        <TradingViewWidget
-          symbol={settings.symbol.value}
-          theme={Themes.DARK}
-          locale="pl"
-          autosize={true}
-        />
+        <Fragment>
+          {isEditMode ?
+            'Edit mode' : ''}
+          <TradingViewWidget
+            symbol={settings.symbol.value}
+            theme={Themes.DARK}
+            locale="pl"
+            autosize={true}
+          />
+        </Fragment>
+
       )
     case 1:
       return (
@@ -236,7 +319,8 @@ const getWidgets = (i, settings) => {
       )
     case 2:
       return (
-        <MarketOverview />
+        <MarketOverview
+          settings={settings} />
       )
     case 3:
       return (
@@ -245,7 +329,8 @@ const getWidgets = (i, settings) => {
       )
     case 4:
       return (
-        <TechnicalAnalisis />
+        <TechnicalAnalisis
+          symbol={settings.symbol.value} />
       )
     case 5:
       return (

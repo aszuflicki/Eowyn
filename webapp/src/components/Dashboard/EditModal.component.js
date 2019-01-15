@@ -12,7 +12,6 @@ class AddWidgetModal extends Component {
 
     constructor(props) {
         super(props)
-        // this.handleClickTabAutoSuggest = this.handleClickTabAutoSuggest.bind(this)
     }
 
     componentWillMount() {
@@ -74,7 +73,6 @@ class AddWidgetModal extends Component {
             <Fragment>
                 <p>No settings available for this widget</p>
             </Fragment>
-
         )
     }
 
@@ -100,7 +98,7 @@ class AddWidgetModal extends Component {
                                         let { tabs, tabActive } = this.state
                                         tabs = tabs.filter((el, i) => index !== i)
                                         if (tabActive >= index) tabActive = tabActive - 1
-                                        
+
 
                                         this.setState({ tabs })
                                         setTimeout(() => this.setState({ tabActive }), 50)
@@ -303,7 +301,7 @@ class AddWidgetModal extends Component {
     }
 
     renderSettings() {
-        switch (this.state.type) {
+        switch (this.props.editedWidget.type) {
             case 0:
                 return (
                     <Fragment>
@@ -343,74 +341,6 @@ class AddWidgetModal extends Component {
         }
     }
 
-    renderChooseType() {
-        const { type } = this.state
-        return (
-            <Fragment>
-                <p>Choose type</p>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 0 ? 'active' : ''}`}
-                    onClick={() => this.setState({ type: 0 })}
-                >
-                    Chart View Widgetw
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className="btn btn-md btn-primary"
-                    className={`btn btn-md btn-primary ${type === 1 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 1 })}
-
-                >
-                    Crypto Market Overview
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 2 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 2 })}
-
-                >
-                    Market Overview
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 3 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 3 })}
-
-                >
-                    Single Ticker
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 4 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 4 })}
-
-                >
-                    Technical Analisis
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 5 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 5 })}
-
-                >
-                    Multi Ticker
-                </button>
-            </Fragment>
-
-        )
-    }
-
     validate() {
         switch (this.state.type) {
             case 0:
@@ -432,15 +362,15 @@ class AddWidgetModal extends Component {
 
                 if (tabs.length === 0) {
                     this.setState({ err: 'Please add at least one tab' })
-                }  else if (tabs.filter(el => el.name === '').length > 0) {
+                } else if (tabs.filter(el => el.name === '').length > 0) {
                     this.setState({ err: 'All tabs should be named' })
-                }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
+                } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
-                }else if (tabs
-                    .filter(el => el.symbols.filter(el => el.value == null).length >  0)
+                } else if (tabs
+                    .filter(el => el.symbols.filter(el => el.value == null).length > 0)
                     .length > 0) {
                     this.setState({ err: 'All fields should be filled' })
-                }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
+                } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
                 } else {
                     this.props.addWidget(2, {
@@ -487,14 +417,38 @@ class AddWidgetModal extends Component {
                 return
         }
     }
+    componentDidMount() {
+        console.log(this.props.editedWidget.settings.symbol.value)
+        switch (this.props.editedWidget.type) {
+            case 0:
+                this.setState({
+                    symbol: {
+                        value: this.props.editedWidget.settings.symbol.value,
+                        label: this.props.editedWidget.settings.symbol.value,
+                    }
+                })
+                return
+            case 1:
+                return
+            case 2:
+                return
+            case 3:
+                return
+            case 4:
+                return
+            case 5:
+                return
+        }
+    }
 
     render() {
+        console.log(this.props.editedWidget)
         return (
-            <div className="modal show " tabIndex="1" role="dialog" style={{ display: "block" }}>
+            <div className="modal show" tabIndex="1" role="dialog" style={{ display: "block" }}>
                 <div className="modal-dialog modal-xl" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title">Add Widget</h5>
+                            <h5 className="modal-title">Edit Widget</h5>
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close"
                                 onClick={() => this.props.onClose()}
                             >
@@ -503,7 +457,7 @@ class AddWidgetModal extends Component {
                         </div>
                         <div className="modal-body">
 
-                            {this.renderChooseType()}
+                            {/* {this.renderChooseType()} */}
                             < hr />
                             {this.state.err.length > 0 ?
                                 <div class="alert alert-danger" role="alert">
@@ -516,14 +470,16 @@ class AddWidgetModal extends Component {
                                 onClick={() => this.props.onClose()}
                             >Close</button>
                             <button type="button" className="btn btn-primary"
-                                onClick={() => this.validate()}
+                                onClick={() => {
+                                    // this.validate()
+                                    console.log(this.state)
+                                }}
                             >Add</button>
                         </div>
                     </div>
                 </div>
             </div>
         )
-
     }
 }
 

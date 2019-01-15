@@ -189,6 +189,17 @@ const standadSettings = {
 	},
 	"2": {
 		type: 2,
+		settings: {
+			tabs: [
+				{
+					title: "Indeksssy xd",
+					symbols: [{ s: "INDEX:SPX", d: "S&P 500" }, { s: "INDEX:IUXX", d: "Nasdaq 100" }]
+				},
+				{
+					title: "Towary",
+					symbols: [{ s: "CME_MINI:ES1!", d: "E-Mini S&P" }, { s: "CME:E61!", d: "Euro" }]
+				}]
+		}
 
 	},
 	"3": {
@@ -202,6 +213,11 @@ const standadSettings = {
 	},
 	"4": {
 		type: 4,
+		settings: {
+			symbol: {
+				value: "BITFINEX:ETHUSD"
+			}
+		}
 
 	},
 	"5": {
