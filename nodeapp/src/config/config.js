@@ -1,7 +1,7 @@
 const dbSettings = {
 	user: 'nodeapp',
 	pass: 'nodeapp123',
-	url: 'nodeapp_db',
+	url: 'localhost',
 	port: 5432,
 	dbname: 'nodeapp',
 	opts: { // database wide options

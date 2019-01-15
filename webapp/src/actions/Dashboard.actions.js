@@ -42,7 +42,7 @@ export function settingsUpdated(data) {
 
 export const getLayout = () => {
     return dispatch => {
-        instance.get('/layout', { headers: { "authorization": localStorage.getItem('token') } })
+        instance.get('/layout', { params: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 return dispatch(getLayoutSuccess({ layout: res.data }))
             })
@@ -70,7 +70,7 @@ function getLayoutSuccess(data) {
 
 export const getSettings = () => {
     return dispatch => {
-        instance.get('/settings', { headers: { "authorization": localStorage.getItem('token') } })
+        instance.get('/settings', { params: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 dispatch(getSettingsSuccess({ settings: res.data }))
             })
