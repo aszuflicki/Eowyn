@@ -58,14 +58,13 @@ const signUp = (repo, email, password) => {
 
     repo.getUserByEmail(email)
       .then(user => {
-        console.log("register")
+        console.log(user)
         if (user.length !== 0) {
           return reject({ msg: 'Email already exists' });
         } else {
-          bcrypt.hash(password, 10, null, (hash) => {
-            repo.addUser(email, hash)
-            return resolve({ msg: "Ok" })
-          })
+          const hash = bcrypt.hashSync(password)
+          repo.addUser(email, hash)
+          return resolve({ msg: "Ok" })
         }
       })
       .catch(err => {

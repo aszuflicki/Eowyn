@@ -25,7 +25,7 @@ const start = (options) => {
 
         app.use(bodyParser.json());
 
-        // cors(app, options)
+        cors(app, options)
         api(app, options)
 
         const http = require('http').Server(app);
