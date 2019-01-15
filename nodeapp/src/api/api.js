@@ -14,6 +14,9 @@ module.exports = (app, options) => {
             })
             .catch(next)
     })
+    app.get("/", ensureAuthenticated, (req, res) => {
+        return res.status(200).send("YAY! ")
+    })
 
     app.get("/protected", ensureAuthenticated, (req, res) => {
         return res.status(200).send("YAY! this is a protected Route")
@@ -38,7 +41,8 @@ module.exports = (app, options) => {
 
     app.post('/register', (req, res) => {
         let { password, email } = req.body;
-
+        console.log({ password, email })
+        // res.json({ msg: 'xdd' })
 
         signUp(repo, email, password)
             .then(response => {
@@ -46,8 +50,6 @@ module.exports = (app, options) => {
                 console.log(response)
                 repo.createStandardDashboard(email)
                 .then(() => res.status(201).json({ msg: "Ok" }))
-                
-
             })
             .catch(err => {
                 console.log("ERR ------------")

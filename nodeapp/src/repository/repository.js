@@ -26,6 +26,7 @@ const repository = ({ user, dashboard }) => {
 
 	const addUser = (email, pass) => {
 		return new Promise((resolve, reject) => {
+			console.log(pass)
 			user.create({ email, pass })
 				.then(() =>
 					user.findOrCreate({ where: { email, pass } })

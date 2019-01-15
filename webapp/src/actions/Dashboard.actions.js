@@ -2,8 +2,10 @@ import axios from 'axios'
 import { retrieveToken } from './Auth.actions'
 
 const io = require('socket.io-client')
+// const socket = io('https://api.eowyn.szuflicki.tk')
 const socket = io('http://localhost:8081')
 const instance = axios.create({ baseURL: 'http://localhost:8081' })
+
 
 export const updateLayout = (layout) => {
     return dispatch => {
@@ -42,7 +44,7 @@ export function settingsUpdated(data) {
 
 export const getLayout = () => {
     return dispatch => {
-        instance.get('/layout', { headers: { "authorization": localStorage.getItem('token') } })
+        instance.get('/layout', { params: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 return dispatch(getLayoutSuccess({ layout: res.data }))
             })
@@ -70,7 +72,7 @@ function getLayoutSuccess(data) {
 
 export const getSettings = () => {
     return dispatch => {
-        instance.get('/settings', { headers: { "authorization": localStorage.getItem('token') } })
+        instance.get('/settings', { params: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 dispatch(getSettingsSuccess({ settings: res.data }))
             })

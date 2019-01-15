@@ -1,5 +1,5 @@
 const JwtStrategy = require('passport-jwt').Strategy;
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt-nodejs')
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const jwt = require("jsonwebtoken")
 const opts = {}
@@ -42,6 +42,7 @@ const logIn = (repo, email, plainPassword) => {
           }
         });
       })
+      .catch(er => console.log(err))
   })
 }
 
@@ -57,13 +58,13 @@ const signUp = (repo, email, password) => {
 
     repo.getUserByEmail(email)
       .then(user => {
+        console.log(user)
         if (user.length !== 0) {
           return reject({ msg: 'Email already exists' });
         } else {
-          bcrypt.hash(password, 10).then(function (hash) {
-            repo.addUser(email, hash)
-            return resolve({ msg: "Ok" })
-          })
+          const hash = bcrypt.hashSync(password)
+          repo.addUser(email, hash)
+          return resolve({ msg: "Ok" })
         }
       })
       .catch(err => {
@@ -77,7 +78,7 @@ const passport = require("passport");
 passport.use(strategy);
 
 const ensureAuthenticated = (req, res, next) => {
-  let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
+  let token = req.params['x-access-token'] || req.query['authorization']; // Express headers are auto converted to lowercase
   if (token.startsWith('Bearer ')) {
     // Remove Bearer from string
     token = token.slice(7, token.length);

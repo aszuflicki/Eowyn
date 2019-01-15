@@ -11,7 +11,11 @@ import TechnicalAnalisis from './Widgets/TechnicalAnalisis.component'
 import Ticker from './Widgets/Ticker.component'
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './Modal.component'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import EditWidgetModal from './EditModal.component'
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faEnvelope, faTimes } from '@fortawesome/free-solid-svg-icons';
+library.add(faEnvelope, faTimes);
 
 const ReactGridLayout = WidthProvider(RGL);
 
@@ -22,7 +26,8 @@ class Dashboard extends React.Component {
     rowHeight: 30,
     cols: 12,
     isAddMode: false,
-    draggableHandle: '.handle'
+    draggableHandle: '.handle',
+
   };
 
   componentWillMount() {
@@ -33,7 +38,16 @@ class Dashboard extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { isAddMode: false, isEditMode: false, isEditModeModal: false, editedWidget: {type: 1} };
+    this.state = {
+      isAddMode: false, isEditMode: false, isEditModeModal: false, editedWidget: { type: 1 },
+      tabs: [
+        { name: 'Tab1' },
+        { name: 'Tab2' },
+        { name: 'Tab3' },
+      ],
+      tabActive: 0
+    }
+
   }
 
   generateDOM() {
@@ -335,6 +349,53 @@ class Dashboard extends React.Component {
   render() {
     return (
       <React.Fragment>
+        <ul className="nav nav-tabs">
+          {this.state.tabs.map((tab, index) => {
+            return (
+              <li className="nav-item" key={index + 'nav-tabs'}>
+                <a
+                  className={`nav-link ${this.state.tabActive == index ? 'active' : ''}`}
+                  onClick={() => this.setState({ tabActive: index })}
+                >
+                  {tab.name}
+                  <span
+                    className="fas fa-igloo"
+                    style={{ fontSize: "12px", width: '7px', height: '10px' }}
+
+                  ></span>
+                  <FontAwesomeIcon
+                    icon="times"
+                    onClick={() => {
+                      let { tabs, tabActive } = this.state
+                      tabs = tabs.filter((el, i) => index !== i)
+                      if (tabActive >= index) tabActive = tabActive - 1
+
+
+                      this.setState({ tabs })
+                      setTimeout(() => this.setState({ tabActive }), 50)
+                    }}
+                  />
+                </a>
+              </li>
+            )
+          })
+          }
+
+          <button
+            type="button"
+            className="btn btn-info"
+            onClick={() => {
+              const { tabs } = this.state
+              this.setState({
+                tabs: [...tabs, { name: 'New Tab', symbols: [] }],
+                tabActive: tabs.length
+              })
+            }}
+          >
+            +
+                </button>
+
+        </ul >
         <div className="card">
           <div className="card-body">
             <button type="button" className="btn btn-md btn-success"
