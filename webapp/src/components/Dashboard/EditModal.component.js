@@ -417,10 +417,6 @@ class AddWidgetModal extends Component {
         }
     }
     componentDidMount() {
-<<<<<<< HEAD
-=======
-        console.log(this.props.editedWidget)
->>>>>>> c9053b8718fb4a3dc89ec7cb12f2868dccb257a1
         switch (this.props.editedWidget.type) {
             case 0:
                 this.setState({
