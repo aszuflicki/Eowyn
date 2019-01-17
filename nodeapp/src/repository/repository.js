@@ -5,9 +5,8 @@ const Op = Sequelize.Op
 
 
 
-const repository = ({ user, dashboard }) => {
+const repository = ({ user, dashboard, settings, layout, tabs }) => {
 	const getUserByEmail = email => {
-		console.log(email)
 		return new Promise((resolve, reject) => {
 			user
 				.findAll({
@@ -26,7 +25,6 @@ const repository = ({ user, dashboard }) => {
 
 	const addUser = (email, pass) => {
 		return new Promise((resolve, reject) => {
-			console.log(pass)
 			user.create({ email, pass })
 				.then(() =>
 					user.findOrCreate({ where: { email, pass } })
@@ -54,39 +52,115 @@ const repository = ({ user, dashboard }) => {
 		})
 	}
 
+	const getLayoutByEmail = (email, no = 0) => {
+		return new Promise((resolve, reject) => {
+			layout
+				.findAll({
+					where: {
+						email, no
+					}
+				})
+				.then(result => {
+					resolve(result[0].dataValues.layout)
+				})
+				.catch(err => {
+					reject(err)
+				})
+		})
+	}
+
+	const getAllLayoutsByEmail = (email) => {
+		return new Promise((resolve, reject) => {
+			layout
+				.findAll({
+					where: {
+						email
+					}
+				})
+				.then(result => {
+					let out = {};
+					result.forEach(el => out[el.dataValues.id + ""] = el.dataValues.layout)
+					resolve(out)
+				})
+				.catch(err => {
+					reject(err)
+				})
+		})
+	}
+
+	const getSettingsByEmail = (email, no = 0) => {
+		return new Promise((resolve, reject) => {
+			settings
+				.findAll({
+					where: {
+						email, no
+					}
+				})
+				.then(result => {
+					resolve(result[0].dataValues.settings)
+				})
+				.catch(err => {
+					reject(err)
+				})
+		})
+	}
+
+
+
+	const getTabsByEmail = email => {
+		return new Promise((resolve, reject) => {
+			tabs
+				.findAll({
+					where: {
+						email
+					}
+				})
+				.then(result => {
+					resolve(result[0].dataValues.tabs)
+				})
+				.catch(err => {
+					reject(err)
+				})
+		})
+	}
+
 	const createStandardDashboard = (email) => {
 		return new Promise((resolve, reject) => {
-			dashboard.upsert({ email, layout: standardLayout, settings: standadSettings })
-				.then(() =>
-					dashboard.findOrCreate({ where: { email } })
-				)
-				.spread((dashboard, created) => {
-					resolve({ dashboard, created })
-				})
+			Promise
+				.all([
+					dashboard.upsert({ email, layout: standardLayout, settings: standadSettings }),
+					settings.upsert({ email, no: 0, settings: standadSettings }),
+					settings.upsert({ email, no: 1, settings: standadSettings }),
+
+					layout.upsert({ email, no: 0, layout: standardLayout }),
+					layout.upsert({ email, no: 1, layout: standardLayout }),
+
+					tabs.upsert({ email, tabs: standardTabs }),
+				])
+				.then((...values) => resolve(values))
 		})
 	}
 
-	const updateDashboardLayout = (email, layout) => {
+	const updateDashboardLayout = (email, layout_, no = 0) => {
 		return new Promise((resolve, reject) => {
-			dashboard.upsert({ email, layout })
-				.then(() =>
-					dashboard.findOrCreate({ where: { email } })
-				)
-				.spread((dashboard, created) => {
-					resolve({ dashboard, created })
-				})
+			console.log()
+			Promise
+				.all([
+					dashboard.upsert({ email, layout }),
+					layout.update({ email, no, layout: layout_ }, { where: { email, no } }),
+				])
+				.then(results => resolve(results))
 		})
 	}
 
-	const updateDashboardSettings = (email, settings) => {
+	const updateDashboardSettings = (email, settings_, no = 0) => {
 		return new Promise((resolve, reject) => {
-			dashboard.upsert({ email, settings })
-				.then(() =>
-					dashboard.findOrCreate({ where: { email } })
-				)
-				.spread((dashboard, created) => {
-					resolve({ dashboard, created })
-				})
+			Promise
+				.all([
+					dashboard.upsert({ email, settings: settings_ }),
+					settings.update({ email, no, settings: settings_ }, { where: { email, no } }),
+				])
+				.then(results => resolve(results))
 		})
 	}
 
@@ -96,7 +170,11 @@ const repository = ({ user, dashboard }) => {
 		getDashboardByEmail,
 		updateDashboardLayout,
 		updateDashboardSettings,
-		createStandardDashboard
+		createStandardDashboard,
+		getLayoutByEmail,
+		getSettingsByEmail,
+		getTabsByEmail,
+		getAllLayoutsByEmail
 	}
 }
 
@@ -104,10 +182,16 @@ const initModels = sequelize => {
 	return new Promise((resolve, reject) => {
 		const User = models.User(sequelize, Sequelize)
 		const Dashboard = models.Dashboard(sequelize, Sequelize)
+		const Settings = models.Settings(sequelize, Sequelize)
+		const Layout = models.Layout(sequelize, Sequelize)
+		const Tabs = models.Tabs(sequelize, Sequelize)
 
 		Promise.all([
 			User.sync({ force: false }),
-			Dashboard.sync({ force: false })
+			Dashboard.sync({ force: false }),
+			Settings.sync({ force: false }),
+			Layout.sync({ force: false }),
+			Tabs.sync({ force: false }),
 		]).then((values) => {
 			resolve(values)
 		}).catch(e => reject(e))
@@ -120,8 +204,8 @@ const connect = sequelize => {
 			reject(new Error('Sequelize not supplied'))
 		}
 		initModels(sequelize).then(
-			([user, dashboard]) => {
-				resolve(repository({ user, dashboard }))
+			([user, dashboard, settings, layout, tabs]) => {
+				resolve(repository({ user, dashboard, settings, layout, tabs }))
 			}
 		).catch(e => reject(e))
 	})
@@ -129,6 +213,11 @@ const connect = sequelize => {
 
 module.exports = { connect }
 
+
+const standardTabs = [
+	{ name: 'Tab1' },
+	{ name: 'Tab2' }
+]
 
 const standardLayout = [
 	{

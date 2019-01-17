@@ -1,5 +1,5 @@
 import {
-    GET_LAYOUT_SUCCESS, GET_SETTINGS_SUCCESS
+    GET_LAYOUT_SUCCESS, GET_SETTINGS_SUCCESS, GET_ALL_LAYOUTS_SUCCESS
 } from '../actions/Dashboard.actions'
 
 const dashboardReducerDefaultState = {
@@ -12,10 +12,15 @@ export default (state = dashboardReducerDefaultState, action) => {
 
 
         case GET_LAYOUT_SUCCESS:
-            return { ...state, layout: action.payload.layout }
+            let layouts = state.layouts
+            layouts[action.payload.id] = action.payload.layouts
+            return { ...state, layouts }
 
         case GET_SETTINGS_SUCCESS:
             return { ...state, settings: action.payload.settings }
+
+        case GET_ALL_LAYOUTS_SUCCESS:
+            return { ...state, layouts: action.payload.layouts }
 
         // case CLEAN_ALERTS:
         //     return { ...state, success_msgs: [], error_msgs: [] }

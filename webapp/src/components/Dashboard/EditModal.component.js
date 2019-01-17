@@ -10,10 +10,6 @@ library.add(faEnvelope, faTimes);
 
 class AddWidgetModal extends Component {
 
-    constructor(props) {
-        super(props)
-    }
-
     componentWillMount() {
         this.setState({
             type: 0,
@@ -338,6 +334,8 @@ class AddWidgetModal extends Component {
                         {this.renderSettingsForMultiTicker()}
                     </Fragment>
                 )
+
+            default: return
         }
     }
 
@@ -415,10 +413,10 @@ class AddWidgetModal extends Component {
                     this.props.addWidget(5, this.state.multiTicker)
                 }
                 return
+            default: return
         }
     }
     componentDidMount() {
-        console.log(this.props.editedWidget.settings.symbol.value)
         switch (this.props.editedWidget.type) {
             case 0:
                 this.setState({
@@ -438,6 +436,7 @@ class AddWidgetModal extends Component {
                 return
             case 5:
                 return
+            default: return
         }
     }
 

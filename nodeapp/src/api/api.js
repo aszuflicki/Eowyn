@@ -49,7 +49,7 @@ module.exports = (app, options) => {
                 console.log("------------")
                 console.log(response)
                 repo.createStandardDashboard(email)
-                .then(() => res.status(201).json({ msg: "Ok" }))
+                    .then(() => res.status(201).json({ msg: "Ok" }))
             })
             .catch(err => {
                 console.log("ERR ------------")
@@ -60,20 +60,37 @@ module.exports = (app, options) => {
 
     app.get('/layout', ensureAuthenticated, (req, res) => {
         let { email } = req.locals;
-        repo.getDashboardByEmail(email)
-            .then((dashboard => {
-                console.log(dashboard[0].dataValues)
-                return res.json(dashboard[0].dataValues.layout)
-            }))
+        const { no } = req.params
+        repo.getLayoutByEmail(email, no)
+            .then(results => {
+                return res.json(results)
+            })
+
+    })
+
+    app.get('/layouts', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals;
+        repo.getAllLayoutsByEmail(email)
+            .then(results => {
+                return res.json(results)
+            })
 
     })
 
     app.get('/settings', ensureAuthenticated, (req, res) => {
         let { email } = req.locals;
-        repo.getDashboardByEmail(email)
-            .then((dashboard => {
-                console.log(dashboard[0].dataValues)
-                return res.json(dashboard[0].dataValues.settings)
+        const { no } = req.params
+        repo.getSettingsByEmail(email, no)
+            .then((results => {
+                return res.json(results)
+            }))
+    })
+
+    app.get('/tabs', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals;
+        repo.getTabsByEmail(email)
+            .then((tabs => {
+                return res.json(tabs)
             }))
     })
 

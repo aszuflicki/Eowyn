@@ -4,7 +4,7 @@ import { Route, Redirect } from 'react-router-dom';
 import Navbar from '../components/Navbar.component';
 
 export const PrivateRoute = ({
-  isAuthenticated = false,
+  isAuthenticated = true,
   component: Component,
   ...rest
 }) => (

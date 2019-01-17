@@ -15,6 +15,7 @@ class LandingPage extends Component {
                         <hr class="my-4" />
                         <p>Just create account</p>
                         <a class="btn btn-primary btn-lg" href="/register" role="button">Register</a>
+                        <a class="btn btn-primary btn-lg ml-4" href="/login" role="button">Log In</a>
                     </div>
                 </div>
             </Fragment>

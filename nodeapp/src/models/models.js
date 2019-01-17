@@ -20,5 +20,37 @@ const Dashboard = (sequelize, types) =>
 		layout: types.JSON,
 		settings: types.JSON
 	})
-	
-module.exports = { User, Dashboard }
+
+const Settings = (sequelize, types) =>
+	sequelize.define('settings', {
+		email: {
+			type: types.STRING(32),
+		},
+		no: {
+			type: types.INTEGER
+		},
+		settings: types.JSON
+	})
+
+const Layout = (sequelize, types) =>
+	sequelize.define('layout', {
+		email: {
+			type: types.STRING(32),
+		},
+		no: {
+			type: types.INTEGER,
+		},
+		layout: types.JSON
+	})
+
+const Tabs = (sequelize, types) =>
+	sequelize.define('tabs', {
+		email: {
+			type: types.STRING(32),
+		},
+		tabs: types.JSON
+	})
+
+
+
+module.exports = { User, Dashboard, Settings, Layout, Tabs }
