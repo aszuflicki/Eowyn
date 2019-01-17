@@ -19,7 +19,6 @@ class AddWidgetModal extends Component {
                 {
                     name: 'New tab',
                     symbols: [{}, {}]
-
                 },
                 {
                     name: 'New tab1',
@@ -28,7 +27,8 @@ class AddWidgetModal extends Component {
             ],
             tabActive: 0,
             multiTicker: [],
-            err: ''
+            err: '',
+            id: null
 
         })
     }
@@ -343,8 +343,8 @@ class AddWidgetModal extends Component {
         switch (this.state.type) {
             case 0:
                 if (!Array.isArray(this.state.symbol)) {
-                    this.props.addWidget(0, {
-                        symbol: this.state.symbol
+                    this.props.editWidget(0, this.props.editedWidget.id, {
+                        symbol: this.state.symbol,
                     })
                 } else {
                     this.setState({ err: 'Please fill input' })
@@ -352,7 +352,7 @@ class AddWidgetModal extends Component {
                 return
 
             case 1:
-                this.props.addWidget(1, {})
+                this.props.onClose()
                 return
             case 2:
                 console.log(this.state.tabs.join())
@@ -417,16 +417,24 @@ class AddWidgetModal extends Component {
         }
     }
     componentDidMount() {
+<<<<<<< HEAD
+=======
+        console.log(this.props.editedWidget)
+>>>>>>> c9053b8718fb4a3dc89ec7cb12f2868dccb257a1
         switch (this.props.editedWidget.type) {
             case 0:
                 this.setState({
                     symbol: {
                         value: this.props.editedWidget.settings.symbol.value,
                         label: this.props.editedWidget.settings.symbol.value,
-                    }
+                    },
+                    id: this.props.editedWidget.id
                 })
                 return
             case 1:
+                this.setState({
+                    type: 1
+                })
                 return
             case 2:
                 return
@@ -456,8 +464,6 @@ class AddWidgetModal extends Component {
                         </div>
                         <div className="modal-body">
 
-                            {/* {this.renderChooseType()} */}
-                            < hr />
                             {this.state.err.length > 0 ?
                                 <div class="alert alert-danger" role="alert">
                                     {this.state.err}
@@ -468,12 +474,11 @@ class AddWidgetModal extends Component {
                             <button type="button" className="btn btn-secondary" data-dismiss="modal"
                                 onClick={() => this.props.onClose()}
                             >Close</button>
-                            <button type="button" className="btn btn-primary"
+                            <button type="button" className="btn btn-info"
                                 onClick={() => {
-                                    // this.validate()
-                                    console.log(this.state)
+                                    this.validate()
                                 }}
-                            >Add</button>
+                            >Edit</button>
                         </div>
                     </div>
                 </div>
