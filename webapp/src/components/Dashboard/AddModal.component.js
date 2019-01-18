@@ -411,8 +411,8 @@ class AddWidgetModal extends Component {
         layout = layout[tabActive].layout
 
         // let newId = Math.max(...this.props.layout[tabActive].layout.map(el => el.i)) + 1
-        let newId = Math.max(0, ...Object.keys(settings)) + 1 
-  
+        let newId = Math.max(0, ...Object.keys(settings)) + 1
+
         console.log(layout)
         layout = [
             {
@@ -448,6 +448,13 @@ class AddWidgetModal extends Component {
 
                 return
             case 2:
+                settings[newId] = {
+                    type: 2,
+                    settings: widgetSettings
+                }
+
+                this.props.update(layout, settings)
+
                 return
             case 3:
                 layout[0].h = 3
@@ -518,7 +525,7 @@ class AddWidgetModal extends Component {
                 } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
                 } else {
-                    this.props.addWidget(2, {
+                    this.addWidget(2, {
                         tabs: tabs.map(tab => ({
                             title: tab.name,
                             symbols: tab.symbols.map(symbol => ({
