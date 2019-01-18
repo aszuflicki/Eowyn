@@ -18,7 +18,8 @@ class Dashboard extends Component {
     this.setState({
       isAddMode: false,
       isEditMode: false,
-      isEditModalOpen: false
+      isEditModalOpen: false,
+      editedWidget: null
     })
     setTimeout(() => {
       this.setState({ tabActive: window.location.href.split('/')[4] || Object.keys(this.props.layout)[0] })
@@ -38,6 +39,7 @@ class Dashboard extends Component {
       <Fragment>
         <Navbar />
         <AddEditBtns
+          isEditMode={this.state.isEditMode}
           updateState={(isAddMode, isEditMode) => this.setState({ isAddMode, isEditMode })}
         />
         <MainTabs
@@ -56,24 +58,29 @@ class Dashboard extends Component {
             updateLayout={(layout) => {
               dashboard[this.state.tabActive].layout = layout
               this.props.updateLayout(dashboard)
-            }} /> : ''}
+            }}
+            isEditMode={this.state.isEditMode}
+            setEditWidget={(editedWidget) => this.setState({ editedWidget })}
+          /> : ''}
 
         {this.state.isAddMode ?
           <AddWidgetModal
-            onClose={() => this.setState({isAddMode: false})}
+            onClose={() => this.setState({ isAddMode: false })}
             layout={dashboard}
             tabActive={this.state.tabActive}
             settings={settings}
             update={(layout, settings) => {
               this.props.updateSettings(settings)
               dashboard[this.state.tabActive].layout = layout
-              setTimeout(() => this.props.updateLayout(dashboard))
-              this.setState({isAddMode: false})
+              setTimeout(() => this.props.updateLayout(dashboard), 50)
+              this.setState({ isAddMode: false })
             }}
+
           /> : ''}
 
         {this.state.isEditModalOpen ?
           <EditWidgetModal
+
 
           /> : ''}
       </Fragment>
@@ -115,6 +122,8 @@ class MainTabsBody extends Component {
             settings={this.props.settings}
             tabActive={this.props.tabActive}
             updateLayout={(layout) => { this.props.updateLayout(layout) }}
+            isEditMode={this.props.isEditMode}
+            setEditWidget={(editedWidget) => this.props.setEditWidget(editedWidget)}
           />
         </div>
       </Fragment>
@@ -146,7 +155,7 @@ class GridLayout extends Component {
               widget={el}
               type={this.props.settings[el.i].type}
               settings={this.props.settings[el.i].settings}
-            // isEditMode={this.state.isEditMode}
+              isEditMode={this.props.isEditMode}
             // layout={this.props.layout}
             // updateLayout={this.props.updateLayout}
             // getLayout={this.props.getLayout}
