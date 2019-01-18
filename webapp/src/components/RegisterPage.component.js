@@ -40,7 +40,7 @@ class RegisterPage extends Component {
                             <div className="card card-body">
                                 <h1 className="text-center mb-3"><i className="fas fa-sign-in-alt"></i>Register</h1>
                                 {this.renderAlerts(error_msgs, 'alert-danger')}
-                                {/* {this.renderAlerts(success_msgs, 'alert-success')} */}
+                                {this.renderAlerts(success_msgs, 'alert-success')}
                                 <form onSubmit={this.handleSubmit}>
                                     <div className="form-group">
                                         <label htmlFor="email">Email</label>

@@ -1,84 +1,42 @@
 import React, { Fragment, Component } from "react";
 import { connect } from 'react-redux';
-import _ from "lodash";
 import RGL, { WidthProvider } from "react-grid-layout";
 import './dashboard.css'
 
-import { updateLayout, updateSettings, getLayout, getSettings, getAllLayouts } from './../../actions/Dashboard.actions'
-import AddWidgetModal from './Modal.component'
+import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
+import AddWidgetModal from './AddModal.component'
 import EditWidgetModal from './EditModal.component'
 import MainTabs from './Fragments/MainTabs.component'
 import AddEditBtns from './Fragments/AddEditBtns.component'
 import Loading from './Fragments/Loading.component'
 import Widget from './Widgets/Widget.component'
+import Navbar from '../Navbar.component';
 
 class Dashboard extends Component {
 
   componentWillMount() {
-    console.log()
-    console.log('xdd')
     this.setState({
-      dashboard: {
-        "1": {
-          tabName: "tab1", layout: [{ h: 10, w: 6, i: "1", x: 6, y: 0 }, { h: 10, w: 6, i: "2", x: 0, y: 10 }]
-        },
-        "2": {
-          tabName: "tab2", layout: [{ h: 10, w: 6, i: "3", x: 6, y: 0 }, { h: 10, w: 6, i: "4", x: 0, y: 10 },]
-        }
-      },
-      settings: {
-        "1": {
-          type: 1,
-        },
-        "2": {
-          type: 2,
-          settings: {
-            tabs: [
-              {
-                title: "Indeksssy xd",
-                symbols: [{ s: "INDEX:SPX", d: "S&P 500" }, { s: "INDEX:IUXX", d: "Nasdaq 100" }]
-              },
-              {
-                title: "Towary",
-                symbols: [{ s: "CME_MINI:ES1!", d: "E-Mini S&P" }, { s: "CME:E61!", d: "Euro" }]
-              }]
-          }
-        },
-        "3": {
-          type: 3,
-          settings: {
-            symbol: {
-              value: "BITFINEX:ETHUSD"
-            }
-          }
-        },
-        "4": {
-          type: 4,
-          settings: {
-            symbol: {
-              value: "BITFINEX:ETHUSD"
-            }
-          }
-        }
-      },
       isAddMode: false,
       isEditMode: false,
       isEditModalOpen: false
     })
     setTimeout(() => {
-      this.setState({ tabActive: window.location.href.split('/')[4] || Object.keys(this.state.dashboard)[0] })
+      this.setState({ tabActive: window.location.href.split('/')[4] || Object.keys(this.props.layout)[0] })
     }, 100)
+
+    this.props.getLayout()
+    this.props.getSettings()
   }
 
   render() {
     if (!this.state.tabActive) return <Loading />
 
-    const { dashboard } = this.state
+    let { layout: dashboard, settings } = this.props
     const tabs = Object.keys(dashboard).map(key => ({ name: dashboard[key].tabName, id: key }))
-    console.log(this.state)
 
     return (
       <Fragment>
+        <Navbar />
         <AddEditBtns
           updateState={(isAddMode, isEditMode) => this.setState({ isAddMode, isEditMode })}
         />
@@ -86,19 +44,36 @@ class Dashboard extends Component {
           tabs={tabs}
           tabActive={this.state.tabActive}
           updateState={(tabActive, tabs) => {
-            console.log(tabActive)
             this.setState({ tabActive, tabs })
           }}
         />
 
-        <MainTabsBody
-          dashboard={dashboard}
-          tabActive={this.state.tabActive}
-          settings={this.state.settings}
-        />
+        {this.state.tabActive ?
+          <MainTabsBody
+            dashboard={dashboard}
+            tabActive={this.state.tabActive}
+            settings={settings}
+            updateLayout={(layout) => {
+              dashboard[this.state.tabActive].layout = layout
+              this.props.updateLayout(dashboard)
+            }} /> : ''}
 
         {this.state.isAddMode ?
           <AddWidgetModal
+            onClose={() => this.setState({isAddMode: false})}
+            layout={dashboard}
+            tabActive={this.state.tabActive}
+            settings={settings}
+            update={(layout, settings) => {
+              this.props.updateSettings(settings)
+              dashboard[this.state.tabActive].layout = layout
+              setTimeout(() => this.props.updateLayout(dashboard))
+              this.setState({isAddMode: false})
+            }}
+          /> : ''}
+
+        {this.state.isEditModalOpen ?
+          <EditWidgetModal
 
           /> : ''}
       </Fragment>
@@ -119,7 +94,6 @@ const mapDispatchToProps = (dispatch) => {
     updateSettings: (settings, no) => dispatch(updateSettings(settings, no)),
     getLayout: () => dispatch(getLayout()),
     getSettings: () => dispatch(getSettings()),
-    getAllLayouts: () => dispatch(getAllLayouts()),
   };
 };
 
@@ -140,6 +114,7 @@ class MainTabsBody extends Component {
             dashboard={dashboard}
             settings={this.props.settings}
             tabActive={this.props.tabActive}
+            updateLayout={(layout) => { this.props.updateLayout(layout) }}
           />
         </div>
       </Fragment>
@@ -201,7 +176,10 @@ class GridLayout extends Component {
         <div className="widget-container">
           <ReactGridLayout
             layout={this.props.dashboard.layout}
-            onLayoutChange={(...args) => console.log(args)}
+            onLayoutChange={(args) => {
+              // console.log(args)
+              this.props.updateLayout(args)
+            }}
             {...this.props}
             settings={this.props.settings}
           >

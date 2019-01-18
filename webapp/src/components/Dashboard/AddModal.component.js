@@ -5,15 +5,11 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faEnvelope, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
+import { layoutUpdated } from "../../actions/Dashboard.actions";
 
 library.add(faEnvelope, faTimes);
 
 class AddWidgetModal extends Component {
-
-    constructor(props) {
-        super(props)
-        // this.handleClickTabAutoSuggest = this.handleClickTabAutoSuggest.bind(this)
-    }
 
     componentWillMount() {
         this.setState({
@@ -100,7 +96,7 @@ class AddWidgetModal extends Component {
                                         let { tabs, tabActive } = this.state
                                         tabs = tabs.filter((el, i) => index !== i)
                                         if (tabActive >= index) tabActive = tabActive - 1
-                                        
+
 
                                         this.setState({ tabs })
                                         setTimeout(() => this.setState({ tabActive }), 50)
@@ -340,6 +336,7 @@ class AddWidgetModal extends Component {
                         {this.renderSettingsForMultiTicker()}
                     </Fragment>
                 )
+            default: return 'Ooopsss...'
         }
     }
 
@@ -358,7 +355,6 @@ class AddWidgetModal extends Component {
                 <span style={{ color: "white" }}>x</span>
                 <button
                     type="button"
-                    className="btn btn-md btn-primary"
                     className={`btn btn-md btn-primary ${type === 1 ? 'active' : ''}`}
 
                     onClick={() => this.setState({ type: 1 })}
@@ -410,12 +406,91 @@ class AddWidgetModal extends Component {
 
         )
     }
+    addWidget(type, widgetSettings) {
+        let { layout, settings, tabActive } = this.props
+        layout = layout[tabActive].layout
+
+        // let newId = Math.max(...this.props.layout[tabActive].layout.map(el => el.i)) + 1
+        let newId = Math.max(0, ...Object.keys(settings)) + 1 
+  
+        console.log(layout)
+        layout = [
+            {
+                h: 10,
+                w: 6,
+                i: newId + "",
+                x: 0,
+                y: 0
+            },
+            ...layout.map(el => ({
+                ...el, y: el.y + 10
+            })),]
+
+        switch (type) {
+            case 0:
+                settings[newId] = {
+                    type: 0,
+                    settings: {
+                        symbol: {
+                            value: widgetSettings.symbol.value
+                        }
+                    }
+                }
+                this.props.update(layout, settings)
+                return
+            case 1:
+                settings[newId] = {
+                    type: 1,
+                    settings: widgetSettings
+                }
+                this.props.update(layout, settings)
+
+
+                return
+            case 2:
+                return
+            case 3:
+                layout[0].h = 3
+                layout[0].w = 3
+                settings[newId] = {
+                    type: 3,
+                    settings: {
+                        symbol: {
+                            value: widgetSettings.symbol.value
+                        }
+                    }
+                }
+                this.props.update(layout, settings)
+                return
+            case 4:
+                layout[0].h = 11
+                layout[0].w = 4
+                settings[newId] = {
+                    type: 4,
+                    settings: {
+                        symbol: {
+                            value: widgetSettings.symbol.value
+                        }
+                    }
+                }
+                this.props.update(layout, settings)
+                return
+            case 5:
+                settings[newId] = {
+                    type: 5,
+                    settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
+                }
+                this.props.update(layout, settings)
+                return
+        }
+
+    }
 
     validate() {
         switch (this.state.type) {
             case 0:
                 if (!Array.isArray(this.state.symbol)) {
-                    this.props.addWidget(0, {
+                    this.addWidget(0, {
                         symbol: this.state.symbol
                     })
                 } else {
@@ -424,7 +499,7 @@ class AddWidgetModal extends Component {
                 return
 
             case 1:
-                this.props.addWidget(1, {})
+                this.addWidget(1, {})
                 return
             case 2:
                 console.log(this.state.tabs.join())
@@ -432,15 +507,15 @@ class AddWidgetModal extends Component {
 
                 if (tabs.length === 0) {
                     this.setState({ err: 'Please add at least one tab' })
-                }  else if (tabs.filter(el => el.name === '').length > 0) {
+                } else if (tabs.filter(el => el.name === '').length > 0) {
                     this.setState({ err: 'All tabs should be named' })
-                }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
+                } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
-                }else if (tabs
-                    .filter(el => el.symbols.filter(el => el.value == null).length >  0)
+                } else if (tabs
+                    .filter(el => el.symbols.filter(el => el.value == null).length > 0)
                     .length > 0) {
                     this.setState({ err: 'All fields should be filled' })
-                }else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
+                } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
                 } else {
                     this.props.addWidget(2, {
@@ -457,7 +532,7 @@ class AddWidgetModal extends Component {
             case 3:
                 console.log()
                 if (!Array.isArray(this.state.symbol)) {
-                    this.props.addWidget(3, {
+                    this.addWidget(3, {
                         symbol: this.state.symbol
                     })
                 } else {
@@ -467,7 +542,7 @@ class AddWidgetModal extends Component {
             case 4:
                 console.log()
                 if (!Array.isArray(this.state.symbol)) {
-                    this.props.addWidget(4, {
+                    this.addWidget(4, {
                         symbol: this.state.symbol
                     })
                 } else {
@@ -482,9 +557,11 @@ class AddWidgetModal extends Component {
                 } else if (this.state.multiTicker.filter(el => el.value == null).length > 0) {
                     this.setState({ err: 'Please fill all inputs or delete additional' })
                 } else {
-                    this.props.addWidget(5, this.state.multiTicker)
+                    this.addWidget(5, this.state.multiTicker)
                 }
                 return
+            default: return 'Ooopsss...'
+
         }
     }
 

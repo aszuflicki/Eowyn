@@ -26,9 +26,6 @@ const Settings = (sequelize, types) =>
 		email: {
 			type: types.STRING(32),
 		},
-		no: {
-			type: types.INTEGER
-		},
 		settings: types.JSON
 	})
 
@@ -37,20 +34,8 @@ const Layout = (sequelize, types) =>
 		email: {
 			type: types.STRING(32),
 		},
-		no: {
-			type: types.INTEGER,
-		},
 		layout: types.JSON
 	})
 
-const Tabs = (sequelize, types) =>
-	sequelize.define('tabs', {
-		email: {
-			type: types.STRING(32),
-		},
-		tabs: types.JSON
-	})
 
-
-
-module.exports = { User, Dashboard, Settings, Layout, Tabs }
+module.exports = { User, Dashboard, Settings, Layout }

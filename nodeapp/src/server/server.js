@@ -33,26 +33,26 @@ const start = (options) => {
 
         io.on('connection', function (socket) {
             console.log('connected -----------------')
-            socket.on('dashboard_layout', function (no, layout, token) {
+            socket.on('dashboard_layout', function (layout, token) {
                 console.log(layout)
                 console.log(token)
                 jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
                     if (err) {
                         console.log(err)
                     } else {
-                        options.repo.updateDashboardLayout(decoded.email, layout[0], no)
+                        options.repo.updateLayout(decoded.email, layout)
                     }
                 });
             });
 
-            socket.on('dashboard_settings', function (no, settings, token) {
+            socket.on('dashboard_settings', function (settings, token) {
                 console.log(settings)
                 console.log(token)
                 jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
                     if (err) {
                         console.log(err)
                     } else {
-                        options.repo.updateDashboardSettings(decoded.email, settings, no)
+                        options.repo.updateSettings(decoded.email, settings)
                     }
                 });
             });

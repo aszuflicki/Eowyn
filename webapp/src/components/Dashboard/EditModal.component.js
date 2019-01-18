@@ -295,7 +295,7 @@ class AddWidgetModal extends Component {
 
         )
     }
-
+    
     renderSettings() {
         switch (this.props.editedWidget.type) {
             case 0:

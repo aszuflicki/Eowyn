@@ -7,19 +7,8 @@ module.exports = (app, options) => {
     const { repo } = options
 
     passport.use(strategy(repo));
-    app.get('/dashboard', (req, res, next) => {
-        repo.getDashboard(req.user)
-            .then(dashboard => {
-                res.status(status.OK).json(dashboard)
-            })
-            .catch(next)
-    })
     app.get("/", ensureAuthenticated, (req, res) => {
         return res.status(200).send("YAY! ")
-    })
-
-    app.get("/protected", ensureAuthenticated, (req, res) => {
-        return res.status(200).send("YAY! this is a protected Route")
     })
 
     app.post("/login", (req, res) => {
@@ -42,7 +31,6 @@ module.exports = (app, options) => {
     app.post('/register', (req, res) => {
         let { password, email } = req.body;
         console.log({ password, email })
-        // res.json({ msg: 'xdd' })
 
         signUp(repo, email, password)
             .then(response => {
@@ -60,17 +48,7 @@ module.exports = (app, options) => {
 
     app.get('/layout', ensureAuthenticated, (req, res) => {
         let { email } = req.locals;
-        const { no } = req.params
-        repo.getLayoutByEmail(email, no)
-            .then(results => {
-                return res.json(results)
-            })
-
-    })
-
-    app.get('/layouts', ensureAuthenticated, (req, res) => {
-        let { email } = req.locals;
-        repo.getAllLayoutsByEmail(email)
+        repo.getLayoutByEmail(email)
             .then(results => {
                 return res.json(results)
             })
@@ -79,19 +57,9 @@ module.exports = (app, options) => {
 
     app.get('/settings', ensureAuthenticated, (req, res) => {
         let { email } = req.locals;
-        const { no } = req.params
-        repo.getSettingsByEmail(email, no)
+        repo.getSettingsByEmail(email)
             .then((results => {
                 return res.json(results)
             }))
     })
-
-    app.get('/tabs', ensureAuthenticated, (req, res) => {
-        let { email } = req.locals;
-        repo.getTabsByEmail(email)
-            .then((tabs => {
-                return res.json(tabs)
-            }))
-    })
-
 }
