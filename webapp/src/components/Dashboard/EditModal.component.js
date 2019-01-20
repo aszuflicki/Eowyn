@@ -8,7 +8,7 @@ import Select from 'react-select';
 
 library.add(faEnvelope, faTimes);
 
-class AddWidgetModal extends Component {
+class EditWidgetModal extends Component {
 
     componentWillMount() {
         this.setState({
@@ -295,7 +295,7 @@ class AddWidgetModal extends Component {
 
         )
     }
-    
+
     renderSettings() {
         switch (this.props.editedWidget.type) {
             case 0:
@@ -344,7 +344,9 @@ class AddWidgetModal extends Component {
             case 0:
                 if (!Array.isArray(this.state.symbol)) {
                     this.props.editWidget(0, this.props.editedWidget.id, {
-                        symbol: this.state.symbol,
+                        symbol:{
+                            value:this.state.symbol.value
+                        }
                     })
                 } else {
                     this.setState({ err: 'Please fill input' })
@@ -371,7 +373,7 @@ class AddWidgetModal extends Component {
                 } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
                 } else {
-                    this.props.addWidget(2, {
+                    this.props.editWidget(2, this.props.editedWidget.id,{
                         tabs: tabs.map(tab => ({
                             title: tab.name,
                             symbols: tab.symbols.map(symbol => ({
@@ -385,7 +387,7 @@ class AddWidgetModal extends Component {
             case 3:
                 console.log()
                 if (!Array.isArray(this.state.symbol)) {
-                    this.props.addWidget(3, {
+                    this.props.editWidget(3, this.props.editedWidget.id, {
                         symbol: this.state.symbol
                     })
                 } else {
@@ -395,7 +397,7 @@ class AddWidgetModal extends Component {
             case 4:
                 console.log()
                 if (!Array.isArray(this.state.symbol)) {
-                    this.props.addWidget(4, {
+                    this.props.editWidget(4, this.props.editedWidget.id, {
                         symbol: this.state.symbol
                     })
                 } else {
@@ -410,7 +412,7 @@ class AddWidgetModal extends Component {
                 } else if (this.state.multiTicker.filter(el => el.value == null).length > 0) {
                     this.setState({ err: 'Please fill all inputs or delete additional' })
                 } else {
-                    this.props.addWidget(5, this.state.multiTicker)
+                    this.props.editWidget(5, this.props.editedWidget.id, this.state.multiTicker)
                 }
                 return
             default: return
@@ -445,7 +447,9 @@ class AddWidgetModal extends Component {
     }
 
     render() {
-        console.log(this.props.editedWidget)
+        // console.log(this.props.editedWidget)
+
+
         return (
             <div className="modal show" tabIndex="1" role="dialog" style={{ display: "block" }}>
                 <div className="modal-dialog modal-xl" role="document">
@@ -495,6 +499,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddWidgetModal);
+export default connect(mapStateToProps, mapDispatchToProps)(EditWidgetModal);
 
 

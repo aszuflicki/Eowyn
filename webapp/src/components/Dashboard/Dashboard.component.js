@@ -60,7 +60,10 @@ class Dashboard extends Component {
               this.props.updateLayout(dashboard)
             }}
             isEditMode={this.state.isEditMode}
-            setEditWidget={(editedWidget) => this.setState({ editedWidget })}
+            setEditWidget={(editedWidget) => {
+              this.setState({ editedWidget })
+              setTimeout(() => this.setState({ isEditModalOpen: true }), 50)
+            }}
           /> : ''}
 
         {this.state.isAddMode ?
@@ -78,10 +81,16 @@ class Dashboard extends Component {
 
           /> : ''}
 
-        {this.state.isEditModalOpen ?
+        {this.state.isEditModalOpen === true ?
           <EditWidgetModal
-
-
+            onClose={() => this.setState({ isEditModalOpen: false })}
+            editedWidget={this.state.editedWidget}
+            editWidget={(type, id, settings_) => {
+              console.log(type, id, settings)
+              settings[id].settings = settings_;
+              this.props.updateSettings(settings)
+              this.setState({ isEditModalOpen: false })
+            }}
           /> : ''}
       </Fragment>
     );
@@ -156,16 +165,15 @@ class GridLayout extends Component {
               type={this.props.settings[el.i].type}
               settings={this.props.settings[el.i].settings}
               isEditMode={this.props.isEditMode}
-            // layout={this.props.layout}
-            // updateLayout={this.props.updateLayout}
-            // getLayout={this.props.getLayout}
-            // updateState={(editedWidget, isEditModeModal) => {
-            //   console.log(editedWidget)
-            //   this.setState({ editedWidget })
-            //   setTimeout(() => {
-            //     this.setState({ isEditModeModal: true })
-            //   }, 50)
-            // }}
+              // layout={this.props.layout}
+              // updateLayout={this.props.updateLayout}
+              // getLayout={this.props.getLayout}
+              updateState={(editedWidget, isEditModeModal) => {
+                editedWidget.id = el.i
+                this.props.setEditWidget(editedWidget)
+
+
+              }}
             />
           </div>
         </div>
