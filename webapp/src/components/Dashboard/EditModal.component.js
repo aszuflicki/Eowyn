@@ -36,8 +36,8 @@ class EditWidgetModal extends Component {
     renderSettingsForChartView() {
         return (
             <Fragment>
-                <div class="row mb-3">
-                    <div class="col-6">
+                <div className="row mb-3">
+                    <div className="col-6">
                         <Select
                             options={symbols.map(el => ({
                                 value: el.symbol,
@@ -143,8 +143,8 @@ class EditWidgetModal extends Component {
     renderTabs() {
         let { tabs } = this.state
         return (
-            <div class="row mb-3">
-                <div class="col-6">
+            <div className="row mb-3">
+                <div className="col-6">
                     <div className="tab-content" id="myTabContent">
                         {this.state.tabs.map((tab, index) => {
                             return (
@@ -171,8 +171,8 @@ class EditWidgetModal extends Component {
 
                                         return (
                                             <Fragment>
-                                                <div class="row mb-3">
-                                                    <div class="col-10">
+                                                <div className="row mb-3">
+                                                    <div className="col-10">
                                                         <Select
                                                             options={symbols.map(el => ({
                                                                 value: el.symbol,
@@ -194,8 +194,8 @@ class EditWidgetModal extends Component {
                                                             value={this.state.tabs[index].symbols[i]}
                                                         />
                                                     </div>
-                                                    <div class="col-2">
-                                                        <button type="button" class="btn btn-primary btn-sm"
+                                                    <div className="col-2">
+                                                        <button type="button" className="btn btn-primary btn-sm"
                                                             onClick={() => {
                                                                 let { tabs } = this.state
                                                                 tabs[index].symbols = tabs[index].symbols.filter((el, filter_i) => i !== filter_i)
@@ -246,8 +246,8 @@ class EditWidgetModal extends Component {
 
                     return (
                         <Fragment>
-                            <div class="row mb-3">
-                                <div class="col-10">
+                            <div className="row mb-3">
+                                <div className="col-10">
                                     <Select
                                         options={symbols.map((el, i) => ({
                                             value: el.symbol,
@@ -269,8 +269,8 @@ class EditWidgetModal extends Component {
                                         value={multiTicker[i]}
                                     />
                                 </div>
-                                <div class="col-2">
-                                    <button type="button" class="btn btn-primary btn-sm"
+                                <div className="col-2">
+                                    <button type="button" className="btn btn-primary btn-sm"
                                         onClick={() => {
                                             multiTicker = multiTicker.filter((el, filter_i) => i !== filter_i)
                                             this.setState({ multiTicker })
@@ -344,8 +344,8 @@ class EditWidgetModal extends Component {
             case 0:
                 if (!Array.isArray(this.state.symbol)) {
                     this.props.editWidget(0, this.props.editedWidget.id, {
-                        symbol:{
-                            value:this.state.symbol.value
+                        symbol: {
+                            value: this.state.symbol.value
                         }
                     })
                 } else {
@@ -373,12 +373,12 @@ class EditWidgetModal extends Component {
                 } else if (tabs.filter(el => el.symbols.length === 0).length > 0) {
                     this.setState({ err: 'All tabs should containe at least one symbol' })
                 } else {
-                    this.props.editWidget(2, this.props.editedWidget.id,{
+                    this.props.editWidget(2, this.props.editedWidget.id, {
                         tabs: tabs.map(tab => ({
                             title: tab.name,
                             symbols: tab.symbols.map(symbol => ({
                                 s: symbol.value,
-                                d: symbol.label.props.children[3]
+                                d: !symbol.label.props ? symbol.label : symbol.label.props.children[3]
                             }))
                         }))
                     })
@@ -435,10 +435,34 @@ class EditWidgetModal extends Component {
                 })
                 return
             case 2:
+                this.setState({
+                    type: 2,
+                    tabs: this.props.editedWidget.settings.tabs.map(el => {
+                        return {
+                            name: el.title,
+                            symbols: el.symbols.map(symbol => ({ value: symbol.s, label: symbol.d }))
+                        }
+                    })
+                })
+                console.log(this.props.editedWidget)
                 return
             case 3:
+                this.setState({
+                    symbol: {
+                        value: this.props.editedWidget.settings.symbol.value,
+                        label: this.props.editedWidget.settings.symbol.value,
+                    },
+                    id: this.props.editedWidget.id
+                })
                 return
             case 4:
+                this.setState({
+                    symbol: {
+                        value: this.props.editedWidget.settings.symbol.value,
+                        label: this.props.editedWidget.settings.symbol.value,
+                    },
+                    id: this.props.editedWidget.id
+                })
                 return
             case 5:
                 return
@@ -465,7 +489,7 @@ class EditWidgetModal extends Component {
                         <div className="modal-body">
 
                             {this.state.err.length > 0 ?
-                                <div class="alert alert-danger" role="alert">
+                                <div className="alert alert-danger" role="alert">
                                     {this.state.err}
                                 </div> : ''}
                             {this.renderSettings()}

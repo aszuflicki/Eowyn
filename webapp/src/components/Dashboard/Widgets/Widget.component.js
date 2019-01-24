@@ -13,40 +13,35 @@ export default class Widget extends Component {
         return (
             <Fragment>
                 {isEditMode ? (
-                        <div style={{ position: "absolute", width: "100%", height: "calc(100% - 20px)", backgroundColor: "rgb(239, 163, 29,0.6)", zIndex: "100000" }}>
-                            <div className="row" style={{ height: "100%" }}>
-                                <div className="col-md-6">
-                                    <div style={{
-                                        fontSize: "4rem", margin: 0, position: "absolute", top: "50%", right: "20%",
-                                        transform: "translate(-50%, -50%)"
-                                    }}>
-                                        <i
-                                            className="fas fa-trash-alt "
-                                            onClick={() => {
-                                                let { layout } = this.props
-                                                layout = layout.filter((el) => el.i !== widget.i)
-                                                this.props.updateLayout([layout])
-                                                setTimeout(() => this.props.getLayout(), 100)
-                                            }}
-                                        ></i>
-                                    </div>
-
+                    <div style={{ position: "absolute", width: "100%", height: "calc(100% - 20px)", backgroundColor: "rgb(239, 163, 29,0.6)", zIndex: "100000" }}>
+                        <div className="row" style={{ height: "100%" }}>
+                            <div className="col-md-6">
+                                <div style={{
+                                    fontSize: "4rem", margin: 0, position: "absolute", top: "50%", right: "20%",
+                                    transform: "translate(-50%, -50%)"
+                                }}>
+                                    <i
+                                        className="fas fa-trash-alt "
+                                        onClick={() => this.props.onDelete()}
+                                    ></i>
                                 </div>
-                                <div className="col-md-6">
-                                    <div style={{
-                                        fontSize: "4rem", margin: 0, position: "absolute", top: "50%", left: "20%",
-                                        transform: "translate(-50%, -50%)"
-                                    }}>
-                                        <i className="fas fa-cog"
-                                            onClick={() => { this.props.updateState({type, settings}, true) }}></i>
-                                    </div>
+
+                            </div>
+                            <div className="col-md-6">
+                                <div style={{
+                                    fontSize: "4rem", margin: 0, position: "absolute", top: "50%", left: "20%",
+                                    transform: "translate(-50%, -50%)"
+                                }}>
+                                    <i className="fas fa-cog"
+                                        onClick={() => { this.props.updateState({ type, settings }, true) }}></i>
                                 </div>
                             </div>
-
                         </div>
-                    ) : ''}
-                {getWidgets(type, settings)} 
-                
+
+                    </div>
+                ) : ''}
+                {getWidgets(type, settings)}
+
             </Fragment>
         )
     }

@@ -29,6 +29,17 @@ class Dashboard extends Component {
     this.props.getSettings()
   }
 
+  onDelete(id) {
+    let { layout, settings } = this.props
+    const { tabActive } = this.state
+    layout[tabActive].layout = layout[tabActive].layout.filter(el => el.i != id)
+    settings[id] = null;
+    this.props.updateSettings(settings)
+    this.props.updateLayout(layout)
+    this.props.getLayout()
+    this.props.getSettings()
+  }
+
   render() {
     if (!this.state.tabActive) return <Loading />
 
@@ -59,11 +70,13 @@ class Dashboard extends Component {
               dashboard[this.state.tabActive].layout = layout
               this.props.updateLayout(dashboard)
             }}
+            layout={dashboard[this.state.tabActive]}
             isEditMode={this.state.isEditMode}
             setEditWidget={(editedWidget) => {
               this.setState({ editedWidget })
               setTimeout(() => this.setState({ isEditModalOpen: true }), 50)
             }}
+            onDelete={id => this.onDelete(id)}
           /> : ''}
 
         {this.state.isAddMode ?
@@ -86,7 +99,6 @@ class Dashboard extends Component {
             onClose={() => this.setState({ isEditModalOpen: false })}
             editedWidget={this.state.editedWidget}
             editWidget={(type, id, settings_) => {
-              console.log(type, id, settings)
               settings[id].settings = settings_;
               this.props.updateSettings(settings)
               this.setState({ isEditModalOpen: false })
@@ -133,6 +145,7 @@ class MainTabsBody extends Component {
             updateLayout={(layout) => { this.props.updateLayout(layout) }}
             isEditMode={this.props.isEditMode}
             setEditWidget={(editedWidget) => this.props.setEditWidget(editedWidget)}
+            onDelete={id => this.props.onDelete(id)}
           />
         </div>
       </Fragment>
@@ -165,15 +178,15 @@ class GridLayout extends Component {
               type={this.props.settings[el.i].type}
               settings={this.props.settings[el.i].settings}
               isEditMode={this.props.isEditMode}
-              // layout={this.props.layout}
+              layout={this.props.layout}
               // updateLayout={this.props.updateLayout}
               // getLayout={this.props.getLayout}
               updateState={(editedWidget, isEditModeModal) => {
                 editedWidget.id = el.i
                 this.props.setEditWidget(editedWidget)
-
-
               }}
+              onDelete={() => this.props.onDelete(el.i)}
+
             />
           </div>
         </div>
