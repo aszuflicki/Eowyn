@@ -7,9 +7,6 @@ module.exports = (app, options) => {
     const { repo } = options
 
     passport.use(strategy(repo));
-    app.get("/", ensureAuthenticated, (req, res) => {
-        return res.status(200).send("YAY! ")
-    })
 
     app.post("/login", (req, res) => {
         let { email, password } = req.body;
@@ -34,14 +31,11 @@ module.exports = (app, options) => {
 
         signUp(repo, email, password)
             .then(response => {
-                console.log("------------")
                 console.log(response)
                 repo.createStandardDashboard(email)
                     .then(() => res.status(201).json({ msg: "Ok" }))
             })
             .catch(err => {
-                console.log("ERR ------------")
-                console.log(err)
                 res.json({ msg: err })
             })
     })

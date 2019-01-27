@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { retrieveToken } from './Auth.actions'
+import history from '../routers/history'
 
 const io = require('socket.io-client')
 // const socket = io('https://api.eowyn.szuflicki.tk')
@@ -28,7 +29,7 @@ export function layoutUpdated(...data) {
 
 export const updateSettings = (settings) => {
     return dispatch => {
-        socket.emit('dashboard_settings',settings, retrieveToken());
+        socket.emit('dashboard_settings', settings, retrieveToken());
 
         dispatch(settingsUpdated(settings))
         dispatch(getSettingsSuccess({ settings }))
@@ -99,7 +100,20 @@ function getSettingsSuccess(data) {
     };
 }
 
+export const setTabActive = (id) => {
+    return dispatch => {
+        dispatch(setTabActiveSuccess(id))
+        history.push(`/dashboard/${id}`)
+    }
+}
 
+export const SET_TAB_ACTIVE_SUCCESS = 'SET_TAB_ACTIVE_SUCCESS';
+function setTabActiveSuccess(data) {
+    return {
+        type: SET_TAB_ACTIVE_SUCCESS,
+        payload: data
+    };
+}
 
 
 

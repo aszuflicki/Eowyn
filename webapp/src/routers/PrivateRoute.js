@@ -8,17 +8,7 @@ export const PrivateRoute = ({
   component: Component,
   ...rest
 }) => (
-    <Route {...rest} component={(props) => (
-      isAuthenticated ? (
-        <Fragment>
-          <Navbar />
-          <Component {...props} />
-          
-        </Fragment>
-      ) : (
-          <Redirect to="/login" />
-        )
-    )} />
+    <Route {...rest} component={() => isAuthenticated ? (<Component />) :( <Redirect to="/login" />)} />
   );
 
 const mapStateToProps = (state) => ({

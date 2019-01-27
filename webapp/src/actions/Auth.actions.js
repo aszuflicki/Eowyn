@@ -1,5 +1,6 @@
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
+
 const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
 
@@ -16,9 +17,9 @@ export const register = (email, password) => {
             .then(res => {
                 console.log(res)
                 if (res.status === 201) {
+                    dispatch(cleanedAlerts())
                     dispatch(registrationSuccess({ success_msg: 'Successfuly registrated', isRegistered: true }))
                 } else {
-
                     dispatch(registrationFailed({ error_msg: res.data.msg, isRegistered: false }))
                 }
 

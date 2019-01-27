@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { logout } from './../actions/Auth.actions'
+import { NavItem, Navbar, Icon, Button } from 'react-materialize'
 
 class NavigationBar extends Component {
   render() {
@@ -8,33 +9,39 @@ class NavigationBar extends Component {
     console.log()
 
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-        <a className="navbar-brand" href="/">Eowyn</a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
 
-        <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul className="navbar-nav mr-auto">
-            <li className={`nav-item ${checkIfUrl('dashboard')}`}>
-              <a className="nav-link" href="/dashboard">Dashboard </a>
-            </li>
+
+      //     </ul>
+      //     <ul className="navbar-nav justify-content-end">
+      //       <li className="nav-item">
+      //         <a className="nav-link" href="/profile" tabIndex="-1" >{this.props.email}</a>
+      //       </li>
+      //       {this.props.token.length > 0 ?
+      //         <button type="button" className="btn btn-danger"
+      //           onClick={() => this.props.logout()}
+      //         >
+      //           Logout
+      //      </button> : ''
+      //       }
+      //     </ul>
+      //   </div>
+      // </nav>
+      <Fragment>
+        <Navbar brand='Eowyn' className="center  indigo darken-4">
+
+          <NavItem href='/dashboard'>Dashboard</NavItem>
+          <NavItem href='/discussion'>#Discussions</NavItem>
+          <ul className="right">
+
+            <NavItem href='/profile'>{this.props.email}</NavItem>
+            <NavItem>Log Out</NavItem>
+
 
           </ul>
-          <ul className="navbar-nav justify-content-end">
-            <li className="nav-item">
-              <a className="nav-link" href="/profile" tabIndex="-1" >{this.props.email}</a>
-            </li>
-            {this.props.token.length > 0 ?
-              <button type="button" className="btn btn-danger"
-                onClick={() => this.props.logout()}
-              >
-                Logout
-           </button> : ''
-            }
-          </ul>
-        </div>
-      </nav>
+        </Navbar>
+
+      </Fragment>
+
     );
   }
 }

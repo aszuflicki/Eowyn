@@ -1683,7 +1683,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@^6.22.0, babel-runtime@^6.23.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -9255,6 +9255,16 @@ react-dev-utils@^6.1.1:
     strip-ansi "4.0.0"
     text-table "0.2.0"
 
+react-dom@^16.2.0:
+  version "16.7.0"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.7.0.tgz#a17b2a7ca89ee7390bc1ed5eb81783c7461748b8"
+  integrity sha512-D0Ufv1ExCAmF38P2Uh1lwpminZFRXEINJe53zRAbm4KPwSyd6DY/uDoS0Blj9jvPpn1+wivKpZYc8aAAN/nAkg==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.12.0"
+
 react-dom@^16.6.1:
   version "16.6.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.6.1.tgz#5476e08694ae504ae385a28b62ecc4fe3a29add9"
@@ -9342,6 +9352,15 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
 
+react-materialize@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.yarnpkg.com/react-materialize/-/react-materialize-2.6.0.tgz#656c511599c547a879c9f97e87727b5376fdfaf2"
+  integrity sha512-bBxYogT/aX3WhBR9KJj6mhRTDIv3NFqnZbugShqjNC0cWc9BpeoCpLGxZ37/Rs2ca43IJBHapQIpZOUTQZM5ig==
+  dependencies:
+    classnames "^2.2.5"
+    react "^16.2.0"
+    react-dom "^16.2.0"
+
 react-overlays@^0.8.0:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/react-overlays/-/react-overlays-0.8.3.tgz#fad65eea5b24301cca192a169f5dddb0b20d3ac5"
@@ -9407,6 +9426,13 @@ react-router@^4.3.1:
     path-to-regexp "^1.7.0"
     prop-types "^15.6.1"
     warning "^4.0.1"
+
+react-s-alert@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/react-s-alert/-/react-s-alert-1.4.1.tgz#ef3665a9d98c4cf2e448fc2d84e48aeca799bb5a"
+  integrity sha512-+cSpVPe6YeGklhlo7zbVlB0Z6jdiU9HPmEVzp5nIhNm9lvdL7rVO2Jx09pCwT99GmODyoN0iNhbQku6r7six8A==
+  dependencies:
+    babel-runtime "^6.23.0"
 
 react-scripts@2.1.1:
   version "2.1.1"
@@ -9524,6 +9550,16 @@ react-transition-group@^2.2.1:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
+
+react@^16.2.0:
+  version "16.7.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-16.7.0.tgz#b674ec396b0a5715873b350446f7ea0802ab6381"
+  integrity sha512-StCz3QY8lxTb5cl2HJxjwLFOXPIFQp+p+hxQfc8WE0QiLfCtIlKj8/+5tjjKm8uSTlAW+fCPaavGFS06V9Ar3A==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.12.0"
 
 react@^16.6.1:
   version "16.6.1"
@@ -10146,6 +10182,14 @@ saxes@^3.1.3:
 scheduler@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.11.0.tgz#def1f1bfa6550cc57981a87106e65e8aea41a6b5"
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+scheduler@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.12.0.tgz#8ab17699939c0aedc5a196a657743c496538647b"
+  integrity sha512-t7MBR28Akcp4Jm+QoR63XgAi9YgCUmgvDHqf5otgAj4QvdoBE4ImCX0ffehefePPG+aitiYHp0g/mW6s4Tp+dw==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
