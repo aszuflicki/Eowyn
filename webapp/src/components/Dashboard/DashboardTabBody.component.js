@@ -1,11 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux';
-import RGL, { WidthProvider } from "react-grid-layout";
-import _ from "lodash";
 import Layout from './DashboardTabBodyLayout.component'
-
-
-const ReactGridLayout = WidthProvider(RGL);
 
 export class DashboardTabBody extends Component {
 
@@ -24,6 +19,7 @@ export class DashboardTabBody extends Component {
     );
   }
 }
+
 const mapStateToProps = (state) => {
   return {
     ...state.dashboard,

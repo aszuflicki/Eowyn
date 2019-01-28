@@ -44,31 +44,12 @@ class Dashboard extends Component {
     if (!this.state.tabActive) return <Loading />
 
     let { layout: dashboard, settings } = this.props
-    const tabs = Object.keys(dashboard).map(key => ({ name: dashboard[key].tabName, id: key }))
 
     return (
       <Fragment>
         <Navbar />
         <DashboardTabNav />
-         <DashboardTabBody />
-
-        {/* {this.state.tabActive ?
-          <MainTabsBody
-            dashboard={dashboard}
-            tabActive={this.state.tabActive}
-            settings={settings}
-            updateLayout={(layout) => {
-              dashboard[this.state.tabActive].layout = layout
-              this.props.updateLayout(dashboard)
-            }}
-            layout={dashboard[this.state.tabActive]}
-            isEditMode={this.state.isEditMode}
-            setEditWidget={(editedWidget) => {
-              this.setState({ editedWidget })
-              setTimeout(() => this.setState({ isEditModalOpen: true }), 50)
-            }}
-            onDelete={id => this.onDelete(id)}
-          /> : ''} */}
+        <DashboardTabBody />
         {this.state.isAddMode ?
           <AddWidgetModal
             onClose={() => this.setState({ isAddMode: false })}
@@ -80,9 +61,7 @@ class Dashboard extends Component {
               dashboard[this.state.tabActive].layout = layout
               setTimeout(() => this.props.updateLayout(dashboard), 50)
               this.setState({ isAddMode: false })
-            }}
-
-          /> : ''}
+            }} /> : ''}
 
         {this.state.isEditModalOpen === true ?
           <EditWidgetModal

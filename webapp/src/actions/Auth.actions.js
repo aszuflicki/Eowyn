@@ -1,5 +1,6 @@
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
+import history from '../routers/history'
 
 const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
@@ -22,8 +23,6 @@ export const register = (email, password) => {
                 } else {
                     dispatch(registrationFailed({ error_msg: res.data.msg, isRegistered: false }))
                 }
-
-
             })
             .catch(err => {
                 dispatch(registrationFailed({ error_msg: 'Email or password incorrect', isRegistered: false }))
@@ -76,10 +75,22 @@ export const login = (email, password) => {
 
 export const checkIfLoggedIn = () => {
     return dispatch => {
-
         let token = retrieveToken()
-        if (token)
-            dispatch(loginSuccess({ success_msg: 'Successfuly logged in', token }))
+
+        if (token) {
+            jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
+                if (err) {
+                    console.log({
+                        success: false,
+                        message: 'Token is not valid'
+                    });
+                } else {
+
+                }
+            });
+        } else {
+            dispatch(loginFailed())
+        }
     }
 }
 
@@ -102,8 +113,8 @@ export function loginSuccess(data) {
 
 export const logout = () => {
     clearLocalStorage()
+    history.push('/');
     return dispatch =>
-
         dispatch(logoutSuccess({ success_msg: 'Successfuly logged out' }))
 
 }
