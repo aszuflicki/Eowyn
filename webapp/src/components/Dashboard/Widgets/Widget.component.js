@@ -1,4 +1,6 @@
 import React, { Component, Fragment } from 'react'
+import { connect } from 'react-redux';
+
 import TradingViewWidget, { Themes } from 'react-tradingview-widget';
 import CryptoMarketOverview from './CryptoMarketOveriew.component'
 import MarketOverview from './MarketOveriew.component'
@@ -6,13 +8,15 @@ import SingleTicker from './SingleTicker.component'
 import TechnicalAnalisis from './TechnicalAnalisis.component'
 import Ticker from './Ticker.component'
 
-export default class Widget extends Component {
+class Widget extends Component {
 
     render() {
-        let { widget, type, settings, isEditMode } = this.props
+        let { i, isEditMode, settings: settingsAll } = this.props
+        const { type, settings } = settingsAll[i]
+        console.log(settings)
         return (
             <Fragment>
-                {isEditMode ? (
+                {/* {isEditMode ? (
                     <div style={{ position: "absolute", width: "100%", height: "calc(100% - 20px)", backgroundColor: "rgb(239, 163, 29,0.6)", zIndex: "100000" }}>
                         <div className="row" style={{ height: "100%" }}>
                             <div className="col-md-6">
@@ -39,15 +43,15 @@ export default class Widget extends Component {
                         </div>
 
                     </div>
-                ) : ''}
-                {getWidgets(type, settings)}
+                ) : ''} */}
+                 {getWidget(type, settings)} 
 
             </Fragment>
         )
     }
 }
 
-const getWidgets = (i, settings, isEditMode) => {
+const getWidget = (i, settings, isEditMode) => {
     switch (i) {
         case 0:
             return (
@@ -92,3 +96,18 @@ const getWidgets = (i, settings, isEditMode) => {
 
     }
 }
+
+function mapStateToProps(state) {
+    // console.log(state.dashboard)
+    return {
+        ...state.dashboard,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        //   setTabActive: (id) => dispatch(setTabActive(id))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Widget)

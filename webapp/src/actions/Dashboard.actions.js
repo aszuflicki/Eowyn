@@ -115,6 +115,19 @@ function setTabActiveSuccess(data) {
     };
 }
 
+export const toggleEditMode = (isActive) => {
+    return dispatch => {
+        dispatch(toggleEditModeSuccess(isActive))
+    }
+}
+
+export const TOGGLE_EDIT_MODE_SUCCESS = 'TOGGLE_EDIT_MODE_SUCCESS';
+function toggleEditModeSuccess(isActive) {
+    return {
+        type: SET_TAB_ACTIVE_SUCCESS,
+        payload: isActive
+    };
+}
 
 
 

@@ -1,15 +1,11 @@
 import React, { Fragment, Component } from "react";
 import { connect } from 'react-redux';
-import RGL, { WidthProvider } from "react-grid-layout";
 import './dashboard.css'
 
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './AddModal.component'
 import EditWidgetModal from './EditModal.component'
-import MainTabs from './Fragments/MainTabs.component'
-import AddEditBtns from './Fragments/AddEditBtns.component'
 import Loading from './Fragments/Loading.component'
-import Widget from './Widgets/Widget.component'
 import Navbar from '../Navbar.component';
 import ActionButtons from './Fragments/ActionButtons.component'
 
@@ -110,7 +106,7 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state.dashboard)
+  // console.log(state.dashboard)
   return {
     ...state.dashboard,
   }

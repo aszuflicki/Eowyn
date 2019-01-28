@@ -29,7 +29,7 @@ export class DashboardTabNav extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state.dashboard)
+  // console.log(state.dashboard)
   return {
     ...state.dashboard,
   }
