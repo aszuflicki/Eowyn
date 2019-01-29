@@ -1,12 +1,15 @@
 import {
-    GET_LAYOUT_SUCCESS, GET_SETTINGS_SUCCESS, SET_TAB_ACTIVE_SUCCESS, TOGGLE_EDIT_MODE_SUCCESS
+    GET_LAYOUT_SUCCESS, GET_SETTINGS_SUCCESS, SET_TAB_ACTIVE_SUCCESS, TOGGLE_EDIT_MODE_SUCCESS,
+    TOGGLE_ADD_MODAL_SUCCESS, TOGGLE_EDIT_MODAL_SUCCESS
 } from '../actions/Dashboard.actions'
 
 const dashboardReducerDefaultState = {
     layout: null,
     settings: null,
     tabActive: 0,
-    isEditMode: false
+    isEditMode: false,
+    isEditModal: false,
+    isAddModal: true,
 };
 
 export default (state = dashboardReducerDefaultState, action) => {
@@ -22,6 +25,12 @@ export default (state = dashboardReducerDefaultState, action) => {
 
         case TOGGLE_EDIT_MODE_SUCCESS:
             return { ...state, isEditMode: action.payload }
+
+        case TOGGLE_ADD_MODAL_SUCCESS:
+            return { ...state, isAddModal: action.payload }
+
+        case TOGGLE_EDIT_MODAL_SUCCESS:
+            return { ...state, isEditModal: action.payload }
 
         // case CLEAN_ALERTS:
         //     return { ...state, success_msgs: [], error_msgs: [] }

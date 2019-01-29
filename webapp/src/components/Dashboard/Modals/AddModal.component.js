@@ -1,13 +1,21 @@
 import React, { Component, Fragment } from "react";
 import { connect } from 'react-redux';
-import { symbols } from './Autosuggestion.component'
+import { symbols } from '../Autosuggestion.component'
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faEnvelope, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
-import { layoutUpdated } from "../../actions/Dashboard.actions";
+import { toggleAddModal } from "../../../actions/Dashboard.actions";
+import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab } from 'react-materialize'
+import ChooseTypeButtons from './Fragments/ChooseTypeButtons'
 
 library.add(faEnvelope, faTimes);
+
+let autocompleteSymbols = {}
+
+symbols.forEach(symbol => {
+    autocompleteSymbols[symbol.name] = null;
+})
 
 class AddWidgetModal extends Component {
 
@@ -37,6 +45,16 @@ class AddWidgetModal extends Component {
     renderSettingsForChartView() {
         return (
             <Fragment>
+                <Row>
+                    <div class="col-6">
+                        <Autocomplete
+                            title='Symbol'
+                            data={autocompleteSymbols}
+                            onAutocomplete={(value) => console.log(value)}
+                        />
+                    </div>
+                </Row>
+
                 <div class="row mb-3">
                     <div class="col-6">
                         <Select
@@ -233,8 +251,14 @@ class AddWidgetModal extends Component {
     renderSettingsForMarketOverview() {
         return (
             <Fragment>
-                {this.renderNavItems()}
-                {this.renderTabs()}
+                {/* {this.renderNavItems()} */}
+                {/* {this.renderTabs()} */}
+                <Tabs className='tab-demo z-depth-1'>
+                    <Tab title="Test 1">Test 1</Tab>
+                    <Tab title="Test 2" active>Test 2</Tab>
+                    <Tab title="Test 3">Test 3</Tab>
+                    <Tab title="Test 4">Test 4</Tab>
+                </Tabs>
             </Fragment>
         )
     }
@@ -340,72 +364,6 @@ class AddWidgetModal extends Component {
         }
     }
 
-    renderChooseType() {
-        const { type } = this.state
-        return (
-            <Fragment>
-                <p>Choose type</p>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 0 ? 'active' : ''}`}
-                    onClick={() => this.setState({ type: 0 })}
-                >
-                    Chart View Widgetw
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 1 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 1 })}
-
-                >
-                    Crypto Market Overview
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 2 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 2 })}
-
-                >
-                    Market Overview
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 3 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 3 })}
-
-                >
-                    Single Ticker
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 4 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 4 })}
-
-                >
-                    Technical Analisis
-                </button>
-                <span style={{ color: "white" }}>x</span>
-                <button
-                    type="button"
-                    className={`btn btn-md btn-primary ${type === 5 ? 'active' : ''}`}
-
-                    onClick={() => this.setState({ type: 5 })}
-
-                >
-                    Multi Ticker
-                </button>
-            </Fragment>
-
-        )
-    }
     addWidget(type, widgetSettings) {
         let { layout, settings, tabActive } = this.props
         layout = layout[tabActive].layout
@@ -573,39 +531,38 @@ class AddWidgetModal extends Component {
     }
 
     render() {
+        const { toggleAddModal } = this.props
         return (
-            <div className="modal show " tabIndex="1" role="dialog" style={{ display: "block" }}>
-                <div className="modal-dialog modal-xl" role="document">
-                    <div className="modal-content">
-                        <div className="modal-header">
-                            <h5 className="modal-title">Add Widget</h5>
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close"
-                                onClick={() => this.props.onClose()}
-                            >
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div className="modal-body">
-
-                            {this.renderChooseType()}
-                            < hr />
+            <div style={{ position: "absolute", top: "112px", width: "100vw", zIndex: "1000", backgroundColor: "rgb(121,121,121,.7)", height: 'calc(100vh - 80px)' }}>
+                <Row style={{ position: "absolute", zIndex: "10000", width: "100vw" }}>
+                    <Col s={2}></Col>
+                    <Col s={8}>
+                        <Card header={<CardTitle waves='light' />}
+                            actions={[<div className="right-align">
+                                <a className="blue-text"
+                                    onClick={() => { }}
+                                >Add</a>
+                                <a className="red-text"
+                                    onClick={() => toggleAddModal(false)}
+                                > Cancel</a></div>]}
+                            title="Add widget" >
+                            <ChooseTypeButtons
+                                type={this.state.type}
+                                setType={(type) => this.setState({ type })}
+                            />
+                            <div style={{ color: "white" }}>x</div>
                             {this.state.err.length > 0 ?
                                 <div class="alert alert-danger" role="alert">
                                     {this.state.err}
                                 </div> : ''}
                             {this.renderSettings()}
-                        </div>
-                        <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-dismiss="modal"
-                                onClick={() => this.props.onClose()}
-                            >Close</button>
-                            <button type="button" className="btn btn-primary"
-                                onClick={() => this.validate()}
-                            >Add</button>
-                        </div>
-                    </div>
-                </div>
+                        </Card>
+
+                    </Col>
+                    <Col s={2}></Col>
+                </Row>
             </div>
+
         )
 
     }
@@ -619,7 +576,7 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        //   updateLayout: (layout) => dispatch(updateLayout(layout)),
+        toggleAddModal: (isActive) => dispatch(toggleAddModal(isActive)),
     };
 };
 

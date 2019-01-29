@@ -89,7 +89,7 @@ export const checkIfLoggedIn = () => {
                 }
             });
         } else {
-            dispatch(loginFailed())
+           // dispatch(loginFailed())
         }
     }
 }

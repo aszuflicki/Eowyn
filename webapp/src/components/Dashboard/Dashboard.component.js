@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import './dashboard.css'
 
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
-import AddWidgetModal from './AddModal.component'
+import AddWidgetModal from './Modals/AddModal.component'
 import EditWidgetModal from './EditModal.component'
 import Loading from './Fragments/Loading.component'
 import Navbar from '../Navbar.component';
@@ -49,9 +49,9 @@ class Dashboard extends Component {
       <Fragment>
         <Navbar />
         <DashboardTabNav />
-        <DashboardTabBody />
-        {this.state.isAddMode ?
+        {this.props.isAddModal ?
           <AddWidgetModal
+            
             onClose={() => this.setState({ isAddMode: false })}
             layout={dashboard}
             tabActive={this.state.tabActive}
@@ -62,8 +62,10 @@ class Dashboard extends Component {
               setTimeout(() => this.props.updateLayout(dashboard), 50)
               this.setState({ isAddMode: false })
             }} /> : ''}
+        <DashboardTabBody />
+        
 
-        {this.state.isEditModalOpen === true ?
+        {this.props.isEditModal ?
           <EditWidgetModal
             onClose={() => this.setState({ isEditModalOpen: false })}
             editedWidget={this.state.editedWidget}
@@ -85,7 +87,7 @@ class Dashboard extends Component {
 }
 
 function mapStateToProps(state) {
-  // console.log(state.dashboard)
+  console.log(state.dashboard)
   return {
     ...state.dashboard,
   }
