@@ -18,10 +18,17 @@ process.on('uncaughtRejection', (err) => {
 	process.exit(1)
 })
 
-mediator.on('db.ready', db => {
+let postgres;
+
+
+mediator.on('postgres.ready', db => {
+	postgres = db
+})
+
+mediator.on('rethinkdb.ready', rethinkdb => {
 	let rep;
-	
-	repository.connect(db)
+
+	repository.connect(postgres, rethinkdb)
 		.then(repo => {
 			console.log('Connected. Starting Server...')
 			rep = repo
@@ -33,8 +40,8 @@ mediator.on('db.ready', db => {
 
 		})
 		.then(() => {
-				console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`);
-			})
+			console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`);
+		})
 })
 
 mediator.on('db.error', err => {
@@ -42,6 +49,7 @@ mediator.on('db.error', err => {
 	process.exit(1)
 })
 
-config.db.connect(config.dbSettings, mediator)
+config.postgres.connect(config.dbSettings, mediator)
+config.rethinkdb.connect(mediator)
 
 mediator.emit('boot.ready')

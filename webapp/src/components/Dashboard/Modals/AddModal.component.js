@@ -47,16 +47,6 @@ class AddWidgetModal extends Component {
             <Fragment>
                 <Row>
                     <div class="col-6">
-                        <Autocomplete
-                            title='Symbol'
-                            data={autocompleteSymbols}
-                            onAutocomplete={(value) => console.log(value)}
-                        />
-                    </div>
-                </Row>
-
-                <div class="row mb-3">
-                    <div class="col-6">
                         <Select
                             options={symbols.map(el => ({
                                 value: el.symbol,
@@ -77,7 +67,9 @@ class AddWidgetModal extends Component {
                             value={this.state.symbol}
                         />
                     </div>
-                </div>
+                </Row>
+
+
             </Fragment >
 
         )
@@ -251,14 +243,8 @@ class AddWidgetModal extends Component {
     renderSettingsForMarketOverview() {
         return (
             <Fragment>
-                {/* {this.renderNavItems()} */}
-                {/* {this.renderTabs()} */}
-                <Tabs className='tab-demo z-depth-1'>
-                    <Tab title="Test 1">Test 1</Tab>
-                    <Tab title="Test 2" active>Test 2</Tab>
-                    <Tab title="Test 3">Test 3</Tab>
-                    <Tab title="Test 4">Test 4</Tab>
-                </Tabs>
+                {this.renderNavItems()}
+                {this.renderTabs()}
             </Fragment>
         )
     }

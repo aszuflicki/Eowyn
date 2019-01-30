@@ -56,4 +56,15 @@ module.exports = (app, options) => {
                 return res.json(results)
             }))
     })
+
+    app.post('/discussions', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals;
+        let { category, topic, desc, tags } = req.body;
+        console.log(email, category, topic, desc, tags )
+        repo.newDisscusion(email, category, topic, desc, tags)
+            .then((results => {
+                console.log(results)
+                res.json(results)
+            }))
+    })
 }

@@ -5,7 +5,7 @@ const Op = Sequelize.Op
 
 
 
-const repository = ({ user, settings, layout }) => {
+const repository = ({ user, settings, layout, discussion, post, follower }) => {
 	const getUserByEmail = email => {
 		return new Promise((resolve, reject) => {
 			user
@@ -101,6 +101,47 @@ const repository = ({ user, settings, layout }) => {
 		})
 	}
 
+	const newDisscusion = (email, category, topic, desc) => {
+		return new Promise((resolve, reject) => {
+			Promise
+				.all([
+					discussion.create({category, topic, desc, author: email, created: new Date()}),
+				])
+				.then(results => resolve(results[0].dataValues))
+		})
+	}
+	
+	const newPost = (author, topic_id, text) => {
+		return new Promise((resolve, reject) => {
+			Promise
+				.all([
+					post.insert({ author, topic_id, text, created: new Date() }),
+					follower.insert({ email: author, topic_id }),
+				])
+				.then(results => resolve(results))
+		})
+	}
+
+	const follow = (email, topic_id) => {
+		return new Promise((resolve, reject) => {
+			Promise
+				.all([
+					follower.insert({ email, topic_id }),
+				])
+				.then(results => resolve(results))
+		})
+	}
+
+	const unfollow = (email, topic_id) => {
+		return new Promise((resolve, reject) => {
+			Promise
+				.all([
+					follower.destroy({ where: { email, topic_id }}),
+				])
+				.then(results => resolve(results))
+		})
+	}
+
 	return {
 		getUserByEmail,
 		addUser,
@@ -109,6 +150,7 @@ const repository = ({ user, settings, layout }) => {
 		createStandardDashboard,
 		getLayoutByEmail,
 		getSettingsByEmail,
+		newDisscusion
 	}
 }
 
@@ -117,11 +159,16 @@ const initModels = sequelize => {
 		const User = models.User(sequelize, Sequelize)
 		const Settings = models.Settings(sequelize, Sequelize)
 		const Layout = models.Layout(sequelize, Sequelize)
-
+		const Discussion = models.Discussion(sequelize, Sequelize)
+		const Post = models.Post(sequelize, Sequelize)
+		const Follower = models.Follower(sequelize, Sequelize)
 		Promise.all([
 			User.sync({ force: false }),
 			Settings.sync({ force: false }),
 			Layout.sync({ force: false }),
+			Discussion.sync({ force: false }),
+			Post.sync({ force: false }),
+			Follower.sync({ force: false }),
 		]).then((values) => {
 			resolve(values)
 		}).catch(e => reject(e))
@@ -134,8 +181,8 @@ const connect = sequelize => {
 			reject(new Error('Sequelize not supplied'))
 		}
 		initModels(sequelize).then(
-			([user, settings, layout]) => {
-				resolve(repository({ user, settings, layout }))
+			([user, settings, layout, discussion, post, follower]) => {
+				resolve(repository({ user, settings, layout, discussion, post, follower}))
 			}
 		).catch(e => reject(e))
 	})

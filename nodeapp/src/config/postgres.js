@@ -15,7 +15,7 @@ const connect = (options, mediator) => {
 			.authenticate()
 			.then(() => {
 				console.log('xd')
-				mediator.emit('db.ready', sequelize)
+				mediator.emit('postgres.ready', sequelize)
 			})
 			.catch(err => {
 				console.log(err)

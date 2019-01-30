@@ -78,7 +78,7 @@ const passport = require("passport");
 passport.use(strategy);
 
 const ensureAuthenticated = (req, res, next) => {
-  let token = req.params['x-access-token'] || req.query['authorization']; // Express headers are auto converted to lowercase
+  let token = req.params['x-access-token'] || req.query['authorization'] ||req.headers['authorization']
   if (token.startsWith('Bearer ')) {
     // Remove Bearer from string
     token = token.slice(7, token.length);

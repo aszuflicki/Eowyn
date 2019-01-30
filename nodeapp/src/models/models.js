@@ -37,5 +37,40 @@ const Layout = (sequelize, types) =>
 		layout: types.JSON
 	})
 
+const Discussion = (sequelize, types) =>
+	sequelize.define('discussion', {
+		id: {
+			type: types.INTEGER,
+			primaryKey: true,
+			autoIncrement: true
+		},
+		category: types.INTEGER,
+		topic: types.STRING(255),
+		desc: types.STRING(511),
+		author: types.STRING(511),
+		created: types.DATE,
+		answeared: types.DATE
+	})
 
-module.exports = { User, Dashboard, Settings, Layout }
+const Post = (sequelize, types) =>
+	sequelize.define('post', {
+		id: {
+			type: types.INTEGER,
+			primaryKey: true,
+			autoIncrement: true
+		},
+		topic_id: types.STRING(255),
+		text: types.STRING(511),
+		author: types.STRING(511),
+		created: types.DATE,
+	})
+
+const Follower = (sequelize, types) =>
+	sequelize.define('follower', {
+		topic_id: types.STRING(255),
+		email: types.STRING(32),
+	})
+
+
+module.exports = { User, Dashboard, Settings, Layout,
+					Discussion, Post, Follower }

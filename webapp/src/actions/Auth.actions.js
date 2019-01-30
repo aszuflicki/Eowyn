@@ -80,16 +80,12 @@ export const checkIfLoggedIn = () => {
         if (token) {
             jwt.verify(token, 'SECRET_KEY', (err, decoded) => {
                 if (err) {
-                    console.log({
-                        success: false,
-                        message: 'Token is not valid'
-                    });
-                } else {
+                    clearLocalStorage()
 
+                } else {
+                    dispatch(loginSuccess({token}))
                 }
             });
-        } else {
-           // dispatch(loginFailed())
         }
     }
 }
