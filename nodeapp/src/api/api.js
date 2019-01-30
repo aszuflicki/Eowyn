@@ -6,7 +6,7 @@ const { strategy, signUp, logIn, ensureAuthenticated } = require("./../middlewar
 module.exports = (app, options) => {
     const { repo } = options
 
-    passport.use(strategy(repo));
+    // passport.use(strategy(repo));
 
     app.post("/login", (req, res) => {
         let { email, password } = req.body;
@@ -54,6 +54,34 @@ module.exports = (app, options) => {
         repo.getSettingsByEmail(email)
             .then((results => {
                 return res.json(results)
+            }))
+    })
+
+    app.post('/discussions', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals;
+        let { category, topic, desc, tags } = req.body;
+        console.log(email, category, topic, desc, tags )
+        repo.newDisscusion(email, category, topic, desc, tags)
+            .then((results => {
+                console.log(results)
+                res.json(results)
+            }))
+    })
+
+    app.get('/discussions/', ensureAuthenticated, (req, res) => {
+        repo.getDisscusions()
+            .then((results => {
+                console.log(results)
+                res.json(results)
+            }))
+    })
+
+    app.get('/discussions/:id', ensureAuthenticated, (req, res) => {
+        let { id } = req.params;
+        repo.getDisscusions(id)
+            .then((results => {
+                console.log(results)
+                res.json(results)
             }))
     })
 

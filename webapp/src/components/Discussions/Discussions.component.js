@@ -2,8 +2,14 @@ import React, { Component, Fragment } from 'react';
 import Navbar from '../Navbar.component'
 import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab, Badge, Icon } from 'react-materialize'
 import history from '../../routers/history';
+import { connect } from 'react-redux';
+import { getDiscussionsList } from '../../actions/Discussions.actions'
 
 class Discussions extends Component {
+
+    componentDidMount = () => {
+        this.props.getDiscussionsList('')
+    }
 
     render() {
 
@@ -16,50 +22,61 @@ class Discussions extends Component {
 
                 <div className="container">
                     <Row>
-                        <Col s={3} style={{ paddingRight: "15px" }}>
+                        <Col s={2} >
+                            <div style={{ marginTop: '7.5px' }}>
+                                <a class="btn"
+                                    onClick={() => history.push('/discussions/new')}
+                                >New discussion</a>
+                            </div>
+
                             <Row />
-                            <a class="btn"
-                                onClick={() => history.push('/discussions/new')}
-                            >New discussion</a>
                             <Row />
-                            <Row />
-                            <Row> <Col>Tags</Col></Row>
+                            <Row><div style={{ paddingLeft: "11.25px" }}><a
+                                onClick={() => this.props.getDiscussionsList('')}
+                            >All discussions</a> </div> </Row>
+                            <Row> <div style={{ paddingLeft: "11.25px" }}>Categories</div></Row>
                             <Row>
 
-                                <Col><span class="new badge tag-menu" data-badge-caption="General Discussion"></span>       </Col>
-                                <Col><span class="new badge tag-menu" data-badge-caption="Stocks / Bonds"></span>       </Col>
-                                <Col><span class="new badge tag-menu" data-badge-caption="Investment Ideas"></span></Col>
-                                <Col><span class="new badge tag-menu" data-badge-caption="Cryptocurrencies"></span>       </Col>
-
-
-
-                                <Col><span class="new badge tag-menu" data-badge-caption="Commodities"></span>       </Col>
-
-                                <Col><span class="new badge tag-menu" data-badge-caption="Short / CFDs"></span>       </Col>
+                                <Col s={12}><span class="new badge tag-menu left"
+                                    onClick={() => this.props.getDiscussionsList(0)} data-badge-caption="General Discussion"></span>       </Col>
+                                <Col s={12}><span class="new badge tag-menu  left"
+                                    onClick={() => this.props.getDiscussionsList(1)} data-badge-caption="Stocks / Bonds"></span>       </Col>
+                                <Col s={12}><span class="new badge tag-menu left"
+                                    onClick={() => this.props.getDiscussionsList(2)} data-badge-caption="Investment Ideas"></span></Col>
+                                <Col s={12}><span class="new badge tag-menu left"
+                                    onClick={() => this.props.getDiscussionsList(3)} data-badge-caption="Cryptocurrencies"></span>       </Col>
+                                <Col s={12}><span class="new badge tag-menu left"
+                                    onClick={() => this.props.getDiscussionsList(4)} data-badge-caption="Commodities"></span>       </Col>
+                                <Col s={12}><span class="new badge tag-menu left"
+                                    onClick={() => this.props.getDiscussionsList(5)} data-badge-caption="Short / CFDs"></span>       </Col>
                             </Row>
 
 
                         </Col>
                         <Col s={9}>
                             <ul class="collection">
-                                <li class="collection-item avatar">
-                                    <img src="images/yuna.jpg" alt="" class="circle" />
-                                    <span class="title">Title</span>
-                                    <p>First Line <br />
-                                        Second Line
-                                    </p>
+                                {!!this.props.list ? this.props.list.map(el => {
 
-                                    <a href="#!" class="secondary-content">
+                                    return (
+                                        <li class="collection-item avatar">
+                                            <img src="images/yuna.jpg" alt="" class="circle" />
+                                            <span class="title">{el.topic}</span>
+                                            <p> </p>
 
-                                        <Row>
-                                            <Col> <span class="new badge" data-badge-caption="Investment"></span>
-                                            </Col>
-                                            <Col><Badge> <Icon tiny >chat_bubble_outline</Icon>4</Badge>
-                                            </Col>
-                                        </Row>
+                                            <a href="#!" class="secondary-content">
 
-                                    </a>
-                                </li>
+                                                <Row>
+                                                    <Col> <span class="new badge" data-badge-caption="Investment"></span>
+                                                    </Col>
+                                                    <Col><Badge> <Icon tiny >chat_bubble_outline</Icon>4</Badge>
+                                                    </Col>
+                                                </Row>
+
+                                            </a>
+                                        </li>
+                                    )
+                                }) : ''}
+
 
                             </ul>
                         </Col>
@@ -73,4 +90,17 @@ class Discussions extends Component {
     }
 }
 
-export default Discussions
+function mapStateToProps(state) {
+    console.log(state.discussion)
+    return {
+        ...state.discussion,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getDiscussionsList: (...args) => dispatch(getDiscussionsList(...args)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Discussions);

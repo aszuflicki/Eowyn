@@ -105,12 +105,30 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			Promise
 				.all([
-					discussion.create({category, topic, desc, author: email, created: new Date()}),
+					discussion.create({ category, topic, desc, author: email, created: new Date(), answeared: new Date() }),
 				])
 				.then(results => resolve(results[0].dataValues))
 		})
 	}
-	
+
+	const getDisscusions = (category) => {
+		return new Promise((resolve, reject) => {
+			let params = {
+				limit: 20,
+				order: [['answeared', 'DESC']]
+			}
+			if (category) params['where'] = { category }
+
+			Promise
+				.all([
+					discussion.findAll(params),
+				])
+				.then(results => {
+					resolve(results[0].map(el => el.dataValues))
+				})
+		})
+	}
+
 	const newPost = (author, topic_id, text) => {
 		return new Promise((resolve, reject) => {
 			Promise
@@ -136,7 +154,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			Promise
 				.all([
-					follower.destroy({ where: { email, topic_id }}),
+					follower.destroy({ where: { email, topic_id } }),
 				])
 				.then(results => resolve(results))
 		})
@@ -150,7 +168,8 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		createStandardDashboard,
 		getLayoutByEmail,
 		getSettingsByEmail,
-		newDisscusion
+		newDisscusion,
+		getDisscusions
 	}
 }
 
@@ -182,7 +201,7 @@ const connect = sequelize => {
 		}
 		initModels(sequelize).then(
 			([user, settings, layout, discussion, post, follower]) => {
-				resolve(repository({ user, settings, layout, discussion, post, follower}))
+				resolve(repository({ user, settings, layout, discussion, post, follower }))
 			}
 		).catch(e => reject(e))
 	})
