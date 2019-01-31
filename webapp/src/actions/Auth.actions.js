@@ -1,7 +1,7 @@
 import axios from 'axios'
 import jwt from 'jsonwebtoken'
 import history from '../routers/history'
-
+import { toast } from "react-toastify";
 const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
 
@@ -18,7 +18,6 @@ export const register = (email, password) => {
             .then(res => {
                 console.log(res)
                 if (res.status === 201) {
-                    dispatch(cleanedAlerts())
                     dispatch(registrationSuccess({ success_msg: 'Successfuly registrated', isRegistered: true }))
                 } else {
                     dispatch(registrationFailed({ error_msg: res.data.msg, isRegistered: false }))
@@ -40,7 +39,6 @@ export function registrationFailed(data) {
 
 export const REGISTRATION_SUCCESS = 'REGISTRATION_SUCCESS';
 export function registrationSuccess(data) {
-    console.log('xdd')
     return {
         type: REGISTRATION_SUCCESS,
         payload: data
@@ -60,7 +58,8 @@ export const login = (email, password) => {
             .then(res => {
                 if (res.status === 200) {
                     preserveToken(res.data.token)
-                    dispatch(loginSuccess({ success_msg: 'Successfuly logged in', token: res.data.token }))
+                    toast.success("Logged in successfully");
+                    dispatch(loginSuccess({ token: res.data.token }))
                 } else {
                     dispatch(loginFailed({ error_msg: res.data.msg }))
                 }
@@ -83,7 +82,7 @@ export const checkIfLoggedIn = () => {
                     clearLocalStorage()
 
                 } else {
-                    dispatch(loginSuccess({token}))
+                    dispatch(loginSuccess({ token }))
                 }
             });
         }
@@ -100,6 +99,7 @@ export function loginFailed(data) {
 
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export function loginSuccess(data) {
+
     data = { email: jwt.decode(data.token).email, ...data }
     return {
         type: LOGIN_SUCCESS,
@@ -110,8 +110,8 @@ export function loginSuccess(data) {
 export const logout = () => {
     clearLocalStorage()
     history.push('/');
-    return dispatch =>
-        dispatch(logoutSuccess({ success_msg: 'Successfuly logged out' }))
+    toast.info("Logged out successfully");
+    return dispatch => dispatch(logoutSuccess({}))
 
 }
 

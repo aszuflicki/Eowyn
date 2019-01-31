@@ -47,7 +47,6 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-        <Navbar />
         <DashboardTabNav />
         {this.props.isAddModal ?
           <AddWidgetModal

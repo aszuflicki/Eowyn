@@ -1,5 +1,5 @@
 import {
-    GET_DISCUSSION_SUCCESS, GET_DISCUSSIONS_LIST_SUCCESS
+    GET_DISCUSSION_SUCCESS, GET_DISCUSSIONS_LIST_SUCCESS, ADD_NEW_DISCUSSION_SUCCESS, NEW_POST_SUCCESS
 } from '../actions/Discussions.actions'
 
 const dashboardReducerDefaultState = {
@@ -14,6 +14,13 @@ export default (state = dashboardReducerDefaultState, action) => {
 
         case GET_DISCUSSIONS_LIST_SUCCESS:
             return { ...state, list: action.payload }
+
+        case ADD_NEW_DISCUSSION_SUCCESS:
+            return { ...state, ...action.payload }
+
+        case NEW_POST_SUCCESS:
+            console.log(action.payload.data)
+            return { ...state, }
 
         // case CLEAN_ALERTS:
         //     return { ...state, success_msgs: [], error_msgs: [] }

@@ -129,14 +129,35 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		})
 	}
 
-	const newPost = (author, topic_id, text) => {
+	const getDisscusion = (id) => {
+		return new Promise((resolve, reject) => {
+
+			Promise
+				.all([
+					discussion.findOne({ where: { id } }),
+					post.findAll({ where: { topic_id: id }, order: [['created', 'DESC']], limit: 20 }),
+				])
+				.then(results => {
+					console.log(results)
+					resolve({
+						discussion: results[0].dataValues,
+						posts: results[1].map(el => el.dataValues) || []
+					})
+				})
+		})
+	}
+
+	const newPost = (author, topic_id, comment) => {
 		return new Promise((resolve, reject) => {
 			Promise
 				.all([
-					post.insert({ author, topic_id, text, created: new Date() }),
-					follower.insert({ email: author, topic_id }),
+					post.create({ author, topic_id, comment, created: new Date() }),
+					follower.create({ email: author, topic_id }),
 				])
-				.then(results => resolve(results))
+				.then(results => resolve({
+					discussion: results[0].dataValues,
+					posts: results[1].dataValues || []
+				}))
 		})
 	}
 
@@ -169,7 +190,11 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		getLayoutByEmail,
 		getSettingsByEmail,
 		newDisscusion,
-		getDisscusions
+		getDisscusions,
+		getDisscusion,
+		newPost,
+		follow,
+		unfollow
 	}
 }
 

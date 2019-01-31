@@ -6,8 +6,6 @@ const { strategy, signUp, logIn, ensureAuthenticated } = require("./../middlewar
 module.exports = (app, options) => {
     const { repo } = options
 
-    // passport.use(strategy(repo));
-
     app.post("/login", (req, res) => {
         let { email, password } = req.body;
 
@@ -60,7 +58,7 @@ module.exports = (app, options) => {
     app.post('/discussions', ensureAuthenticated, (req, res) => {
         let { email } = req.locals;
         let { category, topic, desc, tags } = req.body;
-        console.log(email, category, topic, desc, tags )
+        console.log(email, category, topic, desc, tags)
         repo.newDisscusion(email, category, topic, desc, tags)
             .then((results => {
                 console.log(results)
@@ -68,7 +66,7 @@ module.exports = (app, options) => {
             }))
     })
 
-    app.get('/discussions/', ensureAuthenticated, (req, res) => {
+    app.get('/discussions/', (req, res) => {
         repo.getDisscusions()
             .then((results => {
                 console.log(results)
@@ -76,7 +74,7 @@ module.exports = (app, options) => {
             }))
     })
 
-    app.get('/discussions/:id', ensureAuthenticated, (req, res) => {
+    app.get('/discussions/:id', (req, res) => {
         let { id } = req.params;
         repo.getDisscusions(id)
             .then((results => {
@@ -85,11 +83,19 @@ module.exports = (app, options) => {
             }))
     })
 
-    app.post('/discussions', ensureAuthenticated, (req, res) => {
+    app.get('/discussion/:id', (req, res) => {
+        let { id } = req.params;
+        repo.getDisscusion(id)
+            .then((results => {
+                console.log(results)
+                res.json(results)
+            }))
+    })
+
+    app.post('/discussion', ensureAuthenticated, (req, res) => {
         let { email } = req.locals;
-        let { category, topic, desc, tags } = req.body;
-        console.log(email, category, topic, desc, tags )
-        repo.newDisscusion(email, category, topic, desc, tags)
+        let { topic_id, text } = req.body;
+        repo.newPost(email, topic_id, text)
             .then((results => {
                 console.log(results)
                 res.json(results)

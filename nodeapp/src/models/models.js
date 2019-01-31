@@ -59,9 +59,10 @@ const Post = (sequelize, types) =>
 			primaryKey: true,
 			autoIncrement: true
 		},
-		topic_id: types.STRING(255),
-		text: types.STRING(511),
-		author: types.STRING(511),
+		topic_id: types.INTEGER,
+		
+		author: types.STRING(32),
+		comment: types.STRING(255),
 		created: types.DATE,
 	})
 

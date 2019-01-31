@@ -9,3 +9,17 @@
 .css-1aya2g8 * {
     border: none;
 }
+
+.replay.error {
+    transform:  translate(0, -20px)
+}
+
+.space {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+.add-discussion-label {
+    position: absolute;
+    bottom: 0px;
+    color: red;
+}

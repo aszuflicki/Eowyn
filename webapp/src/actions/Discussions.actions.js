@@ -31,7 +31,7 @@ export const getDisscussion = (id) => {
     return dispatch => {
         instance.get(`/discussion/${id}`, { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
-                dispatch(getDisscussionSuccess(res))
+                dispatch(getDisscussionSuccess(res.data))
             })
             .catch(err => { })
     }
@@ -41,10 +41,9 @@ export const GET_DISCUSSION_SUCCESS = 'GET_DISCUSSION_SUCCESS';
 function getDisscussionSuccess(data) {
     return {
         type: ADD_NEW_DISCUSSION_SUCCESS,
-        payload: { data }
+        payload: data
     };
 }
-
 
 export const getDiscussionsList = (cat) => {
     return dispatch => {
@@ -60,6 +59,24 @@ export const GET_DISCUSSIONS_LIST_SUCCESS = 'GET_DISCUSSIONS_LIST_SUCCESS';
 function getDiscussionsListSuccess(data) {
     return {
         type: GET_DISCUSSIONS_LIST_SUCCESS,
-        payload:  data 
+        payload: data
+    };
+}
+
+export const newPost = (text, topic_id) => {
+    return dispatch => {
+        instance.post(`/discussion/`, { text, topic_id }, { headers: { "authorization": localStorage.getItem('token') } })
+            .then(res => {
+                dispatch(newPostSuccess(res.data))
+            })
+            .catch(err => { })
+    }
+}
+
+export const NEW_POST_SUCCESS = 'NEW_POST_SUCCESS';
+function newPostSuccess(data) {
+    return {
+        type: GET_DISCUSSIONS_LIST_SUCCESS,
+        payload: data
     };
 }

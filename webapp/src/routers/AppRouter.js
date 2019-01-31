@@ -1,5 +1,6 @@
 import React from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
+import Navbar from './../components/Navbar.component'
 import PublicRoute from './PublicRoute';
 import PrivateRoute from './PrivateRoute';
 import history from './history';
@@ -11,23 +12,28 @@ import ProfilePage from '../components/ProfilePage.component'
 import Discussion from '../components/Discussions/Discussion.component'
 import Discussions from '../components/Discussions/Discussions.component'
 import NewDiscussion from '../components/Discussions/NewDiscussion.component'
+import { ToastContainer } from 'react-toastify'
+import "react-toastify/dist/ReactToastify.css";
 
 const AppRouter = () => (
     <React.Fragment>
+        <Navbar />
+
         <Router history={history}>
             <Switch>
                 <Route path="/" exact={true} component={LandingPage} />
                 <PublicRoute path="/register" exact={true} component={RegisterPage} />
-                <PublicRoute path="/login" exact={true} component={LoginPage} /> 
+                <PublicRoute path="/login" exact={true} component={LoginPage} />
                 <Route path="/discussions" exact={true} component={Discussions} />
                 <Route path="/discussions/new" exact={true} component={NewDiscussion} />
-                <Route path="/discussions/:topic" component={Discussion} />
-                <PrivateRoute path="/profile" component={ProfilePage} />
+                <Route path="/discussion/:topic" component={Discussion} />
+                <Route path="/profile" component={ProfilePage} />
                 <Route path="/dashboard/:tab" component={Dashboard} />
                 <PrivateRoute path="/dashboard" component={Dashboard} />
 
             </Switch>
         </Router>
+        <ToastContainer autoClose={2000} />
     </React.Fragment>
 );
 

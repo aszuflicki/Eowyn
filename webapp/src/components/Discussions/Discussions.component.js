@@ -4,6 +4,7 @@ import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab, 
 import history from '../../routers/history';
 import { connect } from 'react-redux';
 import { getDiscussionsList } from '../../actions/Discussions.actions'
+import Badges from './Fragments/Badges.component'
 
 class Discussions extends Component {
 
@@ -15,15 +16,13 @@ class Discussions extends Component {
 
         return (
             <Fragment>
-                <Navbar />
-
                 <Row />
                 <Row />
 
                 <div className="container">
                     <Row>
                         <Col s={2} >
-                            <div style={{ marginTop: '7.5px' }}>
+                            <div style={{ marginTop: '7.5px', marginRight: "25px" }}>
                                 <a class="btn"
                                     onClick={() => history.push('/discussions/new')}
                                 >New discussion</a>
@@ -53,12 +52,14 @@ class Discussions extends Component {
 
 
                         </Col>
-                        <Col s={9}>
+                        <Col />
+                        <Col s={8}>
                             <ul class="collection">
                                 {!!this.props.list ? this.props.list.map(el => {
 
                                     return (
-                                        <li class="collection-item avatar">
+                                        <li class="collection-item avatar"
+                                            onClick={() => history.push(`/discussion/${el.id}`)}>
                                             <img src="images/yuna.jpg" alt="" class="circle" />
                                             <span class="title">{el.topic}</span>
                                             <p> </p>
@@ -66,7 +67,7 @@ class Discussions extends Component {
                                             <a href="#!" class="secondary-content">
 
                                                 <Row>
-                                                    <Col> <span class="new badge" data-badge-caption="Investment"></span>
+                                                    <Col> <Badges badge={el.category} />
                                                     </Col>
                                                     <Col><Badge> <Icon tiny >chat_bubble_outline</Icon>4</Badge>
                                                     </Col>
