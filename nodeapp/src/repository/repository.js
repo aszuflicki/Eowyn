@@ -2,7 +2,7 @@
 const models = require('../models/models')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
-
+const { notifyNewPost } = require('../api/socket')
 
 
 const repository = ({ user, settings, layout, discussion, post, follower }) => {
@@ -138,7 +138,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 					post.findAll({ where: { topic_id: id }, order: [['created', 'DESC']], limit: 20 }),
 				])
 				.then(results => {
-					console.log(results)
+					// console.log(results)
 					resolve({
 						discussion: results[0].dataValues,
 						posts: results[1].map(el => el.dataValues) || []
@@ -152,12 +152,26 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 			Promise
 				.all([
 					post.create({ author, topic_id, comment, created: new Date() }),
-					follower.create({ email: author, topic_id }),
+					// follower.create({ email: author, topic_id }),
 				])
-				.then(results => resolve({
-					discussion: results[0].dataValues,
-					posts: results[1].dataValues || []
-				}))
+				.then(results => {
+					notifyNewPost(results[0].dataValues)
+
+					resolve({
+						post: results[0].dataValues,
+					})
+				})
+		})
+	}
+
+	const getFollows = (email) => {
+		return new Promise((resolve, reject) => {
+			follower.findAll({
+				where: {
+					email
+				}
+			})
+				.then(results => resolve(results.map(el => el.topic_id)))
 		})
 	}
 
@@ -165,7 +179,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			Promise
 				.all([
-					follower.insert({ email, topic_id }),
+					follower.create({ email, topic_id }),
 				])
 				.then(results => resolve(results))
 		})
@@ -175,9 +189,20 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			Promise
 				.all([
-					follower.destroy({ where: { email, topic_id } }),
+					follower.destroy({ where: { email, topic_id: topic_id + "" } }),
 				])
 				.then(results => resolve(results))
+		})
+	}
+
+	const getAllFollowers = (topic_id) => {
+		return new Promise((resolve, reject) => {
+			follower.findAll({
+				where: {
+					topic_id: topic_id+""
+				}
+			})
+				.then(results => resolve(results.map(el => el.email)))
 		})
 	}
 
@@ -194,7 +219,9 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		getDisscusion,
 		newPost,
 		follow,
-		unfollow
+		unfollow,
+		getFollows,
+		getAllFollowers
 	}
 }
 

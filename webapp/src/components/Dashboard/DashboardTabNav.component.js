@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import {setTabActive } from './../../actions/Dashboard.actions'
+import { setTabActive } from './../../actions/Dashboard.actions'
 import { connect } from 'react-redux';
 
 export class DashboardTabNav extends Component {
@@ -20,6 +20,13 @@ export class DashboardTabNav extends Component {
                   >{tab.name}</a>
                 </li>
               ))}
+              <li className="tab"
+                onClick={() => { }}
+                key={'DashboardTabNav-add'}>
+                <a className={``} style={{ paddingLeft: "0", fontSize: "20px" }}
+                >+</a>
+              </li>
+
             </ul>
           </div>
         </nav>

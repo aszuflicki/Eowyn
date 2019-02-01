@@ -1,12 +1,30 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { logout, checkIfLoggedIn } from './../actions/Auth.actions'
+import { justNotifyNewPost } from '../actions/Discussions.actions'
 import { NavItem, Navbar, Icon, Button } from 'react-materialize'
+import { ToastContainer } from 'react-toastify'
 import history from '../routers/history'
+const io = require('socket.io-client')
 
 class NavigationBar extends Component {
-  componentDidMount = () => {
+  componentWillMount = () => {
     this.props.checkIfLoggedIn()
+    const id = window.location.href.split('/')[4]
+
+
+
+  }
+
+  componentDidUpdate = () => {
+    console.log(`http://localhost:8081/discussions/${this.props.email}`)
+    const socket = io(`http://localhost:8081/following/${this.props.email.replace('@', '&')}`)
+      .on('new_post', (post, discussion) => {
+        console.log(post)
+        if (post.author != this.props.email && window.location.href.split('/')[3] != 'discussion') {
+          this.props.justNotifyNewPost(post, discussion)
+        }
+      })
   }
 
 
@@ -16,7 +34,7 @@ class NavigationBar extends Component {
     return (
       <Fragment>
         <Navbar brand='Eowyn' className="center  indigo darken-4">
-          <NavItem onClick={() => history.push('/dashboard')}>Dashboard</NavItem>
+          <NavItem onClick={() => history.push('/dashboard')}>Dashboard </NavItem>
           <NavItem onClick={() => history.push('/discussions')}>#Discussions</NavItem>
           <ul className="right">
             <NavItem href='/profile'>{this.props.email}</NavItem>
@@ -30,6 +48,7 @@ class NavigationBar extends Component {
 
           </ul>
         </Navbar>
+        <ToastContainer autoClose={5000} />
       </Fragment>
     );
   }
@@ -45,7 +64,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
-    checkIfLoggedIn: () => dispatch(checkIfLoggedIn())
+    checkIfLoggedIn: () => dispatch(checkIfLoggedIn()),
+    justNotifyNewPost: (...args) => dispatch(justNotifyNewPost(...args))
   };
 };
 

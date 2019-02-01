@@ -34,7 +34,6 @@ class RegisterPage extends Component {
         const { error_msgs, success_msgs } = this.props;
         return (
             <Fragment>
-                <Navbar />
                 <div className="container">
                     <Row>
                         <Col s={3} />

@@ -9,7 +9,7 @@ const dashboardReducerDefaultState = {
     tabActive: 0,
     isEditMode: false,
     isEditModal: false,
-    isAddModal: true,
+    isAddModal: false,
 };
 
 export default (state = dashboardReducerDefaultState, action) => {

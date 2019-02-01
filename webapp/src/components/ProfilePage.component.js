@@ -7,7 +7,6 @@ class ProfilePage extends Component {
 
         return (
             <Fragment>
-                <Navbar />
                 ProfilePage
             </Fragment>
         )

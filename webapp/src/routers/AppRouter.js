@@ -12,7 +12,6 @@ import ProfilePage from '../components/ProfilePage.component'
 import Discussion from '../components/Discussions/Discussion.component'
 import Discussions from '../components/Discussions/Discussions.component'
 import NewDiscussion from '../components/Discussions/NewDiscussion.component'
-import { ToastContainer } from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
 
 const AppRouter = () => (
@@ -33,7 +32,7 @@ const AppRouter = () => (
 
             </Switch>
         </Router>
-        <ToastContainer autoClose={2000} />
+        
     </React.Fragment>
 );
 

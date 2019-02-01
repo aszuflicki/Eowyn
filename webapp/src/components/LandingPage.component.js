@@ -9,8 +9,6 @@ import history from '../routers/history'
 
         return (
             <Fragment>
-                <Navbar />
-
                 <div className="container">
                 <Row />
                 <Row>

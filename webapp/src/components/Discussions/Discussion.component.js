@@ -4,13 +4,25 @@ import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab, 
 import history from '../../routers/history';
 import { connect } from 'react-redux';
 import Badges from './Fragments/Badges.component'
-import { getDisscussion, newPost } from '../../actions/Discussions.actions'
+import Follow from './Fragments/Follow.component'
+import { getDisscussion, newPost, getFollows, notifyNewPost } from '../../actions/Discussions.actions'
 import ta from 'time-ago'
+const io = require('socket.io-client')
 
 class Discussion extends Component {
 
     componentWillMount = () => {
         this.setState({ err: '', input: '' })
+        this.props.getFollows()
+        const id = window.location.href.split('/')[4]
+        const socket = io(`http://localhost:8081/discussion/${id}`)
+            .on('new_post', (post) => {
+                console.log(post)
+                if (post.author != this.props.email) {
+                    this.props.notifyNewPost( post, this.props.discussion)
+                }
+            })
+
     }
 
 
@@ -33,7 +45,7 @@ class Discussion extends Component {
     render() {
         if (!this.props.discussion) return (<div></div>)
         console.log(this.props)
-        const { topic, category, author, desc } = this.props.discussion
+        const { topic, category, author, desc, id } = this.props.discussion
 
         return (
             <Fragment>
@@ -44,17 +56,20 @@ class Discussion extends Component {
                         <CardPanel className="teal lighten-4 black-text">
                             <Row>
                                 <div className="container avatar">
-
                                     <Col s={1}>
-                                        <img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" class="circle" style={{ width: "42px", marginTop: "35px" }} />
+                                        <img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" className="circle" style={{ width: "42px", marginTop: "35px" }} />
                                     </Col>
-                                    <Col s={10}>
+                                    <Col s={11}>
                                         <Row>
-                                            <Col s={5} />
-                                            <Col>
-                                                <Badges s={2} badge={0} />
+                                            <Col s={4} />
+                                            <Col s={3}>
+                                                <Badges badge={0} />
                                             </Col>
-                                            <Col s={5} />
+                                            <Col s={3} />
+                                            <Col>
+                                                {/* <a className="waves-effect waves-light btn-small" right><i className="material-icons right">star_border</i>Follow</a> */}
+                                                <Follow topic_id={id} />
+                                            </Col>
                                         </Row>
                                         <h5>{topic}</h5>
                                         <span>{desc}</span>
@@ -75,7 +90,7 @@ class Discussion extends Component {
                                 <Input s={10} label="Comment" validate
                                     value={this.state.input}
                                     onChange={(...args) => this.setState({ input: args[1] })}
-                                ><Icon><img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" class="circle" style={{ width: "32px", marginTop: "0px" }} /></Icon></Input>
+                                ><Icon><img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" className="circle" style={{ width: "32px", marginTop: "0px" }} /></Icon></Input>
 
                                 <Col>
                                     <Button s={2} style={{ marginTop: "25px" }}
@@ -90,19 +105,19 @@ class Discussion extends Component {
                             <Row>
                                 <Col s={8}><span>No comments. Be first to comment</span></Col>
                             </Row>
-                        ) : (<ul class="collection">
+                        ) : (<ul className="collection">
                             {this.props.posts.map(post => (
-                                <li class="collection-item avatar">
-                                    <img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" class="circle" />
+                                <li className="collection-item avatar">
+                                    <img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" className="circle" />
                                     <p><b>{post.author}</b>
-                                    
-                                     <label>&nbsp; {ta.ago(post.updatedAt +'')}</label>
-                                      <br />
+
+                                        <label>&nbsp; {ta.ago(post.updatedAt + '')}</label>
+                                        <br />
                                         {post.comment}
                                     </p>
-                                    <a href="#!" class="secondary-content">
+                                    <a href="#!" className="secondary-content">
                                         {/* <Row>
-                                            <Col> <span class="new badge" data-badge-caption="Investment"></span>
+                                            <Col> <span className="new badge" data-badge-caption="Investment"></span>
                                             </Col>
                                         </Row> */}
 
@@ -125,16 +140,19 @@ class Discussion extends Component {
 }
 
 function mapStateToProps(state) {
-    console.log(state.discussion)
+    console.log(state)
     return {
         ...state.discussion,
+        email: state.auth.email || ''
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         getDisscussion: (...args) => dispatch(getDisscussion(...args)),
-        newPost: (...args) => dispatch(newPost(...args))
+        newPost: (...args) => dispatch(newPost(...args)),
+        getFollows: (...args) => dispatch(getFollows(...args)),
+        notifyNewPost: (...args) => dispatch(notifyNewPost(...args))
     };
 };
 

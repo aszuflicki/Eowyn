@@ -41,7 +41,6 @@ class LoginPage extends Component {
 
         return (
             <Fragment>
-                <Navbar />
                 <div className="container">
                     <Row>
                         <Col s={3} />

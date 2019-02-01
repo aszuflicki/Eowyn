@@ -61,7 +61,6 @@ module.exports = (app, options) => {
         console.log(email, category, topic, desc, tags)
         repo.newDisscusion(email, category, topic, desc, tags)
             .then((results => {
-                console.log(results)
                 res.json(results)
             }))
     })
@@ -69,7 +68,6 @@ module.exports = (app, options) => {
     app.get('/discussions/', (req, res) => {
         repo.getDisscusions()
             .then((results => {
-                console.log(results)
                 res.json(results)
             }))
     })
@@ -78,7 +76,6 @@ module.exports = (app, options) => {
         let { id } = req.params;
         repo.getDisscusions(id)
             .then((results => {
-                console.log(results)
                 res.json(results)
             }))
     })
@@ -87,7 +84,6 @@ module.exports = (app, options) => {
         let { id } = req.params;
         repo.getDisscusion(id)
             .then((results => {
-                console.log(results)
                 res.json(results)
             }))
     })
@@ -101,4 +97,38 @@ module.exports = (app, options) => {
                 res.json(results)
             }))
     })
+
+    app.get('/follows', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals
+
+        repo.getFollows(email)
+            .then(results => {
+                console.log(results)
+                res.json(results)
+            })
+    })
+
+    app.post('/follow', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals
+        let { topic_id } = req.body;
+
+        repo.follow(email, topic_id)
+        .then(results => {
+            console.log(results)
+            res.json(results)
+        })
+    })
+
+    app.post('/unfollow', ensureAuthenticated, (req, res) => {
+        let { email } = req.locals
+        let { topic_id } = req.body;
+
+        repo.unfollow(email, topic_id)
+        .then(results => {
+            console.log(results)
+            res.json(results)
+        })
+    })
+
+
 }
