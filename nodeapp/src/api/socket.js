@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 let io, repo
 module.exports = (http, rep) => {
     io = require('socket.io')(http);
@@ -11,7 +13,7 @@ module.exports = (http, rep) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    options.repo.updateLayout(decoded.email, layout)
+                    repo.updateLayout(decoded.email, layout)
                 }
             });
         });
@@ -23,7 +25,7 @@ module.exports = (http, rep) => {
                 if (err) {
                     console.log(err)
                 } else {
-                    options.repo.updateSettings(decoded.email, settings)
+                    repo.updateSettings(decoded.email, settings)
                 }
             });
         });

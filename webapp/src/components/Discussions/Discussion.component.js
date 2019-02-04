@@ -19,7 +19,7 @@ class Discussion extends Component {
             .on('new_post', (post) => {
                 console.log(post)
                 if (post.author != this.props.email) {
-                    this.props.notifyNewPost( post, this.props.discussion)
+                    this.props.notifyNewPost(post, this.props.discussion)
                 }
             })
 
@@ -57,7 +57,7 @@ class Discussion extends Component {
                             <Row>
                                 <div className="container avatar">
                                     <Col s={1}>
-                                        <img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" className="circle" style={{ width: "42px", marginTop: "35px" }} />
+                                        <img src="http://localhost:8081/profile/pic/xd" alt="" className="circle" style={{ width: "42px", marginTop: "35px" }} />
                                     </Col>
                                     <Col s={11}>
                                         <Row>
@@ -90,7 +90,7 @@ class Discussion extends Component {
                                 <Input s={10} label="Comment" validate
                                     value={this.state.input}
                                     onChange={(...args) => this.setState({ input: args[1] })}
-                                ><Icon><img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" className="circle" style={{ width: "32px", marginTop: "0px" }} /></Icon></Input>
+                                ><Icon><img src="http://localhost:8081/profile/pic/xd" alt="" className="circle" style={{ width: "32px", marginTop: "0px" }} /></Icon></Input>
 
                                 <Col>
                                     <Button s={2} style={{ marginTop: "25px" }}

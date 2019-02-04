@@ -2,6 +2,8 @@
 const status = require('http-status')
 const passport = require("passport");
 const { strategy, signUp, logIn, ensureAuthenticated } = require("./../middleware/passport")
+const upload = require('../middleware/multer')
+const path = require('path')
 
 module.exports = (app, options) => {
     const { repo } = options
@@ -113,10 +115,10 @@ module.exports = (app, options) => {
         let { topic_id } = req.body;
 
         repo.follow(email, topic_id)
-        .then(results => {
-            console.log(results)
-            res.json(results)
-        })
+            .then(results => {
+                console.log(results)
+                res.json(results)
+            })
     })
 
     app.post('/unfollow', ensureAuthenticated, (req, res) => {
@@ -124,10 +126,36 @@ module.exports = (app, options) => {
         let { topic_id } = req.body;
 
         repo.unfollow(email, topic_id)
-        .then(results => {
-            console.log(results)
-            res.json(results)
-        })
+            .then(results => {
+                console.log(results)
+                res.json(results)
+            })
+    })
+
+    app.post('/upload', (req, res) => {
+        upload(req, res, (err) => {
+            if (err) {
+                res.json({
+                    msg_err: err
+                });
+            } else {
+                if (req.file == undefined) {
+                    res.json({
+                        err: 'No File Selected!'
+                    });
+                } else {
+                    res.json({
+                        msg: 'File Uploaded!',
+                        file: `uploads/${req.file.filename}`
+                    });
+                }
+            }
+        });
+    });
+
+    app.get('/profile/pic/:email', (req, res) => {
+        console.log(__dirname)
+        res.sendFile(path.resolve(__dirname + '../../../public/uploads/def.jpg'))
     })
 
 

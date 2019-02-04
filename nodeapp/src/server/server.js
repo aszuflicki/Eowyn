@@ -5,7 +5,6 @@ const api = require('../api/api')
 const socket = require('../api/socket')
 const cors = require('./../middleware/cors')
 const bodyParser = require('body-parser')
-const jwt = require('jsonwebtoken')
 
 const start = (options) => {
     return new Promise((resolve, reject) => {
@@ -25,7 +24,7 @@ const start = (options) => {
         })
 
         app.use(bodyParser.json());
-
+        app.use(express.static('public'))
         cors(app, options)
         api(app, options)
 

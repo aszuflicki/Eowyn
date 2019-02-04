@@ -7,6 +7,8 @@ const User = (sequelize, types) =>
 			primaryKey: true,
 			autoIncrement: true
 		},
+		username: types.STRING(32),
+		profile_pic: types.STRING(32),
 		email: types.STRING(32),
 		pass: types.STRING(127)
 	})

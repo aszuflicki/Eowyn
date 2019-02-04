@@ -37,7 +37,9 @@ class NavigationBar extends Component {
           <NavItem onClick={() => history.push('/dashboard')}>Dashboard </NavItem>
           <NavItem onClick={() => history.push('/discussions')}>#Discussions</NavItem>
           <ul className="right">
-            <NavItem href='/profile'>{this.props.email}</NavItem>
+            <NavItem href='/profile'>
+            <img src="http://localhost:8081/profile/pic/xd" alt="" className="circle" style={{ width: "32px", position: "absolute", top: "15px" }} />
+            <span style={{paddingLeft: "40px"}}>{this.props.email}</span></NavItem>
             {this.props.email ?
               <NavItem
                 onClick={() => this.props.logout()}

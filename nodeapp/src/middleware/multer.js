@@ -1,4 +1,5 @@
 const multer = require('multer');
+const path = require('path')
 
 const storage = multer.diskStorage({
     destination: './public/uploads/',
@@ -25,9 +26,9 @@ function checkFileType(file, cb) {
 
 module.exports = multer({
     storage: storage,
-    limits: { fileSize: 1000000 },
+    limits: { fileSize: 100000000 },
     fileFilter: function (req, file, cb) {
         checkFileType(file, cb);
     }
-}).single('myImage');
+}).single('file');
 

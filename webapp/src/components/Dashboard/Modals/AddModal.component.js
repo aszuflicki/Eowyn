@@ -6,8 +6,10 @@ import { faEnvelope, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Select from 'react-select';
 import { toggleAddModal } from "../../../actions/Dashboard.actions";
-import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab } from 'react-materialize'
+import { Input, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab } from 'react-materialize'
 import ChooseTypeButtons from './Fragments/ChooseTypeButtons'
+import { updateSettings, updateLayout } from '../../../actions/Dashboard.actions'
+import M from 'materialize-css';
 
 library.add(faEnvelope, faTimes);
 
@@ -41,6 +43,13 @@ class AddWidgetModal extends Component {
 
         })
     }
+    componentDidMount = () => {
+        setTimeout(() => {
+            const elems = document.querySelectorAll('.tabs');
+            let instances = M.Tabs.init(elems, {});
+        }, 100);
+    }
+
 
     renderSettingsForChartView() {
         return (
@@ -85,55 +94,7 @@ class AddWidgetModal extends Component {
     }
 
     renderNavItems() {
-        return (
-            <ul className="nav nav-tabs">
-                {this.state.tabs.map((tab, index) => {
-                    return (
-                        <li className="nav-item" key={index + 'nav-tabs'}>
-                            <a
-                                className={`nav-link ${this.state.tabActive == index ? 'active' : ''}`}
-                                onClick={() => this.setState({ tabActive: index })}
-                            >
-                                {tab.name}
-                                <span
-                                    className="fas fa-igloo"
-                                    style={{ fontSize: "12px", width: '7px', height: '10px' }}
-
-                                ></span>
-                                <FontAwesomeIcon
-                                    icon="times"
-                                    onClick={() => {
-                                        let { tabs, tabActive } = this.state
-                                        tabs = tabs.filter((el, i) => index !== i)
-                                        if (tabActive >= index) tabActive = tabActive - 1
-
-
-                                        this.setState({ tabs })
-                                        setTimeout(() => this.setState({ tabActive }), 50)
-                                    }}
-                                />
-                            </a>
-                        </li>
-                    )
-                })
-                }
-
-                <button
-                    type="button"
-                    className="btn btn-info"
-                    onClick={() => {
-                        const { tabs } = this.state
-                        this.setState({
-                            tabs: [...tabs, { name: 'New Tab', symbols: [] }],
-                            tabActive: tabs.length
-                        })
-                    }}
-                >
-                    +
-                </button>
-
-            </ul >
-        )
+        return;
     }
 
     handleClickTabAutoSuggest({ i, index }) {
@@ -153,99 +114,111 @@ class AddWidgetModal extends Component {
     }
 
     renderTabs() {
-        let { tabs } = this.state
+        let { tabs, tabActive } = this.state
+        console.log(tabs)
         return (
-            <div class="row mb-3">
-                <div class="col-6">
-                    <div className="tab-content" id="myTabContent">
-                        {this.state.tabs.map((tab, index) => {
-                            return (
-                                <div
-                                    className={`tab-pane fade show ${this.state.tabActive === index ? 'active' : ''}`}
-                                    key={'tab' + index}
-                                >
-                                    <div className="input-group mb-3 mt-3">
-                                        <div className="input-group-prepend">
-                                            <span className="input-group-text"> Tab Title </span>
-                                        </div>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            placeholder="Username"
-                                            value={tab.name}
-                                            onChange={(e) => {
-                                                tabs[index].name = e.target.value
-                                                this.setState({ tabs })
-                                            }}
-                                        />
-                                    </div>
-                                    {this.state.tabs[index].symbols.length > 0 ? this.state.tabs[index].symbols.map((el, i) => {
-
-                                        return (
-                                            <Fragment>
-                                                <div class="row mb-3">
-                                                    <div class="col-10">
-                                                        <Select
-                                                            options={symbols.map(el => ({
-                                                                value: el.symbol,
-                                                                label: (
-                                                                    <Fragment>
-                                                                        <b>{el.name}</b> {'\u00A0'}
-                                                                        {el.desc}
-                                                                        {'\u00A0'}
-                                                                        {'\u00A0'}
-                                                                        {'\u00A0'}
-                                                                        <i>{el.type}</i>
-                                                                    </Fragment>
-                                                                )
-                                                            }))}
-                                                            onChange={(e) => {
-                                                                tabs[index].symbols[i] = e
-                                                                this.setState({ tabs })
-                                                            }}
-                                                            value={this.state.tabs[index].symbols[i]}
-                                                        />
-                                                    </div>
-                                                    <div class="col-2">
-                                                        <button type="button" class="btn btn-primary btn-sm"
-                                                            onClick={() => {
-                                                                let { tabs } = this.state
-                                                                tabs[index].symbols = tabs[index].symbols.filter((el, filter_i) => i !== filter_i)
-                                                                this.setState({ tabs })
-                                                                console.log(this.state.tabs)
-                                                            }}
-                                                        >Remove</button>
-                                                    </div>
-
-                                                </div>
-                                            </Fragment>
-                                        )
-                                    }) :
-                                        <p>No symbols added for his tab</p>
-                                    }
-                                    <button type="button" className="btn btn-secondary"
+            <div style={{ position: "relative" }}>
+                <Button style={{ position: "absolute", right: "20px", zIndex: 10000, top: "5px" }}
+                    onClick={() => {
+                        tabs.push({ name: 'New tab', symbols: [] })
+                        this.setState({ tabs, tabActive: tabs.length - 1 })
+                        console.log('xD')
+                    }}
+                >Add tab</Button>
+                <Tabs className='tab-demo z-depth-1'>
+                    {this.state.tabs.map((tab, index) => {
+                        let tabName = tab.name + "";
+                        return (
+                            <Tab title={tab.name} active={index === tabActive} key={'tab' + index} onShow={(...args) => {
+                                this.setState({ tabActive: index })
+                                console.log(args)
+                            }}>
+                                <Row>
+                                    <Input placeholder="Tab name" s={6} label="Tab name"
+                                        defaultValue={tabName}
+                                        onChange={(...args) => {
+                                            tabs[index].name = args[1]
+                                            tabName = args[1]
+                                            console.log(tabName)
+                                        }} />
+                                    <Col s={3}>
+                                        <Button style={{ marginTop: "25px" }} onClick={() => this.setState({ tabs })}>Change</Button>
+                                    </Col>
+                                    {tabs.length > 1 ? 
+                                    <Col s={3} ><Button style={{ marginTop: "25px" }} className="red right"
                                         onClick={() => {
-                                            tabs[index].symbols.push({})
-                                            this.setState({ tabs })
+                                            tabs = tabs.filter((el, f_index) => index != f_index)
+                                            this.setState({ tabs, tabActive: 0 })
                                         }}
-                                    >
-                                        Add
+                                    >Remove tab</Button></Col> :''}
+
+                                </Row>
+                                {tabs[index].symbols.length > 0 ? tabs[index].symbols.map((el, i) => {
+
+                                    return (
+                                        <Row>
+                                            <Col s={8} >
+                                                <Select
+                                                    options={symbols.map(el => ({
+                                                        value: el.symbol,
+                                                        label: (
+                                                            <Fragment>
+                                                                <b>{el.name}</b> {'\u00A0'}
+                                                                {el.desc}
+                                                                {'\u00A0'}
+                                                                {'\u00A0'}
+                                                                {'\u00A0'}
+                                                                <i>{el.type}</i>
+                                                            </Fragment>
+                                                        )
+                                                    }))}
+                                                    onChange={(e) => {
+                                                        tabs[index].symbols[i] = e
+                                                        this.setState({ tabs })
+                                                    }}
+                                                    value={this.state.tabs[index].symbols[i]}
+                                                />
+                                            </Col>
+                                            <Col s={3} >
+                                                <div class="col-2">
+                                                    <button type="button" class="btn btn-primary btn-sm"
+                                                        onClick={() => {
+                                                            let { tabs } = this.state
+                                                            tabs[index].symbols = tabs[index].symbols.filter((el, filter_i) => i !== filter_i)
+                                                            this.setState({ tabs, tabActive: index })
+
+                                                        }}
+                                                    >Remove</button>
+                                                </div>
+
+                                            </Col>
+                                        </Row>
+                                    )
+                                }) :
+                                    <p>No symbols added for his tab</p>
+                                }
+                                <button type="button" className="btn btn-secondary"
+                                    onClick={() => {
+                                        tabs[index].symbols.push({})
+                                        this.setState({ tabs, tabActive: index })
+                                    }}
+                                >
+                                    Add
                                 </button>
-                                </div>
-                            )
-                        })}
-                    </div>
-                </div>
+                            </Tab>
+                        )
+                    })}
+                </Tabs>
             </div>
         )
     }
 
     renderSettingsForMarketOverview() {
         return (
-            <Fragment>
+            <div class="row">
                 {this.renderNavItems()}
                 {this.renderTabs()}
-            </Fragment>
+            </div>
         )
     }
 
@@ -352,13 +325,12 @@ class AddWidgetModal extends Component {
 
     addWidget(type, widgetSettings) {
         let { layout, settings, tabActive } = this.props
-        layout = layout[tabActive].layout
+        tabActive = Object.keys(layout)[tabActive]
+        let newLayout = layout[tabActive].layout
 
-        // let newId = Math.max(...this.props.layout[tabActive].layout.map(el => el.i)) + 1
         let newId = Math.max(0, ...Object.keys(settings)) + 1
 
-        console.log(layout)
-        layout = [
+        newLayout = [
             {
                 h: 10,
                 w: 6,
@@ -366,9 +338,10 @@ class AddWidgetModal extends Component {
                 x: 0,
                 y: 0
             },
-            ...layout.map(el => ({
+            ...newLayout.map(el => ({
                 ...el, y: el.y + 10
             })),]
+        layout[tabActive].layout = newLayout
 
         switch (type) {
             case 0:
@@ -380,16 +353,18 @@ class AddWidgetModal extends Component {
                         }
                     }
                 }
-                this.props.update(layout, settings)
+
+
                 return
             case 1:
                 settings[newId] = {
                     type: 1,
                     settings: widgetSettings
                 }
-                this.props.update(layout, settings)
 
-
+                this.props.updateSettings(settings)
+                this.props.updateLayout(layout)
+                this.props.toggleAddModal(false);
                 return
             case 2:
                 settings[newId] = {
@@ -397,8 +372,9 @@ class AddWidgetModal extends Component {
                     settings: widgetSettings
                 }
 
-                this.props.update(layout, settings)
-
+                this.props.updateSettings(settings)
+                this.props.updateLayout(layout)
+                this.props.toggleAddModal(false);
                 return
             case 3:
                 layout[0].h = 3
@@ -435,6 +411,7 @@ class AddWidgetModal extends Component {
                 return
         }
 
+
     }
 
     validate() {
@@ -445,7 +422,7 @@ class AddWidgetModal extends Component {
                         symbol: this.state.symbol
                     })
                 } else {
-                    this.setState({ err: 'Please fill input' })
+                    this.setState({ err: 'Please select symbol' })
                 }
                 return
 
@@ -518,6 +495,7 @@ class AddWidgetModal extends Component {
 
     render() {
         const { toggleAddModal } = this.props
+        console.log(this.props)
         return (
             <div style={{ position: "absolute", top: "112px", width: "100vw", zIndex: "1000", backgroundColor: "rgb(121,121,121,.7)", height: 'calc(100vh - 80px)' }}>
                 <Row style={{ position: "absolute", zIndex: "10000", width: "100vw" }}>
@@ -526,7 +504,7 @@ class AddWidgetModal extends Component {
                         <Card header={<CardTitle waves='light' />}
                             actions={[<div className="right-align">
                                 <a className="blue-text"
-                                    onClick={() => { }}
+                                    onClick={() => this.validate()}
                                 >Add</a>
                                 <a className="red-text"
                                     onClick={() => toggleAddModal(false)}
@@ -563,6 +541,8 @@ function mapStateToProps(state) {
 const mapDispatchToProps = (dispatch) => {
     return {
         toggleAddModal: (isActive) => dispatch(toggleAddModal(isActive)),
+        updateLayout: (...args) => dispatch(updateLayout(...args)),
+        updateSettings: (...args) => dispatch(updateSettings(...args))
     };
 };
 
