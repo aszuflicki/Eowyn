@@ -14,8 +14,7 @@ class TechnicalAnalisis extends Component {
             backgroundColor: "#fff"
         }
 
-        let src = 'https://s.tradingview.com/embed-widget/technical-analysis/?locale=en#' +
-            encodeURIComponent(`{"width":"100%","height":"100%","symbol":"${this.props.symbol || 'FX:EURUSD'}","interval":"1m","utm_source":"localhost","utm_medium":"widget_new","utm_campaign":"technical-analysis"}`)
+        let src = 'https://s.tradingview.com/embed-widget/events/?locale=en#%7B%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%2C%22importanceFilter%22%3A%22-1%2C0%2C1%22%2C%22utm_source%22%3A%22%22%2C%22utm_medium%22%3A%22widget_new%22%2C%22utm_campaign%22%3A%22events%22%7D'
 
         return (
             <React.Fragment>

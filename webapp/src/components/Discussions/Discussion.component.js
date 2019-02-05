@@ -157,3 +157,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Discussion);
+
+// google news api key 6518591a014846529815780fd3f59d72

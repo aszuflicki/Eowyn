@@ -124,7 +124,7 @@ export const toggleEditMode = (isActive) => {
 export const TOGGLE_EDIT_MODE_SUCCESS = 'TOGGLE_EDIT_MODE_SUCCESS';
 function toggleEditModeSuccess(isActive) {
     return {
-        type: SET_TAB_ACTIVE_SUCCESS,
+        type: TOGGLE_EDIT_MODE_SUCCESS,
         payload: isActive
     };
 }
@@ -143,17 +143,17 @@ function toggleAddModalSuccess(isActive) {
     };
 }
 
-export const toggleEditModal = (isActive) => {
+export const toggleEditModal = (isActive, i) => {
     return dispatch => {
-        dispatch(toggleEditModalSuccess(isActive))
+        dispatch(toggleEditModalSuccess(isActive, i))
     }
 }
 
 export const TOGGLE_EDIT_MODAL_SUCCESS = 'TOGGLE_EDIT_MODAL_SUCCESS';
-function toggleEditModalSuccess(isActive) {
+function toggleEditModalSuccess(isActive, i) {
     return {
         type: TOGGLE_EDIT_MODAL_SUCCESS,
-        payload: isActive
+        payload: { isActive, i }
     };
 }
 

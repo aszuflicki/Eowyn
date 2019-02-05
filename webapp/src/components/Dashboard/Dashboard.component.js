@@ -4,11 +4,9 @@ import './dashboard.css'
 
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './Modals/AddModal.component'
-import EditWidgetModal from './EditModal.component'
+import EditWidgetModal from './Modals/EditModal.component'
 import Loading from './Fragments/Loading.component'
-import Navbar from '../Navbar.component';
 import ActionButtons from './Fragments/ActionButtons.component'
-
 import DashboardTabNav from './DashboardTabNav.component'
 import DashboardTabBody from './DashboardTabBody.component'
 
@@ -47,24 +45,17 @@ class Dashboard extends Component {
 
     return (
       <Fragment>
-                        
-      {}
+
+        {}
         <DashboardTabNav />
         {this.props.isAddModal ?
           <AddWidgetModal
-            
-            onClose={() => this.setState({ isAddMode: false })}
             layout={dashboard}
             tabActive={this.state.tabActive}
             settings={settings}
-            update={(layout, settings) => {
-              this.props.updateSettings(settings)
-              dashboard[this.state.tabActive].layout = layout
-              setTimeout(() => this.props.updateLayout(dashboard), 50)
-              this.setState({ isAddMode: false })
-            }} /> : ''}
+          /> : ''}
         <DashboardTabBody />
-        
+
 
         {this.props.isEditModal ?
           <EditWidgetModal

@@ -5,7 +5,7 @@ export default class ChooseTypeButtons extends Component {
 
     render() {
         const { type, setType } = this.props
-        const types = ['Chart', 'Crypto Market Overview', 'Custom Market Overview', 'Single Ticker', 'Technical Analisis', 'Multi Ticker']
+        const types = ['Chart', 'Crypto Market Overview', 'Custom Market Overview', 'Single Ticker', 'Economic Calendar', 'Multi Ticker', 'RSS Reader']
         return (
             <Fragment>
                 <p>Choose type</p>

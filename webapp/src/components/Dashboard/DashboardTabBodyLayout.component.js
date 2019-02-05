@@ -36,8 +36,7 @@ export default class Layout extends Component {
       <ReactGridLayout
         layout={this.props.dashboard}
         onLayoutChange={this.props.onLayoutChange}
-        {...this.props}
-      >
+        {...this.props} >
         {this.generateDOM()}
       </ReactGridLayout>
     );

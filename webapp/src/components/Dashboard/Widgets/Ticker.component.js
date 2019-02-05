@@ -5,6 +5,14 @@ class MarketOverview extends Component {
         super(props)
         this.iframeId = Math.random()
     }
+    componentWillMount = () => {
+      this.setState({toRefresh: ''})
+    }
+    componentWillReceiveProps = (nextProps) => {
+        this.setState({toRefresh: new Date()})
+    }
+    
+    
 
     render() {
         const styleDiv = {
@@ -33,7 +41,8 @@ class MarketOverview extends Component {
                     allowtransparency="true"
                     frameBorder="0"
                     title={this.iframeId}
-                    src={src}>
+                    src={src}
+                    key={'widget-' + this.state.toRefresh}>
                 </iframe>
             </React.Fragment>
         )

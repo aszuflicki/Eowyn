@@ -2,10 +2,10 @@ import React, { Component, Fragment } from "react";
 import { connect } from 'react-redux';
 import { symbols } from './Autosuggestion.component'
 import Select from 'react-select';
-import { toggleAddModal } from "../../../actions/Dashboard.actions";
+import { toggleEditModal } from "../../../actions/Dashboard.actions";
 import { Input, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab } from 'react-materialize'
 import ChooseTypeButtons from './Fragments/ChooseTypeButtons'
-import { updateSettings, updateLayout } from '../../../actions/Dashboard.actions'
+import { updateSettings, updateLayout, getLayout, getSettings } from '../../../actions/Dashboard.actions'
 import M from 'materialize-css';
 
 let autocompleteSymbols = {}
@@ -18,7 +18,7 @@ class AddWidgetModal extends Component {
 
     componentWillMount() {
         this.setState({
-            type: 0,
+            type: this.props.settings[this.props.editedWidget].type,
             settings: '',
             symbol: [],
             tabs: [
@@ -37,12 +37,45 @@ class AddWidgetModal extends Component {
             err: ''
 
         })
+        switch (this.props.settings[this.props.editedWidget].type) {
+            case 0:
+                break
+            case 1:
+                this.setState({
+                    symbol: [{
+                        label: this.props.settings[this.props.editedWidget].settings.value,
+                        value: this.props.settings[this.props.editedWidget].settings.value
+                    }]
+                })
+                break
+            case 2:
+                let tabs = this.props.settings[this.props.editedWidget].settings.tabs.map(tab => ({
+                    name: tab.title,
+                    symbols: tab.symbols.map(symbol => ({
+                        value: symbol.s,
+                        label: symbol.d
+                    }))
+                }))
+                this.setState({ tabs })
+
+                break
+            case 3:
+                break
+            case 4:
+
+                break
+            case 5:
+                this.setState({ multiTicker: this.props.settings[this.props.editedWidget].settings.map(el => ({ value: el.proName, label: el.title })) })
+                break
+        }
+        console.log(this.props.settings[this.props.editedWidget])
     }
     componentDidMount = () => {
         setTimeout(() => {
             const elems = document.querySelectorAll('.tabs');
             let instances = M.Tabs.init(elems, {});
         }, 100);
+
     }
 
 
@@ -314,118 +347,67 @@ class AddWidgetModal extends Component {
                         {this.renderSettingsForMultiTicker()}
                     </Fragment>
                 )
-            case 6:
-                return (
-                    <Fragment>
-                        {this.renderSettingsForCrypoMarketOverview()}
-                    </Fragment>
-                )
             default: return 'Ooopsss...'
         }
     }
 
     addWidget(type, widgetSettings) {
-        let { layout, settings, tabActive } = this.props
-        tabActive = Object.keys(layout)[tabActive]
-        let newLayout = layout[tabActive].layout
-
-        let newId = Math.max(0, ...Object.keys(settings)) + 1
-
-        newLayout = [
-            {
-                h: 10,
-                w: 6,
-                i: newId + "",
-                x: 0,
-                y: 0
-            },
-            ...newLayout.map(el => ({
-                ...el, y: el.y + 10
-            })),]
-        layout[tabActive].layout = newLayout
+        let { settings, editedWidget } = this.props
 
         switch (type) {
             case 0:
-                settings[newId] = {
-                    type: 0,
-                    settings: {
-                        symbol: {
-                            value: widgetSettings.symbol.value
-                        }
-                    }
-                }
-
+                settings[editedWidget].settings.symbol.value = widgetSettings.symbol.value
                 this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
-                return
+                this.props.toggleEditModal(false);
+                break
             case 1:
-                settings[newId] = {
-                    type: 1,
-                    settings: widgetSettings
-                }
-
-                this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
-                return
+                this.props.toggleEditModal(false);
+                break
             case 2:
-                settings[newId] = {
+                settings[editedWidget] = {
                     type: 2,
                     settings: widgetSettings
                 }
 
                 this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
-                return
+                this.props.toggleEditModal(false);
+                break
             case 3:
-                layout[tabActive].layout[0].h = 3
-                layout[tabActive].layout[0].w = 3
-                settings[newId] = {
-                    type: 3,
-                    settings: {
-                        symbol: {
-                            value: widgetSettings.symbol.value
-                        }
-                    }
-                }
-                this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
+                // layout[tabActive].layout[0].h = 3
+                // layout[tabActive].layout[0].w = 3
+                // settings[newId] = {
+                //     type: 3,
+                //     settings: {
+                //         symbol: {
+                //             value: widgetSettings.symbol.value
+                //         }
+                //     }
+                // }
+                // this.props.updateSettings(settings)
+                // this.props.updateLayout(layout)
+                // this.props.toggleAddModal(false);
                 return
             case 4:
-                layout[tabActive].layout[0].h = 11
-                layout[tabActive].layout[0].w = 4
-                settings[newId] = {
-                    type: 4,
-                    settings: {}
-                }
-                this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
-                return
+                this.props.toggleEditModal(false);
+                break
             case 5:
-                layout[tabActive].layout[0].h = 10
-                layout[tabActive].layout[0].w = 12
-                settings[newId] = {
-                    type: 5,
-                    settings: widgetSettings.map(el => ({ proName: el.value, title: el.label.props.children[3] }))
-                }
+                settings[editedWidget].type = -1
                 this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
-                return
-            case 6:
-                settings[newId] = {
-                    type: 6,
-                    settings: widgetSettings
-                }
+                getSettings()
+                settings[editedWidget].type = 5
+                settings[editedWidget].settings = widgetSettings
+                    .map(el => ({
+                        proName: el.value,
+                        title: typeof el.label == 'object' ? el.label.props.children[3] : el.label
+                    }))
+                setTimeout(() => this.props.updateSettings(settings), 2200)
 
-                this.props.updateSettings(settings)
-                this.props.updateLayout(layout)
-                this.props.toggleAddModal(false);
-                return
+                this.props.toggleEditModal(false);
+                // setTimeout(() => {
+                //     this.props.getLayout();
+                //     this.props.getSettings();
+                // }, 200)
+                break
         }
 
 
@@ -468,7 +450,7 @@ class AddWidgetModal extends Component {
                             title: tab.name,
                             symbols: tab.symbols.map(symbol => ({
                                 s: symbol.value,
-                                d: symbol.label.props.children[3]
+                                d: typeof symbol.label == 'object' ? symbol.label.props.children[3] : symbol.label
                             }))
                         }))
                     })
@@ -498,16 +480,13 @@ class AddWidgetModal extends Component {
                     this.addWidget(5, this.state.multiTicker)
                 }
                 return
-            case 6:
-                this.addWidget(6, {})
-                break
             default: return 'Ooopsss...'
 
         }
     }
 
     render() {
-        const { toggleAddModal } = this.props
+        const { toggleEditModal, editedWidget } = this.props
         console.log(this.props)
         return (
             <div style={{ position: "absolute", top: "112px", width: "100vw", zIndex: "1000", backgroundColor: "rgb(121,121,121,.7)", height: 'calc(100vh - 80px)' }}>
@@ -520,13 +499,10 @@ class AddWidgetModal extends Component {
                                     onClick={() => this.validate()}
                                 >Add</a>
                                 <a className="red-text"
-                                    onClick={() => toggleAddModal(false)}
+                                    onClick={() => toggleEditModal(false)}
                                 > Cancel</a></div>]}
-                            title="Add widget" >
-                            <ChooseTypeButtons
-                                type={this.state.type}
-                                setType={(type) => this.setState({ type })}
-                            />
+                            title="Edit widget" >
+
                             <div style={{ color: "white" }}>x</div>
                             {this.state.err.length > 0 ?
                                 <div class="alert alert-danger" role="alert">
@@ -553,12 +529,17 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        toggleAddModal: (isActive) => dispatch(toggleAddModal(isActive)),
+        toggleEditModal: (isActive) => dispatch(toggleEditModal(isActive)),
         updateLayout: (...args) => dispatch(updateLayout(...args)),
-        updateSettings: (...args) => dispatch(updateSettings(...args))
+        updateSettings: (...args) => dispatch(updateSettings(...args)),
+        getLayout: () => dispatch(getLayout()),
+        getSettings: () => dispatch(getSettings())
     };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddWidgetModal);
+
+
+
 
 

@@ -11,9 +11,15 @@ class ActionButtons extends Component {
         return (
             <Fragment>
 
-                <Button floating fab='vertical' icon='dehaze' className='red' large style={{ bottom: '45px', right: '24px' }}>
-                    <Button floating icon='mode_edit' className='blue'/>
-                    
+                <Button floating fab='vertical' icon={this.props.isEditMode ? 'close' : 'dehaze'} className={this.props.isEditMode ? 'blue' : 'red'} large style={{ bottom: '45px', right: '24px' }}
+                >
+                    <div style={{ height: "45px", width: "45px", bottom: "-60px", position: "absolute", zIndex: 10000 }} onClick={() => {
+                        if (this.props.isEditMode)
+                            this.props.toggleEditMode(false)
+                    }}></div>
+                    <Button floating icon='mode_edit' className='blue'
+                        onClick={() => this.props.toggleEditMode(true)} />
+
                     <Button floating className='green'
                         onClick={() => { this.props.toggleAddModal(true); console.log('xD') }}
                     >

@@ -10,6 +10,7 @@ const dashboardReducerDefaultState = {
     isEditMode: false,
     isEditModal: false,
     isAddModal: false,
+    
 };
 
 export default (state = dashboardReducerDefaultState, action) => {
@@ -30,7 +31,7 @@ export default (state = dashboardReducerDefaultState, action) => {
             return { ...state, isAddModal: action.payload }
 
         case TOGGLE_EDIT_MODAL_SUCCESS:
-            return { ...state, isEditModal: action.payload }
+            return { ...state, isEditModal: action.payload.isActive, editedWidget: action.payload.i }
 
         // case CLEAN_ALERTS:
         //     return { ...state, success_msgs: [], error_msgs: [] }
