@@ -12,10 +12,7 @@ export const updateLayout = (layout) => {
     return dispatch => {
         socket.emit('dashboard_layout', layout, retrieveToken());
         console.log(layout)
-
-        // dispatch(layoutUpdated(layout, no))
         dispatch(getLayoutSuccess({ layout }))
-
     }
 }
 
@@ -154,6 +151,34 @@ function toggleEditModalSuccess(isActive, i) {
     return {
         type: TOGGLE_EDIT_MODAL_SUCCESS,
         payload: { isActive, i }
+    };
+}
+
+export const toggleAddTabModal = (isActive) => {
+    return dispatch => {
+        dispatch(toggleAddTabModalSuccess(isActive))
+    }
+}
+
+export const TOGGLE_ADD_TAB_MODAL_SUCCESS = 'TOGGLE_ADD_TAB_MODAL_SUCCESS';
+function toggleAddTabModalSuccess(isActive) {
+    return {
+        type: TOGGLE_ADD_TAB_MODAL_SUCCESS,
+        payload: { isActive }
+    };
+}
+
+export const toggleDeleteTabModal = (isActive) => {
+    return dispatch => {
+        dispatch(toggleDeleteTabModalSuccess(isActive))
+    }
+}
+
+export const TOGGLE_DELETE_TAB_MODAL_SUCCESS = 'TOGGLE_DELETE_TAB_MODAL_SUCCESS';
+function toggleDeleteTabModalSuccess(isActive) {
+    return {
+        type: TOGGLE_DELETE_TAB_MODAL_SUCCESS,
+        payload: { isActive }
     };
 }
 

@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import Navbar from './Navbar.component'
-import { Row, Input, Button } from 'react-materialize'
+import { Row, Input, Button, Col } from 'react-materialize'
 import axios from 'axios'
+import { connect } from 'react-redux'
 
 class ProfilePage extends Component {
 
@@ -24,13 +25,8 @@ class ProfilePage extends Component {
         data.append('file', this.state.selectedFile, this.state.selectedFile.name)
 
         axios
-            .post('http://localhost:8081/upload', data, {
-                onUploadProgress: ProgressEvent => {
-                    this.setState({
-                        loaded: (ProgressEvent.loaded / ProgressEvent.total * 100),
-                    })
-                },
-            })
+            .post('http://localhost:8081/upload', data, { headers: { "authorization": localStorage.getItem('token') } }
+            )
             .then(res => {
                 console.log(res.statusText)
             })
@@ -44,23 +40,50 @@ class ProfilePage extends Component {
             <Fragment>
                 <Row />
                 <Row />
-                <div className='container'>
-                    <h5>Profile</h5>
+                <Row>
+                    <Col s={3} />
+                    <Col s={6}>
+                        <Row>
+                            <h5>Current profile avatar</h5>
+                            <Row>
+                                <Col s={3} />
+                                <Col  >
+                                    <img src={`http://localhost:8081/profile/pic/${this.props.email}`} alt="" className="circle"
+                                        style={{width: '300px',height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
+                                </Col>
+                                <Col s={3} />
 
-                    <Row>
-                        <Input type="file" label="File" s={9}
-                            onChange={this.handleselectedFile.bind(this)}
-                        />
-                        <Button className="btn-large"
-                            onClick={() => this.handleUpload()}
-                        >Upload</Button>
-                        
-                    </Row>
-                    <input type="file" name="" id="" />
-                </div>
+                            </Row>
+
+                            <Button className="btn-large right red"
+                                onClick={() => this.handleUpload()}
+                            >Remove</Button>
+                        </Row>
+                        <Row>
+                            <h5>Replace profile avatar</h5>
+                            <Input type="file" label="File" s={9}
+                                onChange={this.handleselectedFile.bind(this)}
+                            />
+                            <Button className="btn-large"
+                                onClick={() => this.handleUpload()}
+                            >Upload</Button>
+                        </Row>
+                    </Col>
+                </Row>
+
             </Fragment>
         )
     }
 }
 
-export default ProfilePage
+const mapStateToProps = (state) => {
+    return { ...state.auth }
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);

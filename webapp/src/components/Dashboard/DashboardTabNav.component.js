@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react'
-import { setTabActive } from './../../actions/Dashboard.actions'
+import { setTabActive, toggleAddTabModal } from './../../actions/Dashboard.actions'
 import { connect } from 'react-redux';
+import M from 'materialize-css';
 
 export class DashboardTabNav extends Component {
+
   render() {
-    const { layout, setTabActive, tabActive } = this.props
+    const { layout, setTabActive, tabActive, toggleAddTabModal } = this.props
     const tabs = Object.keys(layout).map(key => ({ id: key, name: layout[key].tabName }))
 
     return (
@@ -21,7 +23,7 @@ export class DashboardTabNav extends Component {
                 </li>
               ))}
               <li className="tab"
-                onClick={() => { }}
+                onClick={() => toggleAddTabModal(true)}
                 key={'DashboardTabNav-add'}>
                 <a className={``} style={{ paddingLeft: "0", fontSize: "20px" }}
                 >+</a>
@@ -43,7 +45,9 @@ function mapStateToProps(state) {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    setTabActive: (id) => dispatch(setTabActive(id))
+    setTabActive: (id) => dispatch(setTabActive(id)),
+    toggleAddTabModal: (isActive) => dispatch(toggleAddTabModal(isActive)),
+    
   };
 };
 

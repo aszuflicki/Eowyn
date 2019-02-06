@@ -17,7 +17,6 @@ class NavigationBar extends Component {
   }
 
   componentDidUpdate = () => {
-    console.log(`http://localhost:8081/discussions/${this.props.email}`)
     const socket = io(`http://localhost:8081/following/${this.props.email.replace('@', '&')}`)
       .on('new_post', (post, discussion) => {
         console.log(post)
@@ -29,17 +28,18 @@ class NavigationBar extends Component {
 
 
   render() {
-
-
     return (
       <Fragment>
         <Navbar brand='Eowyn' className="center  indigo darken-4">
           <NavItem onClick={() => history.push('/dashboard')}>Dashboard </NavItem>
           <NavItem onClick={() => history.push('/discussions')}>#Discussions</NavItem>
           <ul className="right">
-            <NavItem href='/profile'>
-            <img src="http://localhost:8081/profile/pic/xd" alt="" className="circle" style={{ width: "32px", position: "absolute", top: "15px" }} />
-            <span style={{paddingLeft: "40px"}}>{this.props.email}</span></NavItem>
+            {this.props.email ? (
+              <NavItem href='/profile'>
+                <img src={`http://localhost:8081/profile/pic/${this.props.email}`} alt="" className="circle" style={{ width: "32px", height: "32px", position: "absolute", top: "15px" }} />
+                <span style={{ paddingLeft: "40px" }}>{this.props.email}</span></NavItem>
+            ) : ''}
+
             {this.props.email ?
               <NavItem
                 onClick={() => this.props.logout()}

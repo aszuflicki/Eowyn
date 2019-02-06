@@ -6,45 +6,59 @@ import request from 'request'
 import cheerio from 'cheerio'
 import feed from 'feed-read'
 import ta from 'time-ago'
+import NewsAPI from 'newsapi'
 
-class TechnicalAnalisis extends Component {
+
+
+
+class NewsFeed extends Component {
     constructor(props) {
         super(props)
         this.iframeId = Math.random()
     }
     componentWillMount = () => {
-        this.setState({ feed: { items: [] } })
-        this.getFeed()
+        this.setState({
+            feed: { items: [] },
+            newsapi: new NewsAPI('6518591a014846529815780fd3f59d72'),
+        })
         setTimeout(() => {
             var elems = document.querySelectorAll('.collapsible');
             var instances = M.Collapsible.init(elems, {});
+
         }, 200);
     }
-
+    componentDidMount = () => {
+        this.getFeed()
+    }
 
     getFeed = async () => {
-        let parser = new Parser();
-        const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
-        let feed = await parser.parseURL(CORS_PROXY + 'https://pl.investing.com/rss/market_overview_Technical.rss')
-        console.log(feed.title);
+        const { newsapi } = this.state
+        // newsapi.v2.everything({
+        //     q: ['bitcoin', 'crypto'],
+        //     from: new Date(),
+        //     to: new Date() - 3 * 24 * 3600,
+        //     language: 'en',
+        //     sortBy: 'publishedAt'
 
-        feed.items.forEach(item => {
-            console.log(item)
+        // }).then(response => {
+        //     console.log(response);
+        //     this.setState({ feed: { items: response.articles } })
+        // });
+        newsapi.v2.topHeadlines({
+            category: 'sports', 
+            from: new Date(),
+            to: new Date() - 3 * 24 * 3600,
+            country: 'pl',
+            sortBy: 'publishedAt'
 
+        }).then(response => {
+            console.log(response);
+            this.setState({ feed: { items: response.articles } })
         });
+    }
 
-        this.setState({ feed })
-    }
-    getFeed1 = async () => {
-        const CORS_PROXY = "https://cors-anywhere.herokuapp.com/"
-        feed(CORS_PROXY + 'https://pl.investing.com/rss/market_overview_Technical.rss', (err, articles) => {
-            console.log(articles)
-        })
-        
-    }
 
     render() {
-        this.getFeed1()
         const styleDiv = {
             width: "100%",
             height: "calc(100% - 20px)",
@@ -53,19 +67,26 @@ class TechnicalAnalisis extends Component {
             overflowY: 'scroll'
         }
 
-        const { feed } = this.state
         return (
 
             <React.Fragment>
                 <div style={styleDiv}>
                     <h5>News feed</h5>
                     <ul class="collapsible">
-                        {feed.items.map(el => (
-                            <li style={{position: 'relative'}}>
-                                <div class="collapsible-header"> <span className="truncate" style={{width: "calc(100% - 110px)", display:"inline-block"}}>{el.title}</span> <span style={{top: 0, right: "20px", position: "absolute"}} class="right-align">{ta.ago(el.pubDate)}</span></div>
+                        {this.state.feed.items.map(el => (
+                            <li style={{ position: 'relative' }}>
+                                <div class="collapsible-header"><img src={el.urlToImage} style={{height: "48px", marginTop: "20px", marginRight: "20px"}}/>
+                                    <span className="truncate"
+                                        style={{ width: "calc(100% - 150px)", display: "inline-block" }}>
+                                        
+                                        {el.title}
+                                    </span>
+                                    <span style={{ top: 0, right: "20px", position: "absolute" }} class="right-align">{ta.ago(el.publishedAt)}
+                                    </span>
+                                    <label style={{position: "absolute", right: "30px", top: "50px"}}>by {el.source.name}</label>
+                                </div>
                                 <div class="collapsible-body"><span>
-                                    <a href={el.link} target="_blank" rel="noopener noreferrer" >
-                                    Open in new tab </a>
+                                    {el.description} <a taget="_blank" href={el.url} style={{paddingLeft: "10px"}}>Read full</a>
                                 </span></div>
                             </li>
                         ))}
@@ -76,4 +97,4 @@ class TechnicalAnalisis extends Component {
     }
 }
 
-export default TechnicalAnalisis;
+export default NewsFeed;

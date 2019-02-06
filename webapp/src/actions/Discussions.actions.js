@@ -14,7 +14,7 @@ export const addNewDisscussion = (category, topic, desc, tags) => {
             .then(res => {
                 console.log(res)
                 dispatch(addNewDisscussionSuccess())
-                history.push(`/discussions/${res.data.id}`)
+                history.push(`/discussion/${res.data.id}`)
             })
             .catch(err => { })
     }

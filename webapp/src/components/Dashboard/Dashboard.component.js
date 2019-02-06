@@ -5,6 +5,8 @@ import './dashboard.css'
 import { updateLayout, updateSettings, getLayout, getSettings } from './../../actions/Dashboard.actions'
 import AddWidgetModal from './Modals/AddModal.component'
 import EditWidgetModal from './Modals/EditModal.component'
+import DeleteTabModal from './Modals/DeleteTabModal.component'
+import AddTabModal from './Modals/AddTabModal.component'
 import Loading from './Fragments/Loading.component'
 import ActionButtons from './Fragments/ActionButtons.component'
 import DashboardTabNav from './DashboardTabNav.component'
@@ -67,6 +69,8 @@ class Dashboard extends Component {
               this.setState({ isEditModalOpen: false })
             }}
           /> : ''}
+        <DeleteTabModal />
+        <AddTabModal />
 
         <ActionButtons
           isEditMode={this.state.isEditMode}

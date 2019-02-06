@@ -50,17 +50,15 @@ class Discussions extends Component {
                                     onClick={() => this.props.getDiscussionsList(5)} data-badge-caption="Short / CFDs"></span>       </Col>
                             </Row>
 
-
                         </Col>
                         <Col />
                         <Col s={8}>
                             <ul class="collection">
-                                {!!this.props.list ? this.props.list.map(el => {
-
-                                    return (
+                                {!!this.props.list ?
+                                    this.props.list.map(el => (
                                         <li class="collection-item avatar"
                                             onClick={() => history.push(`/discussion/${el.id}`)}>
-                                            <img src="images/yuna.jpg" alt="" class="circle" />
+                                            <img src={`http://localhost:8081/profile/pic/${el.author}`} alt="" class="circle" />
                                             <span class="title">{el.topic}</span>
                                             <p> </p>
 
@@ -72,20 +70,12 @@ class Discussions extends Component {
                                                     <Col><Badge> <Icon tiny >chat_bubble_outline</Icon>4</Badge>
                                                     </Col>
                                                 </Row>
-
                                             </a>
-                                        </li>
-                                    )
-                                }) : ''}
-
-
+                                        </li>)) : ''}
                             </ul>
                         </Col>
                     </Row>
-
-
                 </div>
-
             </Fragment>
         )
     }

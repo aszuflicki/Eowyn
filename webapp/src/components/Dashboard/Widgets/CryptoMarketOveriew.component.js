@@ -10,13 +10,12 @@ class MarketOverview extends Component {
     render() {
         const styleDiv = {
             width: "100%",
-            height: "calc(100% - 20px)",
+            height: "calc(100%)",
             backgroundColor: "#fff"
           }
 
         return (
             <React.Fragment>
-                
                 <iframe 
                 style={styleDiv}
                 scrolling="yes" 

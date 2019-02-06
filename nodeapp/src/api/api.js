@@ -132,7 +132,8 @@ module.exports = (app, options) => {
             })
     })
 
-    app.post('/upload', (req, res) => {
+    app.post('/upload', ensureAuthenticated, (req, res) => {
+        const { email } = req.locals
         upload(req, res, (err) => {
             if (err) {
                 res.json({
@@ -144,18 +145,29 @@ module.exports = (app, options) => {
                         err: 'No File Selected!'
                     });
                 } else {
-                    res.json({
-                        msg: 'File Uploaded!',
-                        file: `uploads/${req.file.filename}`
-                    });
+                    repo.setProfilePic(email, req.file.filename)
+                    .then(result => {
+                        console.log(result)
+                        console.log(req.file.filename)
+                        res.json({
+                            msg: 'File Uploaded!',
+                            file: `uploads/${req.file.filename}`
+                        });
+                    })
+                    
                 }
             }
         });
     });
 
     app.get('/profile/pic/:email', (req, res) => {
+        const { email } = req.params
         console.log(__dirname)
-        res.sendFile(path.resolve(__dirname + '../../../public/uploads/def.jpg'))
+        repo.getProfilePic(email)
+            .then((result) => {
+                res.sendFile(path.resolve(__dirname + `../../../public/uploads/${result}`))
+            })
+
     })
 
 

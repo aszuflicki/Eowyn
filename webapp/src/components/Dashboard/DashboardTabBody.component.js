@@ -13,6 +13,7 @@ export class DashboardTabBody extends Component {
     return (
       <Fragment>
         <Layout
+          key={'layout-' + tabActive}
           onLayoutChange={(newLayout) => {
             layout[layoutId].layout = newLayout
             updateLayout(layout)

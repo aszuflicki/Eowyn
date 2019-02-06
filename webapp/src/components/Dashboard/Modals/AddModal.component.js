@@ -7,6 +7,7 @@ import { Input, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab } fro
 import ChooseTypeButtons from './Fragments/ChooseTypeButtons'
 import { updateSettings, updateLayout } from '../../../actions/Dashboard.actions'
 import M from 'materialize-css';
+import NewsFeed from "../Widgets/NewsFeed.component";
 
 let autocompleteSymbols = {}
 
@@ -34,16 +35,26 @@ class AddWidgetModal extends Component {
             ],
             tabActive: 0,
             multiTicker: [],
-            err: ''
+            err: '',
+
+            display: 0,
+            category: 'all',
+            keyphrase: [],
+            orderBy: 'relevancy'
 
         })
     }
-    componentDidMount = () => {
+
+    componentWillUpdate = () => {
         setTimeout(() => {
-            const elems = document.querySelectorAll('.tabs');
-            let instances = M.Tabs.init(elems, {});
+            let elems = document.querySelectorAll('.chips');
+            let instances = M.Chips.init(elems, {
+                placeholder: 'Enter a keyphrase',
+                secondaryPlaceholder: '+Keyphrase',
+            });
         }, 100);
     }
+
 
 
     renderSettingsForChartView() {
@@ -276,6 +287,145 @@ class AddWidgetModal extends Component {
         )
     }
 
+    renderSettingsForNewsFeed() {
+        console.log(this.state)
+        return (
+            <Fragment>
+                <h5>Display</h5>
+
+                <Row>
+                    <Input name='group1' type='checkbox' value='headlines' label='Top headlines'
+                        checked={this.state.display == 0}
+                        onClick={(...args) => this.setState({ display: 0 })} />
+                    <Input name='group1' type='checkbox' value='everything' label='Everything'
+                        checked={this.state.display == 1}
+                        onClick={(...args) => this.setState({ display: 1 })} />
+                </Row>
+                {this.state.display == 0 ? (
+                    <Fragment>
+                        <h5>From category</h5>
+                        <Row>
+                            <Input name='group2' type='checkbox' value='relevancy' label='Business'
+                                onClick={(...args) => this.setState({ category: 'relevancy' })}
+                                checked={this.state.category == 'relevancy'} />
+                            <Input name='group2' type='checkbox' value='entertainment' label='Entertainment'
+                                onClick={(...args) => this.setState({ category: 'entertainment' })} 
+                                checked={this.state.category == 'entertainment'} />
+                            <Input name='group2' type='checkbox' value='general' label='general'
+                                onClick={(...args) => this.setState({ category: 'general' })} 
+                                checked={this.state.category == 'general'} />
+                            <Input name='group2' type='checkbox' value='health' label='Health'
+                                onClick={(...args) => this.setState({ category: 'health' })} 
+                                checked={this.state.category == 'health'} />
+                            <Input name='group2' type='checkbox' value='science' label='Science'
+                                onClick={(...args) => this.setState({ category: 'science' })} 
+                                checked={this.state.category == 'science'} />
+                            <Input name='group2' type='checkbox' value='sports' label='Sports'
+                                onClick={(...args) => this.setState({ category: 'sports' })} 
+                                checked={this.state.category == 'sports'} />
+                            <Input name='group2' type='checkbox' value='technology' label='Technology'
+                                onClick={(...args) => this.setState({ category: 'technology' })} 
+                                checked={this.state.category == 'technology'} />
+                            <Input name='group2' type='checkbox' value='all' label='All'
+                                onClick={(...args) => this.setState( { category: 'all' } )} 
+                                checked={this.state.category == 'all'} />
+
+                        </Row>
+                        <h5>Language</h5>
+                        <Row>
+                            <Autocomplete
+                                title='Language'
+                                defaultValue='United States'
+                                data={
+                                    {
+                                        'United Arab Emirates': null,
+                                        'Argentina': null,
+                                        'Austria': null,
+                                        'Australia': null,
+                                        'Belgium': null,
+                                        'Bulgaria': null,
+                                        'Brazil': null,
+                                        'Canada': null,
+                                        'Switzerland': null,
+                                        'China': null,
+                                        'Colombia': null,
+                                        'Cuba': null,
+                                        'Czechia': null,
+                                        'Germany': null,
+                                        'Egypt': null,
+                                        'France': null,
+                                        'United Kingdom': null,
+                                        'Hong Kong': null,
+                                        'Hungary': null,
+                                        'Indonesia': null,
+                                        'Ireland': null,
+                                        'Israel': null,
+                                        'India': null,
+                                        'Italy': null,
+                                        'Japan': null,
+                                        'Korea, Republic of': null,
+                                        'Lithuania': null,
+                                        'Latvia': null,
+                                        'Morocco': null,
+                                        'Mexico': null,
+                                        'Malaysia': null,
+                                        'Nigeria': null,
+                                        'Netherlands': null,
+                                        'Norway': null,
+                                        'New Zealand': null,
+                                        'Philippines': null,
+                                        'Poland': null,
+                                        'Portugal': null,
+                                        'Romania': null,
+                                        'Serbia': null,
+                                        'Russian Federation': null,
+                                        'Saudi Arabia': null,
+                                        'Singapore': null,
+                                        'Slovenia': null,
+                                        'Slovakia': null,
+                                        'Thailand': null,
+                                        'Turkey': null,
+                                        'Taiwan': null,
+                                        'Ukraine': null,
+                                        'United States': null,
+                                        'Venezuela': null,
+                                        'South Africa': null,
+                                    }
+                                }
+                            />
+                        </Row>
+                        {/* ae ar at au be bg br ca ch cn co cu cz de eg fr gb gr hk hu id ie il in it jp kr lt lv ma mx my ng nl no nz ph pl pt ro rs ru sa se sg si sk th tr tw ua us ve za*/}
+                    </Fragment>
+                ) : (
+                        <Fragment>
+                            <h5>Order by</h5>
+                            <Row>
+                                <Input name='group2' type='checkbox' value='relevancy' label='Relevancy'
+                                    onClick={(...args) => this.setState({ orderBy: 'relevancy' })}
+                                    checked={this.state.orderBy == 'relevancy'} />
+                                <Input name='group2' type='checkbox' value='popularity' label='Popularity'
+                                    onClick={(...args) => this.setState({ orderBy: 'popularity' })} 
+                                    checked={this.state.orderBy == 'popularity'} />
+                                <Input name='group2' type='checkbox' value='publishedAt' label='Date'
+                                    onClick={(...args) => this.setState({ orderBy: 'publishedAt' })} 
+                                    checked={this.state.orderBy == 'publishedAt'} />
+                            </Row>
+                        </Fragment>
+                    )}
+
+                <h5>Keywords</h5>
+                <Row>
+                    <div class="chips">
+                        <input id="tags"
+                            onChipAdd={(...args) => console.log(args)}
+                            error={this.state.err.tagsa}
+                        />
+                    </div>
+                </Row>
+            </Fragment>
+        )
+    }
+
     renderSettings() {
         switch (this.state.type) {
             case 0:
@@ -315,11 +465,8 @@ class AddWidgetModal extends Component {
                     </Fragment>
                 )
             case 6:
-                return (
-                    <Fragment>
-                        {this.renderSettingsForCrypoMarketOverview()}
-                    </Fragment>
-                )
+                return (<Fragment>{this.renderSettingsForNewsFeed()} </Fragment>)
+
             default: return 'Ooopsss...'
         }
     }

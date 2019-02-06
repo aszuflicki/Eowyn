@@ -23,7 +23,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		})
 	}
 
-	const addUser = (email, pass, username=email, profile_pic='/uploads/default-user.png') => {
+	const addUser = (email, pass, username = email, profile_pic = '/uploads/default-user.png') => {
 		return new Promise((resolve, reject) => {
 			user.create({ email, pass })
 				.then(() =>
@@ -199,7 +199,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			follower.findAll({
 				where: {
-					topic_id: topic_id+""
+					topic_id: topic_id + ""
 				}
 			})
 				.then(results => resolve(results.map(el => el.email)))
@@ -215,7 +215,26 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 					}
 				})
 				.then(result => {
-					console.log(result)
+					const { profile_pic = '' } = result[0].dataValues
+					resolve(profile_pic)
+				})
+				.catch(err => {
+					reject(err)
+				})
+		})
+	}
+
+	const setProfilePic = (email, profile_pic) => {
+		return new Promise((resolve, reject) => {
+			user
+				.update({
+					profile_pic,
+				}, {
+						where: {
+							email
+						}
+					})
+				.then(result => {
 					resolve(result)
 				})
 				.catch(err => {
@@ -240,7 +259,8 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		unfollow,
 		getFollows,
 		getAllFollowers,
-		getProfilePic
+		getProfilePic,
+		setProfilePic,
 	}
 }
 
