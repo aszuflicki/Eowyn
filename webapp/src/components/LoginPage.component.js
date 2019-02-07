@@ -20,22 +20,12 @@ class LoginPage extends Component {
         this.props.login(this.email.current.value, this.password.current.value)
     }
 
-    renderAlerts(msgs, type) {
-        console.log(msgs)
-        return msgs.map(msg => (
-            <div class={`alert ${type}`} role="alert">
-                {msg}
-            </div>
-        ))
-    }
 
     componentWillMount() {
         this.props.checkIfLoggedIn()
     }
 
     render() {
-
-        const { error_msgs, success_msgs } = this.props;
 
         if (this.props.token.length > 0) return <Redirect to='/dashboard' />
 
@@ -46,10 +36,6 @@ class LoginPage extends Component {
                         <Col s={3} />
                         <Col s={6} >
                             <h1 className="center">Login</h1>
-
-                            {this.renderAlerts(error_msgs, 'alert-danger')}
-                            {this.renderAlerts(success_msgs, 'alert-success')}
-
                             <form onSubmit={this.handleSubmit}>
                                 <div className="form-group">
                                     <label htmlFor="email">Email</label>
@@ -90,7 +76,6 @@ class LoginPage extends Component {
     }
 }
 function mapStateToProps(state) {
-    console.log(state)
     return {
         ...state.auth,
     }

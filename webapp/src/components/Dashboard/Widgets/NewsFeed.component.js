@@ -29,32 +29,41 @@ class NewsFeed extends Component {
     }
     componentDidMount = () => {
         this.getFeed()
+
+        const intervalId = setInterval(this.getFeed, 1000 * 60 * 5)
+        this.setState({ intervalId })
+    }
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId);
     }
 
     getFeed = async () => {
         const { newsapi } = this.state
-        // newsapi.v2.everything({
-        //     q: ['bitcoin', 'crypto'],
-        //     from: new Date(),
-        //     to: new Date() - 3 * 24 * 3600,
-        //     language: 'en',
-        //     sortBy: 'publishedAt'
+        const { display, orderBy: sortBy, category, country, keyphrase: q } = this.props.settings
+        console.log({ display, sortBy, category, country, q })
+        if (display === 0) {
+            let params = { country: countries[country] }
+            if (category !== 'all') params.category = category
 
-        // }).then(response => {
-        //     console.log(response);
-        //     this.setState({ feed: { items: response.articles } })
-        // });
-        newsapi.v2.topHeadlines({
-            category: 'sports', 
-            from: new Date(),
-            to: new Date() - 3 * 24 * 3600,
-            country: 'pl',
-            sortBy: 'publishedAt'
+            newsapi.v2.topHeadlines(params)
+                .then(response => {
+                    console.log(response)
+                    this.setState({ feed: { items: response.articles } })
+                });
+        } else {
+            newsapi.v2.everything({
+                q,
+                from: new Date(),
+                to: new Date() - 3 * 24 * 3600,
+                language: 'en',
+                sortBy,
+            }).then(response => {
+                console.log(response);
+                this.setState({ feed: { items: response.articles } })
+            });
+        }
 
-        }).then(response => {
-            console.log(response);
-            this.setState({ feed: { items: response.articles } })
-        });
+
     }
 
 
@@ -66,6 +75,7 @@ class NewsFeed extends Component {
             backgroundColor: "#fff",
             overflowY: 'scroll'
         }
+        console.log(this.props)
 
         return (
 
@@ -75,18 +85,18 @@ class NewsFeed extends Component {
                     <ul class="collapsible">
                         {this.state.feed.items.map(el => (
                             <li style={{ position: 'relative' }}>
-                                <div class="collapsible-header"><img src={el.urlToImage} style={{height: "48px", marginTop: "20px", marginRight: "20px"}}/>
+                                <div class="collapsible-header"><img src={el.urlToImage} style={{ height: "48px", marginTop: "20px", marginRight: "20px" }} />
                                     <span className="truncate"
                                         style={{ width: "calc(100% - 150px)", display: "inline-block" }}>
-                                        
+
                                         {el.title}
                                     </span>
                                     <span style={{ top: 0, right: "20px", position: "absolute" }} class="right-align">{ta.ago(el.publishedAt)}
                                     </span>
-                                    <label style={{position: "absolute", right: "30px", top: "50px"}}>by {el.source.name}</label>
+                                    <label style={{ position: "absolute", left: "calc(100% - 120px)", top: "50px" }}>by {el.source.name}</label>
                                 </div>
                                 <div class="collapsible-body"><span>
-                                    {el.description} <a taget="_blank" href={el.url} style={{paddingLeft: "10px"}}>Read full</a>
+                                    {el.description} <a taget="_blank" href={el.url} style={{ paddingLeft: "10px" }}>Read full</a>
                                 </span></div>
                             </li>
                         ))}
@@ -98,3 +108,59 @@ class NewsFeed extends Component {
 }
 
 export default NewsFeed;
+{/*  */ }
+
+const countries = {
+    'United Arab Emirates': 'ae',
+    'Argentina': 'ar',
+    'Austria': 'at',
+    'Australia': 'au',
+    'Belgium': 'be',
+    'Bulgaria': 'bg',
+    'Brazil': 'br',
+    'Canada': 'ca',
+    'Switzerland': 'ch',
+    'China': 'cn',
+    'Colombia': 'co',
+    'Cuba': 'cu',
+    'Czechia': 'cz',
+    'Germany': 'de',
+    'Egypt': 'eg',
+    'France': 'fr',
+    'United Kingdom': 'gb',
+    'Hong Kong': 'hk',
+    'Hungary': 'hu',
+    'Indonesia': 'id',
+    'Ireland': 'ie',
+    'Israel': 'il',
+    'India': 'in',
+    'Italy': 'it',
+    'Japan': 'jp',
+    'Korea, Republic of': 'kr',
+    'Lithuania': 'lt',
+    'Latvia': 'lv',
+    'Morocco': 'ma',
+    'Mexico': 'mx',
+    'Malaysia': 'my',
+    'Nigeria': 'ng',
+    'Netherlands': 'nl',
+    'Norway': 'no',
+    'New Zealand': 'nz',
+    'Philippines': 'ph',
+    'Poland': 'pl',
+    'Portugal': 'pt',
+    'Romania': 'ro',
+    'Serbia': 'rs',
+    'Russian Federation': 'ru',
+    'Saudi Arabia': 'sa',
+    'Singapore': 'sg',
+    'Slovenia': 'si',
+    'Slovakia': 'sk',
+    'Thailand': 'th',
+    'Turkey': 'tr',
+    'Taiwan': 'tw',
+    'Ukraine': 'ua',
+    'United States': 'us',
+    'Venezuela': 've',
+    'South Africa': 'za',
+}

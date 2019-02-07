@@ -115,7 +115,7 @@ const getWidget = (i, settings) => {
         case 6:
             return (
                 <NewsFeed
-                    symbols={settings} />
+                    settings={settings} />
             )
         default:
             return <div> Ooopss...</div>

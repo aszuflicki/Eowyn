@@ -9,7 +9,8 @@ export const register = (email, password) => {
     return dispatch => {
 
         if (email.length === 0 || password.length === 0) {
-            dispatch(registrationFailed({ error_msg: 'Fill all inputs', isRegistered: false }))
+            toast.error('Fill all inputs');
+            return dispatch(registrationFailed({ isRegistered: false }))
         }
 
         instance.post('/register', {
@@ -18,13 +19,16 @@ export const register = (email, password) => {
             .then(res => {
                 console.log(res)
                 if (res.status === 201) {
-                    dispatch(registrationSuccess({ success_msg: 'Successfuly registrated', isRegistered: true }))
+                    toast.success("Successfuly registrated");
+                    dispatch(registrationSuccess({ isRegistered: true }))
                 } else {
-                    dispatch(registrationFailed({ error_msg: res.data.msg, isRegistered: false }))
+                    toast.error(res.data.msg.msg);
+                    dispatch(registrationFailed({ isRegistered: false }))
                 }
             })
             .catch(err => {
-                dispatch(registrationFailed({ error_msg: 'Email or password incorrect', isRegistered: false }))
+                toast.error('Email or password incorrect');
+                dispatch(registrationFailed({ isRegistered: false }))
             })
     }
 }
@@ -49,7 +53,8 @@ export const login = (email, password) => {
     return dispatch => {
 
         if (email.length === 0 || password.length === 0) {
-            dispatch(loginFailed({ error_msg: 'Fill all inputs' }))
+            toast.error('Fill all inputs');
+            return dispatch(loginFailed({}))
         }
 
         instance.post('/login', {
@@ -61,13 +66,16 @@ export const login = (email, password) => {
                     toast.success("Logged in successfully");
                     dispatch(loginSuccess({ token: res.data.token }))
                 } else {
+                    toast.success(res.data.msg);
                     dispatch(loginFailed({ error_msg: res.data.msg }))
                 }
 
 
             })
             .catch(err => {
-                dispatch(loginFailed({ error_msg: 'Check email and password' }))
+                toast.error('Check email and password');
+
+                dispatch(loginFailed({}))
             })
     }
 }

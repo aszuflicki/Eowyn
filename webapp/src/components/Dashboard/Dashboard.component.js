@@ -11,6 +11,7 @@ import Loading from './Fragments/Loading.component'
 import ActionButtons from './Fragments/ActionButtons.component'
 import DashboardTabNav from './DashboardTabNav.component'
 import DashboardTabBody from './DashboardTabBody.component'
+import EditTabModal from './Modals/EditTabModal.component'
 
 class Dashboard extends Component {
 
@@ -71,6 +72,7 @@ class Dashboard extends Component {
           /> : ''}
         <DeleteTabModal />
         <AddTabModal />
+        <EditTabModal />
 
         <ActionButtons
           isEditMode={this.state.isEditMode}

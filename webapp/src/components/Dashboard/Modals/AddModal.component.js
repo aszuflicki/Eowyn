@@ -40,18 +40,19 @@ class AddWidgetModal extends Component {
             display: 0,
             category: 'all',
             keyphrase: [],
-            orderBy: 'relevancy'
-
+            orderBy: 'relevancy',
+            country: 'Poland'
         })
     }
 
     componentWillUpdate = () => {
         setTimeout(() => {
             let elems = document.querySelectorAll('.chips');
-            let instances = M.Chips.init(elems, {
+            const instances = M.Chips.init(elems, {
                 placeholder: 'Enter a keyphrase',
                 secondaryPlaceholder: '+Keyphrase',
             });
+            // this.setState({ instances })
         }, 100);
     }
 
@@ -309,33 +310,34 @@ class AddWidgetModal extends Component {
                                 onClick={(...args) => this.setState({ category: 'relevancy' })}
                                 checked={this.state.category == 'relevancy'} />
                             <Input name='group2' type='checkbox' value='entertainment' label='Entertainment'
-                                onClick={(...args) => this.setState({ category: 'entertainment' })} 
+                                onClick={(...args) => this.setState({ category: 'entertainment' })}
                                 checked={this.state.category == 'entertainment'} />
                             <Input name='group2' type='checkbox' value='general' label='general'
-                                onClick={(...args) => this.setState({ category: 'general' })} 
+                                onClick={(...args) => this.setState({ category: 'general' })}
                                 checked={this.state.category == 'general'} />
                             <Input name='group2' type='checkbox' value='health' label='Health'
-                                onClick={(...args) => this.setState({ category: 'health' })} 
+                                onClick={(...args) => this.setState({ category: 'health' })}
                                 checked={this.state.category == 'health'} />
                             <Input name='group2' type='checkbox' value='science' label='Science'
-                                onClick={(...args) => this.setState({ category: 'science' })} 
+                                onClick={(...args) => this.setState({ category: 'science' })}
                                 checked={this.state.category == 'science'} />
                             <Input name='group2' type='checkbox' value='sports' label='Sports'
-                                onClick={(...args) => this.setState({ category: 'sports' })} 
+                                onClick={(...args) => this.setState({ category: 'sports' })}
                                 checked={this.state.category == 'sports'} />
                             <Input name='group2' type='checkbox' value='technology' label='Technology'
-                                onClick={(...args) => this.setState({ category: 'technology' })} 
+                                onClick={(...args) => this.setState({ category: 'technology' })}
                                 checked={this.state.category == 'technology'} />
                             <Input name='group2' type='checkbox' value='all' label='All'
-                                onClick={(...args) => this.setState( { category: 'all' } )} 
+                                onClick={(...args) => this.setState({ category: 'all' })}
                                 checked={this.state.category == 'all'} />
 
                         </Row>
-                        <h5>Language</h5>
+                        <h5>Country</h5>
                         <Row>
                             <Autocomplete
-                                title='Language'
-                                defaultValue='United States'
+                                title='Country'
+                                value={this.state.country}
+                                onAutocomplete={(country) => this.setState({ country })}
                                 data={
                                     {
                                         'United Arab Emirates': null,
@@ -394,7 +396,6 @@ class AddWidgetModal extends Component {
                                 }
                             />
                         </Row>
-                        {/* ae ar at au be bg br ca ch cn co cu cz de eg fr gb gr hk hu id ie il in it jp kr lt lv ma mx my ng nl no nz ph pl pt ro rs ru sa se sg si sk th tr tw ua us ve za*/}
                     </Fragment>
                 ) : (
                         <Fragment>
@@ -404,10 +405,10 @@ class AddWidgetModal extends Component {
                                     onClick={(...args) => this.setState({ orderBy: 'relevancy' })}
                                     checked={this.state.orderBy == 'relevancy'} />
                                 <Input name='group2' type='checkbox' value='popularity' label='Popularity'
-                                    onClick={(...args) => this.setState({ orderBy: 'popularity' })} 
+                                    onClick={(...args) => this.setState({ orderBy: 'popularity' })}
                                     checked={this.state.orderBy == 'popularity'} />
                                 <Input name='group2' type='checkbox' value='publishedAt' label='Date'
-                                    onClick={(...args) => this.setState({ orderBy: 'publishedAt' })} 
+                                    onClick={(...args) => this.setState({ orderBy: 'publishedAt' })}
                                     checked={this.state.orderBy == 'publishedAt'} />
                             </Row>
                         </Fragment>
@@ -646,7 +647,25 @@ class AddWidgetModal extends Component {
                 }
                 return
             case 6:
-                this.addWidget(6, {})
+                const { display, orderBy, category, country } = this.state
+                const elem = document.querySelector('.chips');
+                const keyphrase = M.Chips.getInstance(elem).chipsData.map(el => el.tag)
+                if (display === 0) {
+                    if (this.state.country.length < 3) {
+                        this.setState({ err: 'Please fill all inputs' })
+                        return
+                    }
+                    if (keyphrase.length < 1) {
+                        this.setState({ err: 'Please add at least one keyphase' })
+                        return
+                    }
+                } else if (this.state.display === 1) {
+                    if (keyphrase.length < 1) {
+                        this.setState({ err: 'Please add at least one keyphase' })
+                        return
+                    }
+                }
+                this.addWidget(6, { display, orderBy, category, country, keyphrase })
                 break
             default: return 'Ooopsss...'
 
@@ -676,7 +695,7 @@ class AddWidgetModal extends Component {
                             />
                             <div style={{ color: "white" }}>x</div>
                             {this.state.err.length > 0 ?
-                                <div class="alert alert-danger" role="alert">
+                                <div style={{ color: 'red' }}>
                                     {this.state.err}
                                 </div> : ''}
                             {this.renderSettings()}

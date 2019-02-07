@@ -6,17 +6,18 @@ import { connect } from 'react-redux'
 
 class ProfilePage extends Component {
 
-    // componentWillMount = () => {
-    //     this.setState({
-    //         selectedFile:  null,
-    //         loaded: 0,
-    //     })
-    // }
+    componentWillMount = () => {
+        this.setState({
+            selectedFile:  null,
+            picId: 0
+        })
+    }
 
     handleselectedFile(event) {
         this.setState({
             selectedFile: event.target.files[0],
             loaded: 0,
+            
         })
     }
 
@@ -29,12 +30,21 @@ class ProfilePage extends Component {
             )
             .then(res => {
                 console.log(res.statusText)
+                setTimeout(() => this.setState({ picId: new Date() + "" }), 2000)
             })
+    }
 
+    handleDelete() {
+        axios
+            .delete('http://localhost:8081/upload', { headers: { "authorization": localStorage.getItem('token') } }
+            )
+            .then(res => {
+                console.log(res.statusText)
+                setTimeout(() => this.setState({ picId: new Date() + "" }), 2000)
+            })
     }
 
     render() {
-        console.log(this.state)
 
         return (
             <Fragment>
@@ -47,16 +57,16 @@ class ProfilePage extends Component {
                             <h5>Current profile avatar</h5>
                             <Row>
                                 <Col s={3} />
-                                <Col  >
-                                    <img src={`http://localhost:8081/profile/pic/${this.props.email}`} alt="" className="circle"
-                                        style={{width: '300px',height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
+                                <Col >
+                                    <img key={'pic-' + this.state.picId} src={`http://localhost:8081/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
+                                        style={{ width: '300px', height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
                                 </Col>
                                 <Col s={3} />
 
                             </Row>
 
                             <Button className="btn-large right red"
-                                onClick={() => this.handleUpload()}
+                                onClick={() => this.handleDelete()}
                             >Remove</Button>
                         </Row>
                         <Row>

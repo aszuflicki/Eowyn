@@ -4,7 +4,6 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const { notifyNewPost } = require('../api/socket')
 
-
 const repository = ({ user, settings, layout, discussion, post, follower }) => {
 	const getUserByEmail = email => {
 		return new Promise((resolve, reject) => {
@@ -23,11 +22,11 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		})
 	}
 
-	const addUser = (email, pass, username = email, profile_pic = '/uploads/default-user.png') => {
+	const addUser = (email, pass, username = email, profile_pic = 'def.jpg') => {
 		return new Promise((resolve, reject) => {
 			user.create({ email, pass })
 				.then(() =>
-					user.findOrCreate({ where: { email, pass } })
+					user.findOrCreate({ where: { email, pass, profile_pic, username } })
 				)
 				.spread((user, created) => {
 					resolve({ user, created })

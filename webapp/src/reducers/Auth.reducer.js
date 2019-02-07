@@ -14,21 +14,17 @@ const authReducerDefaultState = {
 export default (state = authReducerDefaultState, action) => {
     switch (action.type) {
 
-
         case REGISTRATION_SUCCESS:
-            console.log(action.payload)
-            return { ...state, ...action.payload, success_msgs: [action.payload.success_msg] }
+            return { ...state, ...action.payload }
 
         case REGISTRATION_FAILED:
-        console.log(action.payload)
-            return { ...state, isRegistered: false, error_msgs: [action.payload.error_msg.msg] }
+            return { ...state, isRegistered: false }
 
         case LOGIN_FAILED:
-            console.log(action.payload)
-            return { ...state, error_msgs: [...state.error_msgs, action.payload.error_msg] }
+            return { ...state }
 
         case LOGIN_SUCCESS:
-            return { ...state, ...action.payload, success_msgs: [action.payload.success_msg] }
+            return { ...state, ...action.payload }
 
         case LOGOUT_SUCCESS:
             return {

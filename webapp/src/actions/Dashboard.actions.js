@@ -182,4 +182,18 @@ function toggleDeleteTabModalSuccess(isActive) {
     };
 }
 
+export const toggleEditTabModal = (isActive, index) => {
+    return dispatch => {
+        dispatch(toggleEditTabModalSuccess(isActive, index))
+    }
+}
+
+export const TOGGLE_EDIT_TAB_MODAL_SUCCESS = 'TOGGLE_EDIT_TAB_MODAL_SUCCESS';
+function toggleEditTabModalSuccess(isActive, index) {
+    return {
+        type: TOGGLE_EDIT_TAB_MODAL_SUCCESS,
+        payload: { isActive, index }
+    };
+}
+
 

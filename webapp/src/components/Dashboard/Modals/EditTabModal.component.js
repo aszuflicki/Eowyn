@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from 'react'
-import { updateLayout, updateSettings, toggleAddTabModal, setTabActive } from "../../../actions/Dashboard.actions";
+import { updateLayout, updateSettings, toggleEditTabModal, setTabActive } from "../../../actions/Dashboard.actions";
 import { Modal, Button, Input, Row, Col, Card, CardTitle } from 'react-materialize'
 import { connect } from 'react-redux';
+import { relative } from 'path';
 
-class DeleteTabModal extends Component {
+class EditTabModal extends Component {
     componentWillMount = () => {
         this.setState({ input: '', err: '' })
     }
@@ -15,24 +16,16 @@ class DeleteTabModal extends Component {
         }
 
         this.setState({ err: '' })
-
-        let { toggleAddTabModal, layout, updateLayout, setTabActive } = this.props
-
-        const newId = Math.max(0, ...Object.keys(layout)) + 1
-        console.log(newId)
-        layout[newId + ""] = {
-            layout: [],
-            tabName: this.state.input
-        }
+        let { toggleEditTabModal, layout, updateLayout, editedTab } = this.props
+        layout[Object.keys(layout)[editedTab]].tabName = this.state.input
         updateLayout(layout)
-        setTabActive(Object.keys(layout).length - 1)
-        toggleAddTabModal(false)
+        toggleEditTabModal(false)
     }
 
     render() {
-        let { toggleAddTabModal, isAddTabModal } = this.props
+        let { toggleEditTabModal, isEditTabModal } = this.props
 
-        if (!isAddTabModal) return ''
+        if (!isEditTabModal) return ''
 
         return (
             <Fragment>
@@ -46,14 +39,17 @@ class DeleteTabModal extends Component {
                                     <div className="right-align">
                                         <a className="blue-text"
                                             onClick={() => this.handleSubmit()}
-                                        >Add</a>
+                                        >Change</a>
                                         <a className="red-text"
-                                            onClick={() => toggleAddTabModal(false)}
+                                            onClick={() => toggleEditTabModal(false)}
                                         > Cancel</a>
                                     </div>
                                 ]}
-                                title="Add new tab" >
-                                <Row  style={{position: "relative"}}>
+                                title="Edit tab name" >
+
+                                <div style={{ color: "white" }}>x</div>
+
+                                <Row style={{position: "relative"}}>
                                     <Input s={6} label="Tab name"
                                         onChange={(...args) => {
                                             console.log(args)
@@ -61,9 +57,8 @@ class DeleteTabModal extends Component {
                                                 input: args[1]
                                             })
                                         }} />
-                                    <label
-                                        style={{ position: 'absolute', left: "15px", bottom: "0", color: 'red' }}>{this.state.err}
-                                        </label>
+                                    <label 
+                                    style={{position: 'absolute', left: "15px", bottom: "0", color: 'red'}}>{this.state.err}</label>
 
                                 </Row>
                             </Card>
@@ -86,12 +81,12 @@ const mapDispatchToProps = (dispatch) => {
     return {
         updateLayout: (...args) => dispatch(updateLayout(...args)),
         updateSettings: (...args) => dispatch(updateSettings(...args)),
-        toggleAddTabModal: (isActive) => dispatch(toggleAddTabModal(isActive)),
+        toggleEditTabModal: (isActive, index) => dispatch(toggleEditTabModal(isActive, index)),
         setTabActive: (index) => dispatch(setTabActive(index))
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeleteTabModal);
+export default connect(mapStateToProps, mapDispatchToProps)(EditTabModal);
 
 
 

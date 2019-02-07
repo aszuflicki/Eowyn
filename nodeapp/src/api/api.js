@@ -4,6 +4,7 @@ const passport = require("passport");
 const { strategy, signUp, logIn, ensureAuthenticated } = require("./../middleware/passport")
 const upload = require('../middleware/multer')
 const path = require('path')
+const fs = require('fs')
 
 module.exports = (app, options) => {
     const { repo } = options
@@ -139,25 +140,49 @@ module.exports = (app, options) => {
                 res.json({
                     msg_err: err
                 });
-            } else {
-                if (req.file == undefined) {
-                    res.json({
-                        err: 'No File Selected!'
-                    });
-                } else {
-                    repo.setProfilePic(email, req.file.filename)
-                    .then(result => {
-                        console.log(result)
-                        console.log(req.file.filename)
-                        res.json({
-                            msg: 'File Uploaded!',
-                            file: `uploads/${req.file.filename}`
-                        });
-                    })
-                    
-                }
+                return;
             }
+
+            if (req.file == undefined) {
+                res.json({
+                    err: 'No File Selected!'
+                });
+                return;
+            }
+
+            repo.getProfilePic(email)
+                .then((result) => {
+                    fs.unlink(path.resolve(__dirname + `../../../public/uploads/${result}`), (err) => {
+                        if (err) console.log(err);
+                        repo.setProfilePic(email, req.file.filename)
+                            .then(result => {
+                                console.log(result)
+                                console.log(req.file.filename)
+                                res.json({
+                                    msg: 'File Uploaded!',
+                                    file: `uploads/${req.file.filename}`
+                                });
+                            })
+                    });
+                })
+
+
         });
+    });
+
+    app.delete('/upload', ensureAuthenticated, (req, res) => {
+        const { email } = req.locals
+        repo.getProfilePic(email)
+            .then((result) => {
+                fs.unlink(path.resolve(__dirname + `../../../public/uploads/${result}`), (err) => {
+                    if (err) throw err;
+                    repo.setProfilePic(email, 'def.jpg')
+
+                    res.json({
+                        msg: 'File deleted!',
+                    });
+                });
+            })
     });
 
     app.get('/profile/pic/:email', (req, res) => {

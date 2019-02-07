@@ -1,6 +1,7 @@
 import {
     GET_LAYOUT_SUCCESS, GET_SETTINGS_SUCCESS, SET_TAB_ACTIVE_SUCCESS, TOGGLE_EDIT_MODE_SUCCESS,
-    TOGGLE_ADD_MODAL_SUCCESS, TOGGLE_EDIT_MODAL_SUCCESS, TOGGLE_ADD_TAB_MODAL_SUCCESS, TOGGLE_DELETE_TAB_MODAL_SUCCESS
+    TOGGLE_ADD_MODAL_SUCCESS, TOGGLE_EDIT_MODAL_SUCCESS, TOGGLE_ADD_TAB_MODAL_SUCCESS, TOGGLE_DELETE_TAB_MODAL_SUCCESS,
+    TOGGLE_EDIT_TAB_MODAL_SUCCESS
 } from '../actions/Dashboard.actions'
 
 const dashboardReducerDefaultState = {
@@ -12,6 +13,8 @@ const dashboardReducerDefaultState = {
     isAddModal: false,
     isAddTabModal: false,
     isDeleteTabModal: false,
+    isEditTabModal: false,
+    editedTab: 0
 };
 
 export default (state = dashboardReducerDefaultState, action) => {
@@ -35,10 +38,13 @@ export default (state = dashboardReducerDefaultState, action) => {
             return { ...state, isEditModal: action.payload.isActive, editedWidget: action.payload.i }
 
         case TOGGLE_ADD_TAB_MODAL_SUCCESS:
-            return { ...state, isAddTabModal: action.payload.isActive  }
+            return { ...state, isAddTabModal: action.payload.isActive }
 
         case TOGGLE_DELETE_TAB_MODAL_SUCCESS:
-        return { ...state, isDeleteTabModal: action.payload.isActive  }
+            return { ...state, isDeleteTabModal: action.payload.isActive }
+
+        case TOGGLE_EDIT_TAB_MODAL_SUCCESS:
+            return { ...state, isEditTabModal: action.payload.isActive, editedTab: action.payload.index }
 
 
         // case CLEAN_ALERTS:
