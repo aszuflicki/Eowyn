@@ -26,9 +26,10 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			user.create({ email, pass })
 				.then(() =>
-					user.findOrCreate({ where: { email, pass, profile_pic, username } })
+					user.findOrCreate({ where: { email, pass } }),
 				)
 				.spread((user, created) => {
+					user.update({ username: email, profile_pic }, { where: { email } })
 					resolve({ user, created })
 				})
 		})
@@ -104,7 +105,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		return new Promise((resolve, reject) => {
 			Promise
 				.all([
-					discussion.create({ category, topic, desc, author: email, created: new Date(), answeared: new Date() }),
+					discussion.create({ category, topic, desc, author: email, created: new Date(), answeared: new Date(), posts: 0 }),
 				])
 				.then(results => resolve(results[0].dataValues))
 		})
@@ -151,7 +152,12 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 			Promise
 				.all([
 					post.create({ author, topic_id, comment, created: new Date() }),
-					// follower.create({ email: author, topic_id }),
+					follower.create({ email: author, topic_id }),
+					discussion.update({
+						posts: Sequelize.literal('posts + 1')
+					}, {
+							where: { id: topic_id }
+						}),
 				])
 				.then(results => {
 					notifyNewPost(results[0].dataValues)

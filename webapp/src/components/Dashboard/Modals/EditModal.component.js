@@ -67,6 +67,17 @@ class AddWidgetModal extends Component {
             case 5:
                 this.setState({ multiTicker: this.props.settings[this.props.editedWidget].settings.map(el => ({ value: el.proName, label: el.title })) })
                 break
+
+            case 6:
+                const { display, orderBy, category, country, keyphrase } = this.props.settings[this.props.editedWidget].settings
+                this.setState({
+                    display,
+                    category,
+                    keyphrase,
+                    orderBy,
+                    country
+                })
+                break
         }
         console.log(this.props.settings[this.props.editedWidget])
     }
@@ -75,10 +86,15 @@ class AddWidgetModal extends Component {
             const elems = document.querySelectorAll('.tabs');
             let instances = M.Tabs.init(elems, {});
         }, 100);
-
+        setTimeout(() => {
+            let elems = document.querySelectorAll('.chips');
+            const instances = M.Chips.init(elems, {
+                placeholder: 'Enter a keyphrase',
+                secondaryPlaceholder: '+Keyphrase',
+                data: this.state.keyphrase.map(el => ({ tag: el }))
+            });
+        }, 100);
     }
-
-
     renderSettingsForChartView() {
         return (
             <Fragment>
@@ -309,6 +325,144 @@ class AddWidgetModal extends Component {
         )
     }
 
+    renderSettingsForNewsFeed() {
+        console.log(this.state)
+        return (
+            <Fragment>
+                <h5>Display</h5>
+
+                <Row>
+                    <Input name='group1' type='checkbox' value='headlines' label='Top headlines'
+                        checked={this.state.display == 0}
+                        onClick={(...args) => this.setState({ display: 0 })} />
+                    <Input name='group1' type='checkbox' value='everything' label='Everything'
+                        checked={this.state.display == 1}
+                        onClick={(...args) => this.setState({ display: 1 })} />
+                </Row>
+                {this.state.display == 0 ? (
+                    <Fragment>
+                        <h5>From category</h5>
+                        <Row>
+                            <Input name='group2' type='checkbox' value='relevancy' label='Business'
+                                onClick={(...args) => this.setState({ category: 'relevancy' })}
+                                checked={this.state.category == 'relevancy'} />
+                            <Input name='group2' type='checkbox' value='entertainment' label='Entertainment'
+                                onClick={(...args) => this.setState({ category: 'entertainment' })}
+                                checked={this.state.category == 'entertainment'} />
+                            <Input name='group2' type='checkbox' value='general' label='general'
+                                onClick={(...args) => this.setState({ category: 'general' })}
+                                checked={this.state.category == 'general'} />
+                            <Input name='group2' type='checkbox' value='health' label='Health'
+                                onClick={(...args) => this.setState({ category: 'health' })}
+                                checked={this.state.category == 'health'} />
+                            <Input name='group2' type='checkbox' value='science' label='Science'
+                                onClick={(...args) => this.setState({ category: 'science' })}
+                                checked={this.state.category == 'science'} />
+                            <Input name='group2' type='checkbox' value='sports' label='Sports'
+                                onClick={(...args) => this.setState({ category: 'sports' })}
+                                checked={this.state.category == 'sports'} />
+                            <Input name='group2' type='checkbox' value='technology' label='Technology'
+                                onClick={(...args) => this.setState({ category: 'technology' })}
+                                checked={this.state.category == 'technology'} />
+                            <Input name='group2' type='checkbox' value='all' label='All'
+                                onClick={(...args) => this.setState({ category: 'all' })}
+                                checked={this.state.category == 'all'} />
+
+                        </Row>
+                        <h5>Country</h5>
+                        <Row>
+                            <Autocomplete
+                                title='Country'
+                                value={this.state.country}
+                                onAutocomplete={(country) => this.setState({ country })}
+                                data={
+                                    {
+                                        'United Arab Emirates': null,
+                                        'Argentina': null,
+                                        'Austria': null,
+                                        'Australia': null,
+                                        'Belgium': null,
+                                        'Bulgaria': null,
+                                        'Brazil': null,
+                                        'Canada': null,
+                                        'Switzerland': null,
+                                        'China': null,
+                                        'Colombia': null,
+                                        'Cuba': null,
+                                        'Czechia': null,
+                                        'Germany': null,
+                                        'Egypt': null,
+                                        'France': null,
+                                        'United Kingdom': null,
+                                        'Hong Kong': null,
+                                        'Hungary': null,
+                                        'Indonesia': null,
+                                        'Ireland': null,
+                                        'Israel': null,
+                                        'India': null,
+                                        'Italy': null,
+                                        'Japan': null,
+                                        'Korea, Republic of': null,
+                                        'Lithuania': null,
+                                        'Latvia': null,
+                                        'Morocco': null,
+                                        'Mexico': null,
+                                        'Malaysia': null,
+                                        'Nigeria': null,
+                                        'Netherlands': null,
+                                        'Norway': null,
+                                        'New Zealand': null,
+                                        'Philippines': null,
+                                        'Poland': null,
+                                        'Portugal': null,
+                                        'Romania': null,
+                                        'Serbia': null,
+                                        'Russian Federation': null,
+                                        'Saudi Arabia': null,
+                                        'Singapore': null,
+                                        'Slovenia': null,
+                                        'Slovakia': null,
+                                        'Thailand': null,
+                                        'Turkey': null,
+                                        'Taiwan': null,
+                                        'Ukraine': null,
+                                        'United States': null,
+                                        'Venezuela': null,
+                                        'South Africa': null,
+                                    }
+                                }
+                            />
+                        </Row>
+                    </Fragment>
+                ) : (
+                        <Fragment>
+                            <h5>Order by</h5>
+                            <Row>
+                                <Input name='group2' type='checkbox' value='relevancy' label='Relevancy'
+                                    onClick={(...args) => this.setState({ orderBy: 'relevancy' })}
+                                    checked={this.state.orderBy == 'relevancy'} />
+                                <Input name='group2' type='checkbox' value='popularity' label='Popularity'
+                                    onClick={(...args) => this.setState({ orderBy: 'popularity' })}
+                                    checked={this.state.orderBy == 'popularity'} />
+                                <Input name='group2' type='checkbox' value='publishedAt' label='Date'
+                                    onClick={(...args) => this.setState({ orderBy: 'publishedAt' })}
+                                    checked={this.state.orderBy == 'publishedAt'} />
+                            </Row>
+                            <h5>Keywords</h5>
+                            <Row>
+                                <div class="chips">
+                                    <input id="tags"
+                                        onChipAdd={(...args) => console.log(args)}
+                                        error={this.state.err.tagsa}
+                                    />
+                                </div>
+                            </Row>
+                        </Fragment>
+                    )}
+            </Fragment>
+        )
+    }
+
     renderSettings() {
         switch (this.state.type) {
             case 0:
@@ -345,6 +499,12 @@ class AddWidgetModal extends Component {
                 return (
                     <Fragment>
                         {this.renderSettingsForMultiTicker()}
+                    </Fragment>
+                )
+            case 6:
+                return (
+                    <Fragment>
+                        {this.renderSettingsForNewsFeed()}
                     </Fragment>
                 )
             default: return 'Ooopsss...'
@@ -401,12 +561,12 @@ class AddWidgetModal extends Component {
                         title: typeof el.label == 'object' ? el.label.props.children[3] : el.label
                     }))
                 setTimeout(() => this.props.updateSettings(settings), 2200)
-
                 this.props.toggleEditModal(false);
-                // setTimeout(() => {
-                //     this.props.getLayout();
-                //     this.props.getSettings();
-                // }, 200)
+                break
+            case 6:
+                settings[editedWidget].settings = widgetSettings
+                setTimeout(() => this.props.updateSettings(settings), 200)
+                this.props.toggleEditModal(false);
                 break
         }
 
@@ -479,7 +639,26 @@ class AddWidgetModal extends Component {
                 } else {
                     this.addWidget(5, this.state.multiTicker)
                 }
-                return
+                break
+            case 6:
+                const { display, orderBy, category, country } = this.state
+                let keyphrase = []
+                if (display === 0) {
+                    if (this.state.country.length < 3) {
+                        this.setState({ err: 'Please fill all inputs' })
+                        return
+                    }
+                    
+                } else if (this.state.display === 1) {
+                    const elem = document.querySelector('.chips');
+                    keyphrase = M.Chips.getInstance(elem).chipsData.map(el => el.tag)
+                    if (keyphrase.length < 1) {
+                        this.setState({ err: 'Please add at least one keyphase' })
+                        return
+                    }
+                }
+                this.addWidget(6, { display, orderBy, category, country, keyphrase })
+                break
             default: return 'Ooopsss...'
 
         }
@@ -497,7 +676,7 @@ class AddWidgetModal extends Component {
                             actions={[<div className="right-align">
                                 <a className="blue-text"
                                     onClick={() => this.validate()}
-                                >Add</a>
+                                >Edit</a>
                                 <a className="red-text"
                                     onClick={() => toggleEditModal(false)}
                                 > Cancel</a></div>]}

@@ -41,7 +41,7 @@ export const getDisscussion = (id) => {
 export const GET_DISCUSSION_SUCCESS = 'GET_DISCUSSION_SUCCESS';
 function getDisscussionSuccess(data) {
     return {
-        type: ADD_NEW_DISCUSSION_SUCCESS,
+        type: GET_DISCUSSION_SUCCESS,
         payload: data
     };
 }

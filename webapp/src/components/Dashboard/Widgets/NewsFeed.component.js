@@ -20,6 +20,7 @@ class NewsFeed extends Component {
         this.setState({
             feed: { items: [] },
             newsapi: new NewsAPI('6518591a014846529815780fd3f59d72'),
+            toRefresh: 0
         })
         setTimeout(() => {
             var elems = document.querySelectorAll('.collapsible');
@@ -37,6 +38,11 @@ class NewsFeed extends Component {
         clearInterval(this.state.intervalId);
     }
 
+    componentWillReceiveProps = (nextProps) => {
+        // this.setState({ toRefresh: new Date() })
+        this.getFeed()
+    }
+
     getFeed = async () => {
         const { newsapi } = this.state
         const { display, orderBy: sortBy, category, country, keyphrase: q } = this.props.settings
@@ -48,7 +54,7 @@ class NewsFeed extends Component {
             newsapi.v2.topHeadlines(params)
                 .then(response => {
                     console.log(response)
-                    this.setState({ feed: { items: response.articles } })
+                    this.setState({ feed: {totalResults: response.totalResults, items: response.articles } })
                 });
         } else {
             newsapi.v2.everything({
@@ -59,7 +65,7 @@ class NewsFeed extends Component {
                 sortBy,
             }).then(response => {
                 console.log(response);
-                this.setState({ feed: { items: response.articles } })
+                this.setState({ feed: {...feed,  items: response.articles } })
             });
         }
 
@@ -75,31 +81,34 @@ class NewsFeed extends Component {
             backgroundColor: "#fff",
             overflowY: 'scroll'
         }
-        console.log(this.props)
+        console.log(this.state)
 
         return (
 
             <React.Fragment>
                 <div style={styleDiv}>
                     <h5>News feed</h5>
-                    <ul class="collapsible">
+                    <ul className="collapsible">
                         {this.state.feed.items.map(el => (
-                            <li style={{ position: 'relative' }}>
-                                <div class="collapsible-header"><img src={el.urlToImage} style={{ height: "48px", marginTop: "20px", marginRight: "20px" }} />
+                            <li style={{ position: 'relative' }} key={el.url}>
+                                <div className="collapsible-header"><img src={el.urlToImage} style={{ height: "48px", marginTop: "20px", marginRight: "20px" }} />
                                     <span className="truncate"
                                         style={{ width: "calc(100% - 150px)", display: "inline-block" }}>
 
                                         {el.title}
                                     </span>
-                                    <span style={{ top: 0, right: "20px", position: "absolute" }} class="right-align">{ta.ago(el.publishedAt)}
+                                    <span style={{ top: 0, right: "20px", position: "absolute" }} className="right-align">{ta.ago(el.publishedAt)}
                                     </span>
                                     <label style={{ position: "absolute", left: "calc(100% - 120px)", top: "50px" }}>by {el.source.name}</label>
                                 </div>
-                                <div class="collapsible-body"><span>
+                                <div className="collapsible-body"><span>
                                     {el.description} <a taget="_blank" href={el.url} style={{ paddingLeft: "10px" }}>Read full</a>
                                 </span></div>
                             </li>
                         ))}
+                        {this.state.feed.totalResults == 0? (
+                            <h6>Sorry, there's no articles for that keyphrase, please try without tags or in diffrent category</h6>
+                        ):''}
                     </ul>
                 </div>
             </React.Fragment>

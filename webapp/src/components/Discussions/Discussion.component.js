@@ -1,7 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import Navbar from '../Navbar.component'
 import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab, Icon, Input } from 'react-materialize'
-import history from '../../routers/history';
 import { connect } from 'react-redux';
 import Badges from './Fragments/Badges.component'
 import Follow from './Fragments/Follow.component'
@@ -22,9 +20,7 @@ class Discussion extends Component {
                     this.props.notifyNewPost(post, this.props.discussion)
                 }
             })
-
     }
-
 
     componentDidMount = () => {
         const id = window.location.href.split('/')[4]
@@ -40,7 +36,6 @@ class Discussion extends Component {
             setTimeout(() => this.props.getDisscussion(this.props.discussion.id), 100);
         }
     }
-
 
     render() {
         if (!this.props.discussion) return (<div></div>)
@@ -90,7 +85,7 @@ class Discussion extends Component {
                                 <Input s={10} label="Comment" validate
                                     value={this.state.input}
                                     onChange={(...args) => this.setState({ input: args[1] })}
-                                ><Icon><img src={`http://localhost:8081/profile/pic/${this.props.email}`} alt="" className="circle" style={{ width: "32px",height: "32px", marginTop: "0px" }} /></Icon></Input>
+                                ><Icon><img src={`http://localhost:8081/profile/pic/${this.props.email}`} alt="" className="circle" style={{ width: "32px", height: "32px", marginTop: "0px" }} /></Icon></Input>
 
                                 <Col>
                                     <Button s={2} style={{ marginTop: "25px" }}
@@ -107,8 +102,8 @@ class Discussion extends Component {
                             </Row>
                         ) : (<ul className="collection">
                             {this.props.posts.map(post => (
-                                <li className="collection-item avatar">
-                                    <img src="http://chittagongit.com//images/default-user-icon/default-user-icon-8.jpg" alt="" className="circle" />
+                                <li className="collection-item avatar" key={'post-' + post.updatedAt}>
+                                    <img src={`http://localhost:8081/profile/pic/${post.author}`} alt="" className="circle" />
                                     <p><b>{post.author}</b>
 
                                         <label>&nbsp; {ta.ago(post.updatedAt + '')}</label>

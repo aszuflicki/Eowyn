@@ -411,18 +411,17 @@ class AddWidgetModal extends Component {
                                     onClick={(...args) => this.setState({ orderBy: 'publishedAt' })}
                                     checked={this.state.orderBy == 'publishedAt'} />
                             </Row>
+                            <h5>Keywords</h5>
+                            <Row>
+                                <div class="chips">
+                                    <input id="tags"
+                                        onChipAdd={(...args) => console.log(args)}
+                                        error={this.state.err.tagsa}
+                                    />
+                                </div>
+                            </Row>
                         </Fragment>
                     )}
-
-                <h5>Keywords</h5>
-                <Row>
-                    <div class="chips">
-                        <input id="tags"
-                            onChipAdd={(...args) => console.log(args)}
-                            error={this.state.err.tagsa}
-                        />
-                    </div>
-                </Row>
             </Fragment>
         )
     }
@@ -648,18 +647,16 @@ class AddWidgetModal extends Component {
                 return
             case 6:
                 const { display, orderBy, category, country } = this.state
-                const elem = document.querySelector('.chips');
-                const keyphrase = M.Chips.getInstance(elem).chipsData.map(el => el.tag)
+                let keyphrase = []
                 if (display === 0) {
                     if (this.state.country.length < 3) {
                         this.setState({ err: 'Please fill all inputs' })
                         return
                     }
-                    if (keyphrase.length < 1) {
-                        this.setState({ err: 'Please add at least one keyphase' })
-                        return
-                    }
+                    
                 } else if (this.state.display === 1) {
+                    const elem = document.querySelector('.chips');
+                    keyphrase = M.Chips.getInstance(elem).chipsData.map(el => el.tag)
                     if (keyphrase.length < 1) {
                         this.setState({ err: 'Please add at least one keyphase' })
                         return

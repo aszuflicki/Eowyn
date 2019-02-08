@@ -7,7 +7,10 @@ const User = (sequelize, types) =>
 			primaryKey: true,
 			autoIncrement: true
 		},
-		username: types.STRING(32),
+		username: {
+			type: types.STRING(32),
+			unique: true
+		},
 		profile_pic: types.STRING(32),
 		email: types.STRING(32),
 		pass: types.STRING(127)
@@ -51,7 +54,8 @@ const Discussion = (sequelize, types) =>
 		desc: types.STRING(511),
 		author: types.STRING(511),
 		created: types.DATE,
-		answeared: types.DATE
+		answeared: types.DATE,
+		posts: types.INTEGER
 	})
 
 const Post = (sequelize, types) =>

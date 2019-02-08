@@ -12,7 +12,7 @@ const dashboardReducerDefaultState = {
 export default (state = dashboardReducerDefaultState, action) => {
     switch (action.type) {
         case GET_DISCUSSION_SUCCESS:
-            return { ...state, discussion: action.payload }
+            return { ...state, ...action.payload }
 
         case GET_DISCUSSIONS_LIST_SUCCESS:
             return { ...state, list: action.payload }
