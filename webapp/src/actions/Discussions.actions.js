@@ -46,6 +46,24 @@ function getDisscussionSuccess(data) {
     };
 }
 
+export const getMorePostsDisscussion = (id, offset) => {
+    return dispatch => {
+        instance.get(`/discussion/${id}?offset=${offset}`, { headers: { "authorization": localStorage.getItem('token') } })
+            .then(res => {
+                dispatch(getMorePostsDisscussionSuccess(res.data))
+            })
+            .catch(err => { })
+    }
+}
+
+export const GET_MORE_POSTS_DISCUSSION_SUCCESS = 'GET_MORE_POSTS_DISCUSSION_SUCCESS';
+function getMorePostsDisscussionSuccess(data) {
+    return {
+        type: GET_MORE_POSTS_DISCUSSION_SUCCESS,
+        payload: data
+    };
+}
+
 export const getDiscussionsList = (cat) => {
     return dispatch => {
         instance.get(`/discussions/${cat}`, { headers: { "authorization": localStorage.getItem('token') } })
@@ -60,6 +78,24 @@ export const GET_DISCUSSIONS_LIST_SUCCESS = 'GET_DISCUSSIONS_LIST_SUCCESS';
 function getDiscussionsListSuccess(data) {
     return {
         type: GET_DISCUSSIONS_LIST_SUCCESS,
+        payload: data
+    };
+}
+
+export const getMoreOfDiscussionsList = (cat, offset=0) => {
+    return dispatch => {
+        instance.get(`/discussions/${cat}?offset=${offset}`, { headers: { "authorization": localStorage.getItem('token') } })
+            .then(res => {
+                dispatch(getMoreOfDiscussionsListSuccess(res.data))
+            })
+            .catch(err => { })
+    }
+}
+
+export const GET_MORE_OF_DISCUSSIONS_LIST_SUCCESS = 'GET_MORE_OF_DISCUSSIONS_LIST_SUCCESS';
+function getMoreOfDiscussionsListSuccess(data) {
+    return {
+        type: GET_MORE_OF_DISCUSSIONS_LIST_SUCCESS,
         payload: data
     };
 }
@@ -91,7 +127,7 @@ export const getFollows = () => {
                 dispatch(getFollowsSuccess(res.data))
             })
             .catch(err => {
-                toast.error("Log in to comment");
+                // toast.error("Log in to comment");
             })
     }
 }
@@ -131,7 +167,7 @@ export const unfollow = (topic_id) => {
                 dispatch(unfollowSuccess(topic_id))
             })
             .catch(err => {
-                toast.error("Log in to comment");
+                // toast.error("Log in to comment");
             })
     }
 }

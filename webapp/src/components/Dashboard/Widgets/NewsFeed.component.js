@@ -39,7 +39,6 @@ class NewsFeed extends Component {
     }
 
     componentWillReceiveProps = (nextProps) => {
-        // this.setState({ toRefresh: new Date() })
         this.getFeed()
     }
 
@@ -48,7 +47,7 @@ class NewsFeed extends Component {
         const { display, orderBy: sortBy, category, country, keyphrase: q } = this.props.settings
         console.log({ display, sortBy, category, country, q })
         if (display === 0) {
-            let params = { country: countries[country] }
+            let params = { country: countries[country], pageSize: 50 }
             if (category !== 'all') params.category = category
 
             newsapi.v2.topHeadlines(params)
@@ -60,9 +59,10 @@ class NewsFeed extends Component {
             newsapi.v2.everything({
                 q,
                 from: new Date(),
-                to: new Date() - 3 * 24 * 3600,
+                to: new Date() - 4 * 24 * 3600,
                 language: 'en',
                 sortBy,
+                pageSize: 50
             }).then(response => {
                 console.log(response);
                 this.setState({ feed: {...feed,  items: response.articles } })
@@ -107,7 +107,7 @@ class NewsFeed extends Component {
                             </li>
                         ))}
                         {this.state.feed.totalResults == 0? (
-                            <h6>Sorry, there's no articles for that keyphrase, please try without tags or in diffrent category</h6>
+                            <h6>Sorry, there's no articles for that set of keyphrases, please try without tags or in diffrent category</h6>
                         ):''}
                     </ul>
                 </div>

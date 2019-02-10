@@ -69,15 +69,17 @@ module.exports = (app, options) => {
     })
 
     app.get('/discussions/', (req, res) => {
-        repo.getDisscusions()
+        const { offset=0 } = req.query
+        repo.getDisscusions(offset)
             .then((results => {
                 res.json(results)
             }))
     })
 
     app.get('/discussions/:id', (req, res) => {
+        const { offset=0 } = req.query
         let { id } = req.params;
-        repo.getDisscusions(id)
+        repo.getDisscusions(offset, id)
             .then((results => {
                 res.json(results)
             }))
@@ -85,7 +87,8 @@ module.exports = (app, options) => {
 
     app.get('/discussion/:id', (req, res) => {
         let { id } = req.params;
-        repo.getDisscusion(id)
+        const { offset=0 } = req.query
+        repo.getDisscusion(id, offset)
             .then((results => {
                 res.json(results)
             }))

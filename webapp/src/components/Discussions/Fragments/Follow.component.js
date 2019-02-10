@@ -5,7 +5,8 @@ import { follow, unfollow } from './../../../actions/Discussions.actions'
 class Follow extends Component {
 
     render() {
-        if(this.props == null) return;
+        console.log(this.props)
+        if(this.props.follows == null) return <div></div>
         const { follows, topic_id } = this.props
 
         if (follows.includes(topic_id+""))

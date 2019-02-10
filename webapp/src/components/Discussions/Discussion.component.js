@@ -3,11 +3,43 @@ import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab, 
 import { connect } from 'react-redux';
 import Badges from './Fragments/Badges.component'
 import Follow from './Fragments/Follow.component'
-import { getDisscussion, newPost, getFollows, notifyNewPost } from '../../actions/Discussions.actions'
+import { getDisscussion, newPost, getFollows, notifyNewPost, getMorePostsDisscussion } from '../../actions/Discussions.actions'
 import ta from 'time-ago'
 const io = require('socket.io-client')
 
 class Discussion extends Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            error: false,
+            category: ''
+        };
+
+        // Binds our scroll event handler
+        window.onscroll = () => {
+            const {
+                state: {
+                    error,
+                    isLoading,
+                },
+            } = this;
+
+            if (error || isLoading || !this.hasMore) return;
+
+            if (
+                window.innerHeight + document.documentElement.scrollTop
+                === document.documentElement.offsetHeight
+            ) {
+                console.log('xD')
+                const id = window.location.href.split('/')[4]
+                this.props.getMorePostsDisscussion(id, this.props.posts.rows.length);
+            }
+        };
+    }
+
+    hasMore() { return this.props.posts.rows.length < this.props.posts.count }
 
     componentWillMount = () => {
         this.setState({ err: '', input: '' })
@@ -62,7 +94,6 @@ class Discussion extends Component {
                                             </Col>
                                             <Col s={3} />
                                             <Col>
-                                                {/* <a className="waves-effect waves-light btn-small" right><i className="material-icons right">star_border</i>Follow</a> */}
                                                 <Follow topic_id={id} />
                                             </Col>
                                         </Row>
@@ -96,12 +127,12 @@ class Discussion extends Component {
                             </div>
                         </Row>
 
-                        {this.props.posts.length == 0 ? (
+                        {this.props.posts.rows.length == 0 ? (
                             <Row>
                                 <Col s={8}><span>No comments. Be first to comment</span></Col>
                             </Row>
                         ) : (<ul className="collection">
-                            {this.props.posts.map(post => (
+                            {this.props.posts.rows.map(post => (
                                 <li className="collection-item avatar" key={'post-' + post.updatedAt}>
                                     <img src={`http://localhost:8081/profile/pic/${post.author}`} alt="" className="circle" />
                                     <p><b>{post.author}</b>
@@ -111,11 +142,6 @@ class Discussion extends Component {
                                         {post.comment}
                                     </p>
                                     <a href="#!" className="secondary-content">
-                                        {/* <Row>
-                                            <Col> <span className="new badge" data-badge-caption="Investment"></span>
-                                            </Col>
-                                        </Row> */}
-
                                     </a>
                                 </li>
                             ))}
@@ -125,6 +151,15 @@ class Discussion extends Component {
 
 
                     </Row>
+                    {this.hasMore() ? (
+                            <Row>
+                                <Col s={8}><span>Loading...</span></Col>
+                            </Row>
+                        ): (
+                            <Row>
+                                <Col s={8}><span>You've reached end...</span></Col>
+                            </Row>
+                        )}
 
 
                 </div>
@@ -147,7 +182,9 @@ const mapDispatchToProps = (dispatch) => {
         getDisscussion: (...args) => dispatch(getDisscussion(...args)),
         newPost: (...args) => dispatch(newPost(...args)),
         getFollows: (...args) => dispatch(getFollows(...args)),
-        notifyNewPost: (...args) => dispatch(notifyNewPost(...args))
+        notifyNewPost: (...args) => dispatch(notifyNewPost(...args)),
+        getMorePostsDisscussion: (...args) => dispatch(getMorePostsDisscussion(...args)),
+
     };
 };
 

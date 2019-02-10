@@ -111,37 +111,43 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 		})
 	}
 
-	const getDisscusions = (category) => {
+	const getDisscusions = (offset = 0, category) => {
 		return new Promise((resolve, reject) => {
 			let params = {
 				limit: 20,
-				order: [['answeared', 'DESC']]
+				offset,
+				order: [['updatedAt', 'DESC']]
 			}
 			if (category) params['where'] = { category }
 
 			Promise
 				.all([
-					discussion.findAll(params),
+					discussion.findAndCountAll(params)
 				])
 				.then(results => {
-					resolve(results[0].map(el => el.dataValues))
+					console.log(results)
+					resolve(results[0])
 				})
 		})
 	}
 
-	const getDisscusion = (id) => {
+	const getDisscusion = (id, offset) => {
 		return new Promise((resolve, reject) => {
 
 			Promise
 				.all([
 					discussion.findOne({ where: { id } }),
-					post.findAll({ where: { topic_id: id }, order: [['created', 'DESC']], limit: 20 }),
+					post.findAndCountAll({
+						where: { topic_id: id },
+						order: [['updatedAt', 'DESC']],
+						limit: 20,
+						offset
+					}),
 				])
 				.then(results => {
-					// console.log(results)
 					resolve({
 						discussion: results[0].dataValues,
-						posts: results[1].map(el => el.dataValues) || []
+						posts: results[1]
 					})
 				})
 		})

@@ -1,5 +1,4 @@
 import React, { Component, Fragment } from 'react';
-import Navbar from './Navbar.component'
 import { Row, Input, Button, Col } from 'react-materialize'
 import axios from 'axios'
 import { connect } from 'react-redux'
@@ -8,7 +7,7 @@ class ProfilePage extends Component {
 
     componentWillMount = () => {
         this.setState({
-            selectedFile:  null,
+            selectedFile: null,
             picId: 0
         })
     }
@@ -17,11 +16,12 @@ class ProfilePage extends Component {
         this.setState({
             selectedFile: event.target.files[0],
             loaded: 0,
-            
+
         })
     }
 
     handleUpload = () => {
+        if (!this.state.selectedFile) return
         const data = new FormData()
         data.append('file', this.state.selectedFile, this.state.selectedFile.name)
 
@@ -51,36 +51,33 @@ class ProfilePage extends Component {
                 <Row />
                 <Row />
                 <Row>
-                    <Col s={3} />
-                    <Col s={6}>
+                    <Col s={4} />
+                    <Col s={4}>
                         <Row>
                             <h5>Current profile avatar</h5>
                             <Row>
                                 <Col s={3} />
                                 <Col >
-                                    <img key={'pic-' + this.state.picId} src={`http://localhost:8081/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
-                                        style={{ width: '300px', height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
+                                    <Row>
+                                        <img key={'pic-' + this.state.picId} src={`http://localhost:8081/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
+                                            style={{ width: '300px', height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
+                                    </Row>
                                 </Col>
-                                <Col s={3} />
-
+                                <Col s={4} />
                             </Row>
-
-                            <Button className="btn-large right red"
+                            <Row><Col s={9} /> <Button className="btn-large red"
                                 onClick={() => this.handleDelete()}
-                            >Remove</Button>
+                            >Remove</Button></Row>
                         </Row>
                         <Row>
                             <h5>Replace profile avatar</h5>
                             <Input type="file" label="File" s={9}
-                                onChange={this.handleselectedFile.bind(this)}
-                            />
+                                onChange={this.handleselectedFile.bind(this)} />
                             <Button className="btn-large"
-                                onClick={() => this.handleUpload()}
-                            >Upload</Button>
+                                onClick={() => this.handleUpload()}>Upload</Button>
                         </Row>
                     </Col>
                 </Row>
-
             </Fragment>
         )
     }
@@ -91,9 +88,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => {
-    return {
-
-    };
+    return {};
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfilePage);
