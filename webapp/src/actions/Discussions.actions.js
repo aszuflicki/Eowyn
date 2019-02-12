@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 // const io = require('socket.io-client')
 // const socket = io('https://api.eowyn.szuflicki.tk')
 // const socket = io('http://localhost:8081')
-const instance = axios.create({ baseURL: 'http://localhost:8081' })
+const instance = axios.create({ baseURL: '/api' })
 
 export const addNewDisscussion = (category, topic, desc, tags) => {
     return dispatch => {

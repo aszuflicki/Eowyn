@@ -177,6 +177,12 @@ module.exports = (app, options) => {
         const { email } = req.locals
         repo.getProfilePic(email)
             .then((result) => {
+                if(result === 'def.jpg') {
+                    res.json({
+                        msg: 'File deleted!',
+                    });
+                    return
+                }
                 fs.unlink(path.resolve(__dirname + `../../../public/uploads/${result}`), (err) => {
                     if (err) throw err;
                     repo.setProfilePic(email, 'def.jpg')

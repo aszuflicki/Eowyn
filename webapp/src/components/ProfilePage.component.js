@@ -26,7 +26,7 @@ class ProfilePage extends Component {
         data.append('file', this.state.selectedFile, this.state.selectedFile.name)
 
         axios
-            .post('http://localhost:8081/upload', data, { headers: { "authorization": localStorage.getItem('token') } }
+            .post('/upload', data, { headers: { "authorization": localStorage.getItem('token') } }
             )
             .then(res => {
                 console.log(res.statusText)
@@ -36,7 +36,7 @@ class ProfilePage extends Component {
 
     handleDelete() {
         axios
-            .delete('http://localhost:8081/upload', { headers: { "authorization": localStorage.getItem('token') } }
+            .delete('/upload', { headers: { "authorization": localStorage.getItem('token') } }
             )
             .then(res => {
                 console.log(res.statusText)
@@ -59,7 +59,7 @@ class ProfilePage extends Component {
                                 <Col s={3} />
                                 <Col >
                                     <Row>
-                                        <img key={'pic-' + this.state.picId} src={`http://localhost:8081/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
+                                        <img key={'pic-' + this.state.picId} src={`/api/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
                                             style={{ width: '300px', height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
                                     </Row>
                                 </Col>
