@@ -183,8 +183,9 @@ module.exports = (app, options) => {
                     });
                     return
                 }
+                try
                 fs.unlink(path.resolve(__dirname + `../../../public/uploads/${result}`), (err) => {
-                    if (err) throw err;
+                    if (err) console.log(err)
                     repo.setProfilePic(email, 'def.jpg')
 
                     res.json({
