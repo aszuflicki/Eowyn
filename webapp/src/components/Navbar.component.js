@@ -17,7 +17,7 @@ class NavigationBar extends Component {
   }
 
   componentDidUpdate = () => {
-    const socket = io(`/api/following/${this.props.email.replace('@', '&')}`)
+    const socket = io(`http://just-testing.ml:8081/following/${this.props.email.replace('@', '&')}`)
       .on('new_post', (post, discussion) => {
         console.log(post)
         if (post.author != this.props.email && window.location.href.split('/')[3] != 'discussion') {

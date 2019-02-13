@@ -24,7 +24,7 @@ class Dashboard extends Component {
     })
     setTimeout(() => {
       this.setState({ tabActive: window.location.href.split('/')[4] || Object.keys(this.props.layout)[0] })
-    }, 100)
+    }, 400)
 
     this.props.getLayout()
     this.props.getSettings()
