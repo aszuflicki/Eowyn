@@ -62,30 +62,15 @@ class Discussions extends Component {
                             <Row />
                             <Row />
                             <Row><div style={{ paddingLeft: "11.25px" }}><a
-                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' }) }}
+                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' });history.push('/discussions/followed')  }}
+                            >Followed</a> </div> </Row>
+                            <Row><div style={{ paddingLeft: "11.25px" }}><a
+                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' });history.push('/discussions/search')  }}
+                            >Search</a> </div> </Row>
+                            <Row><div style={{ paddingLeft: "11.25px" }}><a
+                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' });history.push('/discussions/') }}
                             >All discussions</a> </div> </Row>
-                            <Row> <div style={{ paddingLeft: "11.25px" }}>Categories</div></Row>
-                            <Row>
-
-                                <Col s={12}><span className="new badge tag-menu left"
-                                    style={{ opacity: this.state.category === 0 ? .7 : 1 }}
-                                    onClick={() => { this.props.getDiscussionsList(0); this.setState({ category: 0 }) }} data-badge-caption="General Discussion"></span>       </Col>
-                                <Col s={12}><span className="new badge tag-menu  left"
-                                    style={{ opacity: this.state.category === 1 ? .7 : 1 }}
-                                    onClick={() => { this.props.getDiscussionsList(1); this.setState({ category: 1 }) }} data-badge-caption="Stocks / Bonds"></span>       </Col>
-                                <Col s={12}><span className="new badge tag-menu left"
-                                    style={{ opacity: this.state.category === 2 ? .7 : 1 }}
-                                    onClick={() => { this.props.getDiscussionsList(2); this.setState({ category: 2 }) }} data-badge-caption="Investment Ideas"></span></Col>
-                                <Col s={12}><span className="new badge tag-menu left"
-                                    style={{ opacity: this.state.category === 3 ? .7 : 1 }}
-                                    onClick={() => { this.props.getDiscussionsList(3); this.setState({ category: 3 }) }} data-badge-caption="Cryptocurrencies"></span>       </Col>
-                                <Col s={12}><span className="new badge tag-menu left"
-                                    style={{ opacity: this.state.category === 4 ? .7 : 1 }}
-                                    onClick={() => { this.props.getDiscussionsList(4); this.setState({ category: 4 }) }} data-badge-caption="Commodities"></span>       </Col>
-                                <Col s={12}><span className="new badge tag-menu left"
-                                    style={{ opacity: this.state.category === 5 ? .7 : 1 }}
-                                    onClick={() => { this.props.getDiscussionsList(5); this.setState({ category: 5 }) }} data-badge-caption="Short / CFDs"></span>       </Col>
-                            </Row>
+                            
 
                         </Col>
                         <Col />
@@ -122,7 +107,7 @@ class Discussions extends Component {
                                 <div>You did it! You reached the end!</div>
                                 : ''}
                             {this.props.count === 0 ?
-                                <div>Category empty so far :( </div>
+                                <div>Empty so far :( </div>
                                 : ''}
                         </Col>
                     </Row>

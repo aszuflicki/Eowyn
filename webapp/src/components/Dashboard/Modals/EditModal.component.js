@@ -86,6 +86,7 @@ class AddWidgetModal extends Component {
             const elems = document.querySelectorAll('.tabs');
             let instances = M.Tabs.init(elems, {});
         }, 100);
+        if(this.props.settings[this.props.editedWidget].type === 6)
         setTimeout(() => {
             let elems = document.querySelectorAll('.chips');
             const instances = M.Chips.init(elems, {
@@ -93,7 +94,20 @@ class AddWidgetModal extends Component {
                 secondaryPlaceholder: '+Keyphrase',
                 data: this.state.keyphrase.map(el => ({ tag: el }))
             });
-        }, 100);
+        }, 200);
+    }
+
+
+    componentDidUpdate() {
+        if(this.props.settings[this.props.editedWidget].type === 6)
+        setTimeout(() => {
+            let elems = document.querySelectorAll('.chips');
+            const instances = M.Chips.init(elems, {
+                placeholder: 'Enter a keyphrase',
+                secondaryPlaceholder: '+Keyphrase',
+                data: this.state.keyphrase.map(el => ({ tag: el }))
+            });
+        }, 200);
     }
     renderSettingsForChartView() {
         return (

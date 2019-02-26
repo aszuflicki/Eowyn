@@ -2,8 +2,8 @@ import axios from 'axios'
 import jwt from 'jsonwebtoken'
 import history from '../routers/history'
 import { toast } from "react-toastify";
-const instance = axios.create({ baseURL: '/api' })
-
+// const instance = axios.create({ baseURL: '/api' })
+const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
 export const register = (email, password) => {
     return dispatch => {

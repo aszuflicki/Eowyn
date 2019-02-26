@@ -4,8 +4,11 @@ import history from '../routers/history'
 
 const io = require('socket.io-client')
 // const socket = io('https://api.eowyn.szuflicki.tk')
-const socket = io('http://just-testing.ml:8081')
-const instance = axios.create({ baseURL: '/api' })
+// const socket = io('http://just-testing.ml:8081')
+// const instance = axios.create({ baseURL: '/api' })
+
+const socket = io('http://localhost:8081')
+const instance = axios.create({ baseURL: 'http://localhost:8081' })
 
 
 export const updateLayout = (layout) => {

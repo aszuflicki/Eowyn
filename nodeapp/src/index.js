@@ -9,47 +9,36 @@ console.log('--- Main service ---')
 console.log('Connecting to repository...')
 
 process.on('uncaughtException', (err) => {
-	console.error('Unhandled Exception', err)
-	process.exit(1)
+  console.error('Unhandled Exception', err)
+  process.exit(1)
 })
 
 process.on('uncaughtRejection', (err) => {
-	console.error('Unhandled Rejection', err)
-	process.exit(1)
+  console.error('Unhandled Rejection', err)
+  process.exit(1)
 })
 
-let postgres;
+let postgres
 
-
-mediator.on('postgres.ready', db => {
-	postgres = db
-})
-
-mediator.on('rethinkdb.ready', rethinkdb => {
-	let rep;
-
-	repository.connect(postgres, rethinkdb)
-		.then(repo => {
-			console.log('Connected. Starting Server...')
-			rep = repo
-
-			return server.start({
-				port: config.serverSettings.port,
-				repo
-			})
-
-		})
-		.then(() => {
-			console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`);
-		})
+mediator.on('postgres.ready', postgres => {
+  repository.connect(postgres)
+    .then(repo => {
+      console.log('Connected. Starting Server...')
+      return server.start({
+        port: config.serverSettings.port,
+        repo
+      })
+    })
+    .then(() => {
+      console.log(`Server started succesfully, running on port: ${config.serverSettings.port}.`)
+    })
 })
 
 mediator.on('db.error', err => {
-	console.error(err)
-	process.exit(1)
+  console.error(err)
+  process.exit(1)
 })
 
 config.postgres.connect(config.dbSettings, mediator)
-config.rethinkdb.connect(mediator)
 
 mediator.emit('boot.ready')
