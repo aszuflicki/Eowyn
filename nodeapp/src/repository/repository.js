@@ -102,6 +102,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
   }
 
   const newDisscusion = (email, category, topic, desc, tags) => {
+    console.log({ email, category, topic, desc, tags })
     return new Promise((resolve, reject) => {
       Promise
         .all([
@@ -121,11 +122,13 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
 
       console.log("xd" + category)
 
-      if (category) params['where'] = { 'category': { 
-        [Op.like]: {
-          [Op.all]: category.map(el => `%${el}%`)
-        }          
-      }}
+      if (category) params['where'] = {
+        'category': {
+          [Op.like]: {
+            [Op.all]: category.map(el => `%${el}%`)
+          }
+        }
+      }
 
       Promise
         .all([
@@ -169,8 +172,8 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
           discussion.update({
             posts: Sequelize.literal('posts + 1')
           }, {
-            where: { id: topicID }
-          })
+              where: { id: topicID }
+            })
         ])
         .then(results => {
           notifyNewPost(results[0].dataValues)
@@ -248,10 +251,10 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
         .update({
           profile_pic: profilePic
         }, {
-          where: {
-            email
-          }
-        })
+            where: {
+              email
+            }
+          })
         .then(result => {
           resolve(result)
         })

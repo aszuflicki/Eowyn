@@ -81,15 +81,6 @@ class NewDiscussion extends Component {
                         <Col s={3} />
                         <Col s={6} >
                             <h4>Add new discussion</h4>
-                            <h5>Choose tag</h5>
-                            <Row s={6}>
-                                <a class={`space btn teal ${category == 0 ? 'darken-3' : ''}`} onClick={() => this.setState({ category: 0 })}>General Discussion</a>
-                                <a class={`space btn teal ${category == 1 ? 'darken-3' : ''}`} onClick={() => this.setState({ category: 1 })}>Stocks / Bonds</a>
-                                <a class={`space btn teal ${category == 2 ? 'darken-3' : ''}`} onClick={() => this.setState({ category: 2 })}>Investment Ideas</a>
-                                <a class={`space btn teal ${category == 3 ? 'darken-3' : ''}`} onClick={() => this.setState({ category: 3 })}>Cryptocurrencies</a>
-                                <a class={`space btn teal ${category == 4 ? 'darken-3' : ''}`} onClick={() => this.setState({ category: 4 })}>Commodities</a>
-                                <a class={`space btn teal ${category == 5 ? 'darken-3' : ''}`} onClick={() => this.setState({ category: 5 })}>Short / CFDs</a>
-                            </Row>
                         </Col>
                     </Row>
                     <Row style={{ position: "relative" }}>
@@ -97,8 +88,6 @@ class NewDiscussion extends Component {
                         <Input placeholder="Topic" s={6}
                             onChange={(...args) => this.setState({ topic: args[1] })}
                             error={this.state.err.topic} />
-
-
                         <Col s={6} offset={'s3'}> <label className="add-discussion-label">{this.state.err.topic}</label>
                         </Col>
 

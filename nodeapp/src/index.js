@@ -18,8 +18,6 @@ process.on('uncaughtRejection', (err) => {
   process.exit(1)
 })
 
-let postgres
-
 mediator.on('postgres.ready', postgres => {
   repository.connect(postgres)
     .then(repo => {

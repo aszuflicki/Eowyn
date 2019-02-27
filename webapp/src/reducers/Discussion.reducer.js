@@ -5,7 +5,7 @@ import {
 
 const dashboardReducerDefaultState = {
     discussion: null,
-    list: null,
+    list: [],
     follows: null,
     count: 0,
 };
