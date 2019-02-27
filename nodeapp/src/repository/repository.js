@@ -2,6 +2,7 @@
 const models = require('../models/models')
 const Sequelize = require('sequelize')
 const { notifyNewPost } = require('../api/socket')
+const Op = Sequelize.Op;
 
 const repository = ({ user, settings, layout, discussion, post, follower }) => {
   const getUserByEmail = email => {
@@ -100,11 +101,11 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
     })
   }
 
-  const newDisscusion = (email, category, topic, desc) => {
+  const newDisscusion = (email, category, topic, desc, tags) => {
     return new Promise((resolve, reject) => {
       Promise
         .all([
-          discussion.create({ category, topic, desc, author: email, created: new Date(), answeared: new Date(), posts: 0 })
+          discussion.create({ category: JSON.stringify(tags), topic, desc, author: email, created: new Date(), answeared: new Date(), posts: 0 })
         ])
         .then(results => resolve(results[0].dataValues))
     })
@@ -117,7 +118,14 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
         offset,
         order: [['updatedAt', 'DESC']]
       }
-      if (category) params['where'] = { category }
+
+      console.log("xd" + category)
+
+      if (category) params['where'] = { 'category': { 
+        [Op.like]: {
+          [Op.all]: category.map(el => `%${el}%`)
+        }          
+      }}
 
       Promise
         .all([
@@ -127,6 +135,7 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
           console.log(results)
           resolve(results[0])
         })
+        .catch(err => console.log(err))
     })
   }
 

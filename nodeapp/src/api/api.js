@@ -74,10 +74,11 @@ module.exports = (app, options) => {
       })
   })
 
-  app.get('/discussions/:id', (req, res) => {
+  app.get('/discussions/:cat', (req, res) => {
     const { offset = 0 } = req.query
-    let { id } = req.params
-    repo.getDisscusions(offset, id)
+    let { cat } = req.params
+    console.log()
+    repo.getDisscusions(offset, cat.split(','))
       .then(results => {
         res.json(results)
       })

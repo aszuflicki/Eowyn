@@ -49,7 +49,7 @@ const Discussion = (sequelize, types) =>
       primaryKey: true,
       autoIncrement: true
     },
-    category: types.INTEGER,
+    category: types.STRING(511),
     topic: types.STRING(255),
     desc: types.STRING(511),
     author: types.STRING(511),

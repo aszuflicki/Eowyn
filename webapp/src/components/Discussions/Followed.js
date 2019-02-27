@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { CardPanel, Row, Col, Card, CardTitle, Button, Autocomplete, Tabs, Tab, Icon, Input } from 'react-materialize'
 import M from 'materialize-css';
+import ta from 'time-ago'
 
 export default class Followed extends Component {
     constructor(props) {
@@ -14,7 +15,7 @@ export default class Followed extends Component {
         if (JSON.stringify(search) !== JSON.stringify(this.state.search)) {
             this.setState({ search })
             console.log(search)
-            
+
         }
 
         console.log(search)
@@ -46,6 +47,7 @@ export default class Followed extends Component {
                         </div>
                     </Col>
                 </Row>
+                
             </div>
         )
     }

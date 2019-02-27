@@ -85,7 +85,7 @@ function getDiscussionsListSuccess(data) {
     };
 }
 
-export const getMoreOfDiscussionsList = (cat, offset=0) => {
+export const getMoreOfDiscussionsList = (cat, offset = 0) => {
     return dispatch => {
         instance.get(`/discussions/${cat}?offset=${offset}`, { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
@@ -204,3 +204,27 @@ export const justNotifyNewPost = (post, discussion) => {
     }
 }
 
+
+
+export const searchDiscussions = (cat) => {
+    return dispatch => {
+        instance
+            .get(`/discussions/${cat}`, {
+                params: {
+                    cat
+                }
+            })
+            .then(res => {
+                dispatch(searchDiscussionsSuccess(res.data))
+            })
+            .catch(err => { })
+    }
+}
+
+export const SEARCH_DISCUSSIONS_SUCCESS = 'SEARCH_DISCUSSIONS_SUCCESS';
+function searchDiscussionsSuccess(data) {
+    return {
+        type: GET_DISCUSSIONS_LIST_SUCCESS,
+        payload: data
+    };
+}
