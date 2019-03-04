@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Row, Input, Button, Col } from 'react-materialize'
 import axios from 'axios'
 import { connect } from 'react-redux'
+import { toast } from "react-toastify";
 
 class ProfilePage extends Component {
 
@@ -21,16 +22,22 @@ class ProfilePage extends Component {
     }
 
     handleUpload = () => {
-        if (!this.state.selectedFile) return
+        if (!this.state.selectedFile) {
+            toast.error('Add photo file')
+            return 
+        }
         const data = new FormData()
         data.append('file', this.state.selectedFile, this.state.selectedFile.name)
-
+        toast.info('Sending...')
         axios
-            .post('/upload', data, { headers: { "authorization": localStorage.getItem('token') } }
-            )
+            .post('http://localhost:8081/upload', data, { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 console.log(res.statusText)
+                toast.success('Uploaded successfully')
                 setTimeout(() => this.setState({ picId: new Date() + "" }), 2000)
+            })
+            .catch((err) => {
+                toast.error('Wrong file format')
             })
     }
 
@@ -59,7 +66,7 @@ class ProfilePage extends Component {
                                 <Col s={3} />
                                 <Col >
                                     <Row>
-                                        <img key={'pic-' + this.state.picId} src={`/api/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
+                                        <img key={'pic-' + this.state.picId} src={`http://localhost:8081/profile/pic/${this.props.email}?hash=${this.state.picId}`} alt="" className="circle"
                                             style={{ width: '300px', height: "300px", top: "15px", marginLeft: "auto", marginRight: "auto" }} />
                                     </Row>
                                 </Col>

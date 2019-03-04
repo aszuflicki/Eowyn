@@ -113,6 +113,16 @@ module.exports = (app, options) => {
       })
   })
 
+  app.get('/followed', ensureAuthenticated, (req, res) => {
+    let { email } = req.locals
+    const { offset = 0 } = req.query
+    repo.getFollowed(email, offset)
+      .then(results => {
+        console.log(results)
+        res.json(results)
+      })
+  })
+
   app.post('/follow', ensureAuthenticated, (req, res) => {
     let { email } = req.locals
     let { topic_id: topicID } = req.body

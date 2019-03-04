@@ -80,7 +80,7 @@ class Discussions extends Component {
                                     this.props.list.map(el => (
                                         <li className="collection-item avatar"
                                             onClick={() => history.push(`/discussion/${el.id}`)} key={'post-' + el.createdAt}>
-                                            <img src={`/api/profile/pic/${el.author}`} alt="" className="circle" />
+                                            <img src={`http://localhost:8081/profile/pic/${el.author}`} alt="" className="circle" />
                                             <span className="title"><b>{el.topic}</b></span>
                                             <p><span className="truncate"
                                                 style={{ width: "calc(100% - 250px)", display: "inline-block" }}>

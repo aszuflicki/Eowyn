@@ -17,7 +17,7 @@ class NavigationBar extends Component {
   }
 
   componentDidUpdate = () => {
-    const socket = io(`http://just-testing.ml:8081/following/${this.props.email.replace('@', '&')}`)
+    const socket = io(`http://localhost:8081/following/${this.props.email.replace('@', '&')}`)
       .on('new_post', (post, discussion) => {
         console.log(post)
         if (post.author != this.props.email && window.location.href.split('/')[3] != 'discussion') {
@@ -36,7 +36,7 @@ class NavigationBar extends Component {
           <ul className="right">
             {this.props.email ? (
               <NavItem href='/profile'>
-                <img src={`/api/profile/pic/${this.props.email}`} alt="" className="circle" style={{ width: "32px", height: "32px", position: "absolute", top: "15px" }} />
+                <img src={`http://localhost:8081/profile/pic/${this.props.email}`} alt="" className="circle" style={{ width: "32px", height: "32px", position: "absolute", top: "15px" }} />
                 <span style={{ paddingLeft: "40px" }}>{this.props.email}</span></NavItem>
             ) : ''}
 

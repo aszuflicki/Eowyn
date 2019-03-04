@@ -196,6 +196,40 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
     })
   }
 
+  const getFollowed = (email, offset = 0) => {
+    return new Promise((resolve, reject) => {
+      let count = 0;
+      let rows = [];
+
+      follower.findAndCountAll({
+        where: { email },
+        order: [['updatedAt', 'DESC']],
+        limit: 20,
+        offset
+      })
+        .then(results => {
+          rows = results.rows.map(el => el.dataValues.topic_id)
+          count = results.count
+          discussion.findAll({
+            where: {
+              'id': {
+                [Op.eq]: { [Op.any]: rows.map(el => parseInt(el)) }
+              }
+            }
+          })
+            .then(results => {
+              resolve({
+                followed: {
+                  rows: results.map(el => el.dataValues),
+                  count
+                }
+              })
+            })
+
+        })
+    })
+  }
+
   const follow = (email, topicID) => {
     return new Promise((resolve, reject) => {
       Promise
@@ -281,7 +315,8 @@ const repository = ({ user, settings, layout, discussion, post, follower }) => {
     getFollows,
     getAllFollowers,
     getProfilePic,
-    setProfilePic
+    setProfilePic,
+    getFollowed
   }
 }
 

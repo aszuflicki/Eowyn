@@ -2,6 +2,8 @@ import axios from 'axios'
 import { retrieveToken } from './Auth.actions'
 import history from '../routers/history'
 import { toast } from "react-toastify";
+import React from 'react'
+import Notification from '../components/NotificationNewPost'
 
 const io = require('socket.io-client')
 // const socket = io('https://api.eowyn.szuflicki.tk')
@@ -143,11 +145,32 @@ function getFollowsSuccess(data) {
     };
 }
 
+export const getFollowed = () => {
+    return dispatch => {
+        instance.get(`/followed`, { headers: { "authorization": localStorage.getItem('token') } })
+            .then(res => {
+                dispatch(getFollowedSuccess(res.data))
+            })
+            .catch(err => {
+                // toast.error("Log in to comment");
+            })
+    }
+}
+
+export const GET_FOLLOWED_SUCCESS = 'GET_FOLLOWED_SUCCESS';
+function getFollowedSuccess(data) {
+    return {
+        type: GET_FOLLOWED_SUCCESS,
+        payload: data
+    };
+}
+
 export const follow = (topic_id) => {
     return dispatch => {
         instance.post(`/follow`, { topic_id }, { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 dispatch(followSuccess(topic_id))
+                dispatch(getFollows())
             })
             .catch(err => {
                 toast.error("Error occured");
@@ -168,6 +191,7 @@ export const unfollow = (topic_id) => {
         instance.post(`/unfollow`, { topic_id }, { headers: { "authorization": localStorage.getItem('token') } })
             .then(res => {
                 dispatch(unfollowSuccess(topic_id))
+                dispatch(getFollows())
             })
             .catch(err => {
                 // toast.error("Log in to comment");
@@ -186,7 +210,7 @@ function unfollowSuccess(data) {
 export const notifyNewPost = (post, discussion) => {
     return dispatch => {
         dispatch(notifyNewPostSuccess(post))
-        toast.info(`New post in ${discussion.topic}   by ${post.author}`);
+        toast.info(<Notification post={post} discussion={discussion} />);
     }
 }
 
@@ -200,7 +224,7 @@ function notifyNewPostSuccess(data) {
 
 export const justNotifyNewPost = (post, discussion) => {
     return dispatch => {
-        toast.info(`New post in ${discussion.topic}   by ${post.author}`);
+        toast.info(<Notification post={post} discussion={discussion} />);
     }
 }
 

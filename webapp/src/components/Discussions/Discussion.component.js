@@ -45,7 +45,7 @@ class Discussion extends Component {
         this.setState({ err: '', input: '' })
         this.props.getFollows()
         const id = window.location.href.split('/')[4]
-        const socket = io(`http://just-testing.ml:8081/discussion/${id}`)
+        const socket = io(`http://localhost:8081/discussion/${id}`)
             .on('new_post', (post) => {
                 console.log(post)
                 if (post.author != this.props.email) {
