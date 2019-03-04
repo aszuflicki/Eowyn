@@ -1,0 +1,30 @@
+version: '3'
+
+services:
+  nodeapp:
+    container_name: nodeapp
+    build: ./nodeapp
+    ports: 
+      - "8081:8081"
+    environment:
+      - DB=nodeapp_db
+    links:
+      - nodeapp_db
+    depends_on: 
+      - nodeapp_db
+    restart: always
+  webapp:
+    container_name: webapp
+    build: ./webapp
+    ports:
+      - "5000:80"
+    restart: always
+  nodeapp_db:
+    container_name: nodeapp_db
+    build: ./nodeapp_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./nodeapp_db/init:/docker-entrypoint-initdb.d
+    restart: always
+    

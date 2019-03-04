@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import Parser from 'rss-parser'
-import { Collapsible, CollapsibleItem } from 'react-materialize'
 import M from 'materialize-css'
-import request from 'request'
-import cheerio from 'cheerio'
-import feed from 'feed-read'
 import ta from 'time-ago'
 import NewsAPI from 'newsapi'
 
@@ -65,7 +60,7 @@ class NewsFeed extends Component {
                 pageSize: 50
             }).then(response => {
                 console.log(response);
-                this.setState({ feed: {...feed,  items: response.articles } })
+                this.setState({ feed: {...this.state.feed,  items: response.articles } })
             });
         }
 

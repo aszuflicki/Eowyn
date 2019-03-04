@@ -17,7 +17,7 @@ process.on('uncaughtRejection', (err) => {
   console.error('Unhandled Rejection', err)
   process.exit(1)
 })
-
+console.log(config)
 mediator.on('postgres.ready', postgres => {
   repository.connect(postgres)
     .then(repo => {
