@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { logout, checkIfLoggedIn } from './../actions/Auth.actions'
-import { justNotifyNewPost } from '../actions/Discussions.actions'
+import { justNotifyNewPost, getFollows } from '../actions/Discussions.actions'
 import { NavItem, Navbar, Icon, Button } from 'react-materialize'
 import { ToastContainer } from 'react-toastify'
 import history from '../routers/history'
@@ -20,10 +20,12 @@ class NavigationBar extends Component {
     const socket = io(`http://localhost:8081/following/${this.props.email.replace('@', '&')}`)
       .on('new_post', (post, discussion) => {
         console.log(post)
-        if (post.author != this.props.email && window.location.href.split('/')[3] != 'discussion') {
+        if (post.author != this.props.email && window.location.href.split('/')[4] != post.topic_id ) {
           this.props.justNotifyNewPost(post, discussion)
         }
       })
+    
+    this.props.getFollows()
   }
 
 
@@ -67,7 +69,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logout: () => dispatch(logout()),
     checkIfLoggedIn: () => dispatch(checkIfLoggedIn()),
-    justNotifyNewPost: (...args) => dispatch(justNotifyNewPost(...args))
+    justNotifyNewPost: (...args) => dispatch(justNotifyNewPost(...args)),
+    getFollows: () => dispatch(getFollows())
   };
 };
 

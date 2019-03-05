@@ -26,17 +26,15 @@ const AppRouter = () => (
                 <PublicRoute path="/register" exact={true} component={RegisterPage} />
                 <PublicRoute path="/login" exact={true} component={LoginPage} />
                 <Route path="/discussions" exact={true} component={Discussions} />
-                <Route path="/discussions/new" exact={true} component={NewDiscussion} />
-                <Route path="/discussions/followed" exact={true} component={Followed} />
+                <PrivateRoute path="/discussions/new" exact={true} component={NewDiscussion} />
+                <PrivateRoute path="/discussions/followed" exact={true} component={Followed} />
                 <Route path="/discussions/search" exact={true} component={Search} />
                 <Route path="/discussion/:topic" component={Discussion} />
                 <PrivateRoute path="/profile" component={ProfilePage} />
                 <PrivateRoute path="/dashboard/:tab" component={Dashboard} />
                 <PrivateRoute path="/dashboard" component={Dashboard} />
-
             </Switch>
         </Router>
-        
     </React.Fragment>
 );
 

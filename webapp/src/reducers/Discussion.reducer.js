@@ -36,9 +36,8 @@ export default (state = dashboardReducerDefaultState, action) => {
             return { ...state, follows: state.follows.filter(el => el != action.payload) }
 
         case NOTIFY_NEW_POST_SUCCESS:
-            console.log(state)
-            return state
-            // return { ...state, posts: [action.payload, ...state.posts] }
+            // return state
+            return { ...state, posts: {rows: [action.payload, ...state.posts.rows], count: state.posts.count + 1 }}
 
         case GET_MORE_OF_DISCUSSIONS_LIST_SUCCESS:
             return { ...state, list: [...state.list, ...action.payload.rows], count: action.payload.count }

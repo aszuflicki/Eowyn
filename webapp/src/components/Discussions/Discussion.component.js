@@ -44,11 +44,13 @@ class Discussion extends Component {
     componentWillMount = () => {
         this.setState({ err: '', input: '' })
         this.props.getFollows()
-        const id = window.location.href.split('/')[4]
+        let id = window.location.href.split('/')[4]
         const socket = io(`http://localhost:8081/discussion/${id}`)
             .on('new_post', (post) => {
+                id = window.location.href.split('/')[4]
+                console.log(id)
                 console.log(post)
-                if (post.author != this.props.email) {
+                if (post.author != this.props.email && id == post.topic_id) {
                     this.props.notifyNewPost(post, this.props.discussion)
                 }
             })

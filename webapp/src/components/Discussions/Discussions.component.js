@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { getDiscussionsList, getMoreOfDiscussionsList } from '../../actions/Discussions.actions'
 import Badges from './Fragments/Badges.component'
 import ta from 'time-ago'
+import { toast } from "react-toastify";
 
 class Discussions extends Component {
     constructor(props) {
@@ -55,22 +56,33 @@ class Discussions extends Component {
                         <Col s={2} >
                             <div style={{ marginTop: '7.5px', marginRight: "25px" }}>
                                 <a className="btn"
-                                    onClick={() => history.push('/discussions/new')}
+                                    onClick={() => {
+                                        if (this.props.email.length === 0) {
+                                            toast.error("Log in to add new discussion");
+                                        } else {
+                                            history.push('/discussions/new')
+                                        }
+
+                                    }}
                                 >New discussion</a>
                             </div>
 
                             <Row />
                             <Row />
                             <Row><div style={{ paddingLeft: "11.25px" }}><a
-                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' });history.push('/discussions/followed')  }}
-                            >Followed</a> </div> </Row>
+                                onClick={() => {
+                                    if (this.props.email.length === 0) {
+                                        toast.error("Log in to see followed discussion");
+                                    } else {
+                                        history.push('/discussions/followed')
+                                    }}}>Followed</a> </div> </Row>
                             <Row><div style={{ paddingLeft: "11.25px" }}><a
-                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' });history.push('/discussions/search')  }}
+                                onClick={() => history.push('/discussions/search')}
                             >Search</a> </div> </Row>
                             <Row><div style={{ paddingLeft: "11.25px" }}><a
-                                onClick={() => { this.props.getDiscussionsList(''); this.setState({ category: '' });history.push('/discussions/') }}
+                                onClick={() => { this.props.getDiscussionsList(''); history.push('/discussions/') }}
                             >All discussions</a> </div> </Row>
-                            
+
 
                         </Col>
                         <Col />
@@ -87,7 +99,7 @@ class Discussions extends Component {
 
                                                 {el.desc}
                                             </span> </p>
-                                            <label>{el.posts === 0? `Created ${ta.ago(el.createdAt)}` : `Updated ${ta.ago(el.updatedAt)}`}</label>
+                                            <label>{el.posts === 0 ? `Created ${ta.ago(el.createdAt)}` : `Updated ${ta.ago(el.updatedAt)}`}</label>
 
                                             <a href="#!" className="secondary-content">
 
@@ -119,8 +131,10 @@ class Discussions extends Component {
 
 function mapStateToProps(state) {
     console.log(state.discussion)
+    console.log(state)
     return {
         ...state.discussion,
+        email: state.auth.email
     }
 }
 
